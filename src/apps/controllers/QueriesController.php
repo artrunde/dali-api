@@ -5,7 +5,6 @@ namespace DaliAPI\Controllers;
 use DaliAPI\Models\Tags;
 use DaliAPI\Response\QueryPlaceResponse;
 use DaliAPI\Response\QueryPlacesResponse;
-use DaliAPI\Response\ResponseArray;
 use Phalcon\Mvc\Controller;
 
 class QueriesController extends Controller

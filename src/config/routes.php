@@ -11,9 +11,13 @@ $di->set('router', function () {
 
     $router = new Router(false);
 
+    /**
+     * OPEN ROUTES
+     */
+
     // Define a route
     $router->addGet(
-        "/search-terms/{search_terms:}",
+        "/dali-public/search-terms/{search_terms:}",
         [
             "controller" => "Search_Terms",
             "action"     => "search",
@@ -21,7 +25,7 @@ $di->set('router', function () {
     );
 
     $router->addPost(
-        "/queries/places/",
+        "/dali-public/queries/places/",
         [
             "controller" => "Queries",
             "action"     => "createPlace",
@@ -29,7 +33,7 @@ $di->set('router', function () {
     );
 
     $router->addGet(
-        "/places/{place_id:}",
+        "/dali-public/places/{place_id:}",
         [
             "controller" => "Places",
             "action"     => "get",
@@ -37,7 +41,7 @@ $di->set('router', function () {
     );
 
     $router->addGet(
-        "/debug/",
+        "/dali-public/debug/",
         [
             "controller" => "Index",
             "action"     => "debug",

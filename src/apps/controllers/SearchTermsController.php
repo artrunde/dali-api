@@ -3,6 +3,8 @@
 namespace DaliAPI\Controllers;
 
 use DaliAPI\Models\SearchTerms;
+use DaliAPI\Response\SearchTermResponse;
+use DaliAPI\Response\SearchTermsResponse;
 use Phalcon\Mvc\Controller;
 
 class SearchTermsController extends Controller
@@ -15,26 +17,24 @@ class SearchTermsController extends Controller
          */
        $searchTerms = SearchTerms::factory('DaliAPI\Models\SearchTerms')
             ->where('search_term_id', '=', $searchTerm)
-            ->limit(3)
+            ->limit(10)
             ->findMany();
 
-        $this->response->setJsonContent($searchTerms);
-		$this->response->send();
+
+       $response = new SearchTermsResponse();
+
+        /**
+         * @var SearchTerms $searchTerm
+         */
+       foreach( $searchTerms as $searchTerm ) {
+
+           $searchTermResponse = new SearchTermResponse($searchTerm->search_term_id, $searchTerm->tag_priority_id, $searchTerm->category, $searchTerm->tag_id);
+
+           $response->addResponse($searchTermResponse);
+       }
+
+       return $response;
 
 	}
 
-    public function queryAction($searchTerm)
-    {
-        /**
-         * @var SearchTerms $searchTerms
-         */
-        $searchTerms = SearchTerms::factory('DaliAPI\Models\SearchTerms')
-            ->where('search_term_id', '=', $searchTerm)
-            ->limit(3)
-            ->findMany();
-
-        $this->response->setJsonContent($searchTerms);
-        $this->response->send();
-
-    }
 }

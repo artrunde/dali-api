@@ -19,7 +19,7 @@ class IndexController extends Controller
          * Return debug response
          */
         return new DebugResponse(
-            getenv('EVENT_PARAMS')
+            json_decode(getenv('EVENT_PARAMS'),true)
         );
 	}
 }

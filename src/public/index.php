@@ -89,8 +89,6 @@ class Application extends BaseApplication
 
         $this->setDI($di);
 
-
-
     }
 
     public function run()
