@@ -1,2 +1,2 @@
-# demo-aws-lambda-php-template
-Simple PHP and AWS Lambda template
+# Dali API
+Dali API. AWS API Gateway with proxy. Phalcon PHP extension.
