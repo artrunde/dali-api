@@ -930,9 +930,10 @@ class ODM
 				'RequestItems' => array(
 					$this->_table_name => array(
 						'Keys'           => $keys,
-						'ConsistentRead' => true
+						'ConsistentRead' => $this->_consistent_read
 					)
-				)
+				),
+                'ReturnConsumedCapacity' => 'TOTAL'
 			)
 		);
 

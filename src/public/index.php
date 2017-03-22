@@ -3,14 +3,17 @@
 namespace DaliAPI;
 
 use Aws\DynamoDb\DynamoDbClient;
+use DaliAPI\Exceptions\HandledException;
 use DaliAPI\Request\LambdaRequest;
 use DaliAPI\Response\JSONResponse;
 use DaliAPI\Response\ResponseArray;
+use DaliAPI\Response\ResponseMessage;
 use Phalcon\DI;
+use Phalcon\Http\Response;
+use DaliAPI\Response\Response as HTTPResponse;
 use Phalcon\Loader;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\Dispatcher;
-use Phalcon\Http\Response;
 use Phalcon\Mvc\Application as BaseApplication;
 
 class Application extends BaseApplication
@@ -25,7 +28,8 @@ class Application extends BaseApplication
                 'DaliAPI\Models'      => '../apps/models/',
                 'DaliAPI\Library'     => '../apps/library/',
                 'DaliAPI\Request'     => '../apps/request/',
-                'DaliAPI\Response'    => '../apps/response/'
+                'DaliAPI\Response'    => '../apps/response/',
+                'DaliAPI\Exceptions'  => '../apps/exceptions/'
             ]
         );
 
@@ -132,6 +136,29 @@ try {
 	 * Run app
 	 */
     $application->run();
+
+} catch (HandledException $e) {
+
+    $response = new HTTPResponse();
+
+    $response->setStatusCode(
+        $e->getCode(),
+        $e->getMessage()
+    );
+
+    $response->addMessage(
+        $e->getMessage(),
+        ResponseMessage::TYPE_WARNING
+    );
+
+    /** @var LambdaRequest $request */
+    $di         = Di::getDefault();
+    $request    = $di->get('request');
+
+    if ( $request->isJSON() ) {
+        $json = new JSONResponse($response,true);
+        return $json->send();
+    }
 
 } catch (\Exception $e) {
     echo $e->getMessage();

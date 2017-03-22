@@ -150,5 +150,7 @@ class Response
     }
 
     return $dataVars;
+
   }
+
 }

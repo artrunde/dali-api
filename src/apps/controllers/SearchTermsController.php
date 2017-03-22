@@ -5,9 +5,8 @@ namespace DaliAPI\Controllers;
 use DaliAPI\Models\SearchTerms;
 use DaliAPI\Response\SearchTermResponse;
 use DaliAPI\Response\SearchTermsResponse;
-use Phalcon\Mvc\Controller;
 
-class SearchTermsController extends Controller
+class SearchTermsController extends BaseController
 {
 
     public function searchAction($searchTerm)
@@ -19,7 +18,6 @@ class SearchTermsController extends Controller
             ->where('search_term_id', '=', $searchTerm)
             ->limit(10)
             ->findMany();
-
 
        $response = new SearchTermsResponse();
 

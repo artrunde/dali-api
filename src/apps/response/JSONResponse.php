@@ -16,10 +16,14 @@ class JSONResponse extends HTTPResponse
     /** @var array */
     public $data;
 
+    protected $envelope = false;
+
     /**
+     * JSONResponse constructor.
      * @param Response $response
+     * @param bool $envelope
      */
-    public function __construct(Response $response)
+    public function __construct(Response $response, $envelope = false)
     {
 
         parent::__construct();
@@ -32,6 +36,7 @@ class JSONResponse extends HTTPResponse
         $this->data     = $response->getData();
         $this->meta     = $response->getMeta();
         $this->messages = $response->getMessages();
+        $this->envelope = $envelope; // This is useful for exceptions
 
     }
 
@@ -59,7 +64,7 @@ class JSONResponse extends HTTPResponse
         /**
          * Check enveloped
          */
-        if( true === $request->envelope() ) {
+        if( true === $request->envelope() || true === $this->envelope ) {
             $this->setContent(json_encode($this));
         } else {
             $this->setContent(json_encode($this->data));
@@ -70,12 +75,4 @@ class JSONResponse extends HTTPResponse
 
     }
 
-    public function sendException(\Exception $exception)
-    {
-        $this->setStatusCode($exception->getCode(), $exception->getMessage());
-
-        $this->setJsonContent($this);
-
-        return parent::send();
-    }
 }

@@ -41,6 +41,14 @@ $di->set('router', function () {
     );
 
     $router->addGet(
+        "/dali-public/places/",
+        [
+            "controller" => "Places",
+            "action"     => "getBulk",
+        ]
+    );
+
+    $router->addGet(
         "/dali-public/debug/",
         [
             "controller" => "Index",

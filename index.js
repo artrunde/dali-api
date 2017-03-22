@@ -1,7 +1,5 @@
 'use strict';
 
-console.log('Loading hello world php function');
-
 var spawn   = require('child_process').spawn;
 var parser  = require('http-string-parser');
 
@@ -9,7 +7,7 @@ exports.handler = function(event, context) {
 
     var PHPOutput = '';
 
-    console.log("request: " + JSON.stringify(event));
+    console.log("Request: " + JSON.stringify(event));
 
     // Sets some sane defaults here so that this function doesn't fail when it's not handling a HTTP request from
     // API Gateway.

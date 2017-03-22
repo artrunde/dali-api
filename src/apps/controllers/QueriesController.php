@@ -2,12 +2,12 @@
 
 namespace DaliAPI\Controllers;
 
+use DaliAPI\Exceptions\BadRequestException;
 use DaliAPI\Models\Tags;
 use DaliAPI\Response\QueryPlaceResponse;
 use DaliAPI\Response\QueryPlacesResponse;
-use Phalcon\Mvc\Controller;
 
-class QueriesController extends Controller
+class QueriesController extends BaseController
 {
 
     private $tagResults = array();
@@ -22,46 +22,46 @@ class QueriesController extends Controller
          */
         $body = $this->request->getJsonRawBody();
 
-        $i = 0;
+        if ( count($body->tags) < 4 && count($body->tags) > 0) {
 
-        /**
-         *  Go through each searchable and query all items tagged
-         */
-        foreach($body->tags as $searchable) {
+            // Create result arrays
+            $this->tagResults = Tags::createQueryPlaceResult($body->tags);
 
             /**
-             * @var Tags $data
+             *  array_intersect_key return only the array elements in common with the first array
              */
-            $data = Tags::factory('DaliAPI\Models\Tags')
-            ->where('tag_id', '=', $searchable)
-            ->findMany();
-
-            foreach($data as $tag) {
-                $this->tagResults[$i][$tag->place_id] = $searchable;
+            if( count($body->tags) == 2) {
+                $results = array_intersect_key($this->tagResults[0], $this->tagResults[1]);
+            } elseif (count($body->tags) == 3) {
+                $results = array_intersect_key($this->tagResults[0], $this->tagResults[1], $this->tagResults[2]);
+            } else {
+                $results = $this->tagResults[0];
             }
 
-            $i++;
+            /**
+             * Create array response
+             */
+            $response = new QueryPlacesResponse();
+
+            if (!empty($results)) {
+
+                foreach ($results as $place_id => $tag_id) {
+
+                    $queryPlace = new QueryPlaceResponse($place_id, $tag_id);
+
+                    $response->addResponse($queryPlace);
+
+                }
+
+            }
+
+            return $response;
+
+        } else {
+
+            throw new BadRequestException('Invalid number of search tags, min:1 max:3');
+
         }
-
-        /**
-         *  array_intersect_key return only the array elements in common with the first array
-         */
-        $results = array_intersect_key($this->tagResults[0], $this->tagResults[1]);
-
-        /**
-         * Create array response
-         */
-        $response = new QueryPlacesResponse();
-
-        foreach ( $results as $place_id => $tag_id) {
-
-            $queryPlace = new QueryPlaceResponse($place_id, $tag_id);
-
-            $response->addResponse($queryPlace);
-
-        }
-
-        return $response;
 
     }
 }

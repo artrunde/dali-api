@@ -24,4 +24,32 @@ class Tags extends ODM {
 		'category'  => 'S'
 	);
 
+    public static function createQueryPlaceResult($tags) {
+
+        $resultArray    = array();
+        $i              = 0;
+
+        /**
+         *  Go through each searchable and query all items tagged
+         */
+        foreach ($tags as $searchable) {
+
+            /**
+             * @var Tags $data
+             */
+            $data = Tags::factory('DaliAPI\Models\Tags')
+                ->where('tag_id', '=', $searchable)
+                ->findMany();
+
+            foreach ($data as $tag) {
+                $resultArray[$i][$tag->place_id] = $searchable;
+            }
+
+            $i++;
+        }
+
+        return $resultArray;
+
+    }
+
 }
