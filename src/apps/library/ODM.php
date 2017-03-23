@@ -158,7 +158,7 @@ class ODM
 
 		$key  = $this->_formatAttributes($conditions);
 		$args = array(
-			'TableName'              => $this->_table_name,
+			'TableName'              => $this->getTableName(),
 			'Key'                    => $key,
 			'ConsistentRead'         => $this->_consistent_read,
 			'ReturnConsumedCapacity' => 'TOTAL',
@@ -296,7 +296,7 @@ class ODM
 		$conditions = $this->_getKeyConditions();
 
 		$args       = array(
-			'TableName'    => $this->_table_name,
+			'TableName'    => $this->getTableName(),
 			'Key'          => $conditions,
 			'ReturnValues' => 'ALL_OLD',
 		);
@@ -557,7 +557,7 @@ class ODM
 	{
 
 		$args = array(
-			'TableName'              => $this->_table_name,
+			'TableName'              => $this->getTableName(),
 			'KeyConditions'          => $conditions,
 			'ScanIndexForward'       => true,
 			// Select: ALL_ATTRIBUTES|ALL_PROJECTED_ATTRIBUTES|SPECIFIC_ATTRIBUTES|COUNT
@@ -673,8 +673,8 @@ class ODM
 	 */
 	public function scan(array $options = array())
 	{
-		$options['TableName'] = $this->_table_name;
-		$client              = $this->getClient();
+		$options['TableName']   = $this->getTableName();
+		$client                 = $this->getClient();
 
 		$iterator = $client->getIterator('Scan', $options);
 		$items    = array();
@@ -699,9 +699,8 @@ class ODM
 	{
 
         $args = array(
-			'TableName'                   => $this->_table_name,
+			'TableName'                   => $this->getTableName(),
 			'Item'                        => $this->_formatAttributes($values),
-			//'ReturnValues'                => 'ALL_NEW',
 			'ReturnConsumedCapacity'      => 'TOTAL',
 			'ReturnItemCollectionMetrics' => 'SIZE',
 		);
@@ -770,7 +769,7 @@ class ODM
 			}
 		}
 		$args = array(
-			'TableName'                   => $this->_table_name,
+			'TableName'                   => $this->getTableName(),
 			'Key'                         => $conditions,
 			'AttributeUpdates'            => $attributes,
 			'ReturnValues'                => 'ALL_NEW',
@@ -859,7 +858,7 @@ class ODM
 	 */
 	public function getTableName()
 	{
-		return $this->_table_name;
+		return empty(getenv('ENVIRONMENT')) ? $this->_table_name : $this->_table_name.'_'.getenv('ENVIRONMENT');
 	}
 
 	/**
@@ -924,11 +923,13 @@ class ODM
 			$keys[] = $this->_formatAttributes($conditions);
 		}
 
+		$table_name = $this->getTableName();
+
 		$client   = $this->getClient();
 		$result   = $client->batchGetItem(
 			array(
 				'RequestItems' => array(
-					$this->_table_name => array(
+                    $table_name => array(
 						'Keys'           => $keys,
 						'ConsistentRead' => $this->_consistent_read
 					)
@@ -937,7 +938,7 @@ class ODM
 			)
 		);
 
-		$items            = $result->getPath("Responses/{$this->_table_name}");
+		$items            = $result->getPath("Responses/{$this->getTableName()}");
 		$class_name       = get_called_class();
 		$formatted_result = $this->_formatResults($items);
 

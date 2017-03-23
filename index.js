@@ -25,6 +25,10 @@ exports.handler = function(event, context) {
         });
     }
 
+    // Get function name. This will have a suffix with environment
+    var environment = context.functionName.slice(-3);
+    console.log("Environment: " + JSON.stringify(environment));
+
     // Create HTTP object
     httpObject = Object.assign({
         REDIRECT_STATUS: 200,
@@ -39,7 +43,8 @@ exports.handler = function(event, context) {
         AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
         AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
         AWS_SESSION_TOKEN: process.env.AWS_SESSION_TOKEN,
-        EVENT_PARAMS: JSON.stringify(event)
+        EVENT_PARAMS: JSON.stringify(event),
+        ENVIRONMENT: environment // dev/stg/prd
     }, headers);
 
     function serialize( obj ) {

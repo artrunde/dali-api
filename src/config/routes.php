@@ -17,7 +17,7 @@ $di->set('router', function () {
 
     // Define a route
     $router->addGet(
-        "/dali-public/search-terms/{search_terms:}",
+        "/rodin-public/search-terms/{search_terms:}",
         [
             "controller" => "Search_Terms",
             "action"     => "search",
@@ -25,7 +25,7 @@ $di->set('router', function () {
     );
 
     $router->addPost(
-        "/dali-public/queries/places/",
+        "/rodin-public/queries/places/",
         [
             "controller" => "Queries",
             "action"     => "createPlace",
@@ -33,7 +33,7 @@ $di->set('router', function () {
     );
 
     $router->addGet(
-        "/dali-public/places/{place_id:}",
+        "/rodin-public/places/{place_id:}",
         [
             "controller" => "Places",
             "action"     => "get",
@@ -41,7 +41,7 @@ $di->set('router', function () {
     );
 
     $router->addGet(
-        "/dali-public/places/",
+        "/rodin-public/places/",
         [
             "controller" => "Places",
             "action"     => "getBulk",
@@ -49,7 +49,7 @@ $di->set('router', function () {
     );
 
     $router->addGet(
-        "/dali-public/debug/",
+        "/rodin-public/debug/",
         [
             "controller" => "Index",
             "action"     => "debug",

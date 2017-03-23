@@ -2,14 +2,14 @@
 
 namespace DaliAPI\Controllers;
 
+use DaliAPI\Exceptions\ItemNotFoundException;
 use DaliAPI\Response\DebugResponse;
 
 class IndexController extends BaseController
 {
 	public function indexAction()
 	{
-		$this->response->setJsonContent(array('nothing to see here' => $this->request->getQuery()));
-		$this->response->send();
+	    throw new ItemNotFoundException('The resource you tried to access, does not exist!');
 	}
 
 	public function debugAction()

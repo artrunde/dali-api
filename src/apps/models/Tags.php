@@ -12,7 +12,7 @@ class Tags extends ODM {
 
 	public $category;
 
-	protected $_table_name = 'Tags';
+	protected $_table_name = 'tate_tags';
 
 	protected $_hash_key   = 'tag_id';
 
