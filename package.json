@@ -7,7 +7,8 @@
     "test": "test"
   },
   "dependencies": {
-    "http-string-parser": "^0.0.5"
+    "http-string-parser": "^0.0.5",
+    "lambda-local": "^1.4.2"
   },
   "devDependencies": {},
   "scripts": {
