@@ -8,6 +8,8 @@ class ResponseMeta
     public function __construct()
     {
         $this->version = file_get_contents(__DIR__ . '/../../../version');
+
+        $this->environment = getenv('ENVIRONMENT');
     }
 
     /** @var int */
@@ -21,5 +23,10 @@ class ResponseMeta
 
     /** @var string */
     public $version;
+
+    /**
+     * @var string
+     */
+    public $environment;
 
 }

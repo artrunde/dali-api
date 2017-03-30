@@ -10,7 +10,7 @@ class Places extends ODM {
 
 	public $url_id;
 
-	protected $_table_name = 'tate_places';
+	protected $_table_name = 'rodin_places_v1';
 
 	protected $_hash_key   = 'place_id';
 

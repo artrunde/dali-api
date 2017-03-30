@@ -14,7 +14,7 @@ class SearchTerms extends ODM {
 
     public $tag_id;
 
-	protected $_table_name = 'tate_search_terms';
+	protected $_table_name = 'rodin_search_terms_v1';
 
 	protected $_hash_key   = 'search_term_id';
 
