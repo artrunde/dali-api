@@ -10,7 +10,7 @@ dependencies:
     - unzip terraform_0.9.2_linux_amd64.zip
     - ./terraform --version
 test:
-  pre:
+  override:
     - git clone git@github.com:artrunde/terraform-infrastructure.git --branch master
     - ./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active
     - ./terraform output -state=terraform-infrastructure/dev/services/osman/terraform.tfstate auto_deploy_bucket_name
@@ -23,10 +23,10 @@ deployment:
   production:
     branch: master
     commands:
-      - zip -r $(./terraform output -state=terraform-infrastructure/prd/services/rodin/custom-domain-mapping/terraform.tfstate lambda_staging).zip * -x *.git -x composer.phar -x terraform
+      - zip -r $(./terraform output -state=terraform-infrastructure/prd/services/rodin/custom-domain-mapping/terraform.tfstate lambda_staging).zip * -x *.git -x composer.phar -x terraform*
       - aws s3 cp $(./terraform output -state=terraform-infrastructure/prd/services/rodin/custom-domain-mapping/terraform.tfstate lambda_staging).zip s3://$(./terraform output -state=terraform-infrastructure/prd/services/osman/terraform.tfstate auto_deploy_bucket_name)/$(./terraform output -state=terraform-infrastructure/prd/services/rodin/custom-domain-mapping/terraform.tfstate lambda_staging).zip
   development:
     branch: development
     commands:
-      - zip -r $(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip * -x *.git -x composer.phar -x terraform
+      - zip -r $(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip * -x *.git -x composer.phar -x terraform*
       - aws s3 cp $(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip s3://$(./terraform output -state=terraform-infrastructure/dev/services/osman/terraform.tfstate auto_deploy_bucket_name)/$(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip
