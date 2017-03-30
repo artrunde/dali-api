@@ -1,6 +1,6 @@
 <?php
 
-namespace DaliAPI\Library;
+namespace RodinAPI\Library;
 
 use Phalcon\Di;
 

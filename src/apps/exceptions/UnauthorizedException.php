@@ -1,7 +1,7 @@
 <?php
 
 
-namespace DaliAPI\Exceptions;
+namespace RodinAPI\Exceptions;
 
 class UnauthorizedException extends HandledException
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace DaliAPI\Controllers;
+namespace RodinAPI\Controllers;
 
-use DaliAPI\Exceptions\ItemNotFoundException;
-use DaliAPI\Response\DebugResponse;
+use RodinAPI\Exceptions\ItemNotFoundException;
+use RodinAPI\Response\DebugResponse;
 
 class IndexController extends BaseController
 {

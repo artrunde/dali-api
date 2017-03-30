@@ -1,8 +1,8 @@
 <?php
 
-namespace DaliAPI\Models;
+namespace RodinAPI\Models;
 
-use DaliAPI\Library\ODM;
+use RodinAPI\Library\ODM;
 
 class Tags extends ODM {
 
@@ -37,7 +37,7 @@ class Tags extends ODM {
             /**
              * @var Tags $data
              */
-            $data = Tags::factory('DaliAPI\Models\Tags')
+            $data = Tags::factory('RodinAPI\Models\Tags')
                 ->where('tag_id', '=', $searchable)
                 ->findMany();
 

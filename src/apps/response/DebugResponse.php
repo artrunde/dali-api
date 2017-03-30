@@ -1,5 +1,5 @@
 <?php
-namespace DaliAPI\Response;
+namespace RodinAPI\Response;
 
 class DebugResponse extends Response
 {

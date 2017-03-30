@@ -1,6 +1,6 @@
 <?php
 
-namespace DaliAPI\Controllers;
+namespace RodinAPI\Controllers;
 
 use Phalcon\Mvc\Controller;
 

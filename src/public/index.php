@@ -1,16 +1,16 @@
 <?php
 
-namespace DaliAPI;
+namespace RodinAPI;
 
 use Aws\DynamoDb\DynamoDbClient;
-use DaliAPI\Exceptions\HandledException;
-use DaliAPI\Request\LambdaRequest;
-use DaliAPI\Response\JSONResponse;
-use DaliAPI\Response\ResponseArray;
-use DaliAPI\Response\ResponseMessage;
+use RodinAPI\Exceptions\HandledException;
+use RodinAPI\Request\LambdaRequest;
+use RodinAPI\Response\JSONResponse;
+use RodinAPI\Response\ResponseArray;
+use RodinAPI\Response\ResponseMessage;
 use Phalcon\DI;
 use Phalcon\Http\Response;
-use DaliAPI\Response\Response as HTTPResponse;
+use RodinAPI\Response\Response as HTTPResponse;
 use Phalcon\Loader;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\Dispatcher;
@@ -24,12 +24,12 @@ class Application extends BaseApplication
 
         $loader->registerNamespaces(
             [
-                'DaliAPI\Controllers' => '../apps/controllers/',
-                'DaliAPI\Models'      => '../apps/models/',
-                'DaliAPI\Library'     => '../apps/library/',
-                'DaliAPI\Request'     => '../apps/request/',
-                'DaliAPI\Response'    => '../apps/response/',
-                'DaliAPI\Exceptions'  => '../apps/exceptions/'
+                'RodinAPI\Controllers' => '../apps/controllers/',
+                'RodinAPI\Models'      => '../apps/models/',
+                'RodinAPI\Library'     => '../apps/library/',
+                'RodinAPI\Request'     => '../apps/request/',
+                'RodinAPI\Response'    => '../apps/response/',
+                'RodinAPI\Exceptions'  => '../apps/exceptions/'
             ]
         );
 
@@ -57,7 +57,7 @@ class Application extends BaseApplication
         // Registering a dispatcher
         $di->set('dispatcher', function () {
             $dispatcher = new Dispatcher();
-            $dispatcher->setDefaultNamespace('DaliAPI\Controllers\\');
+            $dispatcher->setDefaultNamespace('RodinAPI\Controllers\\');
             return $dispatcher;
         });
 
@@ -107,7 +107,7 @@ class Application extends BaseApplication
         // Get the returned value by the last executed action
         $controllerResponse = $this->dispatcher->getReturnedValue();
 
-        if (is_a($controllerResponse, 'DaliAPI\Response\ResponseArray')) {
+        if (is_a($controllerResponse, 'RodinAPI\Response\ResponseArray')) {
 
             /** @var $controllerResponse ResponseArray */
             $controllerResponse->setCount($controllerResponse->getCount());

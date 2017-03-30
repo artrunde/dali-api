@@ -1,12 +1,12 @@
 <?php
 
-namespace DaliAPI\Controllers;
+namespace RodinAPI\Controllers;
 
-use DaliAPI\Exceptions\BadRequestException;
-use DaliAPI\Exceptions\ItemNotFoundException;
-use DaliAPI\Models\Places;
-use DaliAPI\Response\PlaceResponse;
-use DaliAPI\Response\PlacesResponse;
+use RodinAPI\Exceptions\BadRequestException;
+use RodinAPI\Exceptions\ItemNotFoundException;
+use RodinAPI\Models\Places;
+use RodinAPI\Response\PlaceResponse;
+use RodinAPI\Response\PlacesResponse;
 
 class PlacesController extends BaseController
 {
@@ -14,7 +14,7 @@ class PlacesController extends BaseController
     public function getAction($place_id)
     {
         // Get place
-        $place = Places::factory('DaliAPI\Models\Places')->findOne($place_id);
+        $place = Places::factory('RodinAPI\Models\Places')->findOne($place_id);
 
         if(empty($place)) {
             throw new ItemNotFoundException();
@@ -37,7 +37,7 @@ class PlacesController extends BaseController
         if(count($queryItems) > 0 && count($queryItems) < 11) {
 
             // Get place
-            $places = Places::factory('DaliAPI\Models\Places')->batchGetItems(
+            $places = Places::factory('RodinAPI\Models\Places')->batchGetItems(
                 $queryItems
             );
 

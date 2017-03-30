@@ -1,7 +1,7 @@
 <?php
-namespace DaliAPI\Response;
+namespace RodinAPI\Response;
 
-use DaliAPI\Request\LambdaRequest;
+use RodinAPI\Request\LambdaRequest;
 use Phalcon\Http\Response as HTTPResponse;
 
 class JSONResponse extends HTTPResponse

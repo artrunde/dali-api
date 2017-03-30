@@ -1,6 +1,6 @@
 <?php
 
-namespace DaliAPI\Response;
+namespace RodinAPI\Response;
 
 class Response
 {

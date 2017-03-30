@@ -1,6 +1,6 @@
 <?php
 
-namespace DaliAPI\Exceptions;
+namespace RodinAPI\Exceptions;
 
 class ItemNotFoundException extends HandledException
 {

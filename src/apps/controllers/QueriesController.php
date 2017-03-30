@@ -1,11 +1,11 @@
 <?php
 
-namespace DaliAPI\Controllers;
+namespace RodinAPI\Controllers;
 
-use DaliAPI\Exceptions\BadRequestException;
-use DaliAPI\Models\Tags;
-use DaliAPI\Response\QueryPlaceResponse;
-use DaliAPI\Response\QueryPlacesResponse;
+use RodinAPI\Exceptions\BadRequestException;
+use RodinAPI\Models\Tags;
+use RodinAPI\Response\QueryPlaceResponse;
+use RodinAPI\Response\QueryPlacesResponse;
 
 class QueriesController extends BaseController
 {

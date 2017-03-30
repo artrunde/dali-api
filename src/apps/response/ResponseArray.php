@@ -1,6 +1,6 @@
 <?php
 
-namespace DaliAPI\Response;
+namespace RodinAPI\Response;
 
 class ResponseArray extends Response
 {

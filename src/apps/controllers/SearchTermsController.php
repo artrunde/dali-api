@@ -1,10 +1,10 @@
 <?php
 
-namespace DaliAPI\Controllers;
+namespace RodinAPI\Controllers;
 
-use DaliAPI\Models\SearchTerms;
-use DaliAPI\Response\SearchTermResponse;
-use DaliAPI\Response\SearchTermsResponse;
+use RodinAPI\Models\SearchTerms;
+use RodinAPI\Response\SearchTermResponse;
+use RodinAPI\Response\SearchTermsResponse;
 
 class SearchTermsController extends BaseController
 {
@@ -14,7 +14,7 @@ class SearchTermsController extends BaseController
         /**
          * @var SearchTerms $searchTerms
          */
-       $searchTerms = SearchTerms::factory('DaliAPI\Models\SearchTerms')
+       $searchTerms = SearchTerms::factory('RodinAPI\Models\SearchTerms')
             ->where('search_term_id', '=', $searchTerm)
             ->limit(10)
             ->findMany();

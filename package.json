@@ -7,12 +7,11 @@
     "test": "test"
   },
   "dependencies": {
-    "http-string-parser": "^0.0.5",
-    "lambda-local": "^1.4.2"
+    "http-string-parser": "^0.0.5"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "lambda-local -l index.js -e test/event.json"
+    "test": "lambda-local -l index.js -e test/lambda/event.json"
   },
   "repository": {
     "type": "git",

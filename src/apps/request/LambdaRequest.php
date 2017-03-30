@@ -1,6 +1,6 @@
 <?php
 
-namespace DaliAPI\Request;
+namespace RodinAPI\Request;
 
 use Phalcon\Http\Request;
 

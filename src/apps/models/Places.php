@@ -1,8 +1,8 @@
 <?php
 
-namespace DaliAPI\Models;
+namespace RodinAPI\Models;
 
-use DaliAPI\Library\ODM;
+use RodinAPI\Library\ODM;
 
 class Places extends ODM {
 

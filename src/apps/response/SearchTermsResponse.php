@@ -1,6 +1,6 @@
 <?php
 
-namespace DaliAPI\Response;
+namespace RodinAPI\Response;
 
 class SearchTermsResponse extends ResponseArray
 {
