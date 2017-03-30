@@ -6,6 +6,7 @@ compile:
     - echo "Compiling.."
 dependencies:
   pre:
+    - mkdir
     - wget https://releases.hashicorp.com/terraform/0.9.2/terraform_0.9.2_linux_amd64.zip
     - unzip terraform_0.9.2_linux_amd64.zip
     - ./terraform --version
@@ -26,5 +27,5 @@ deployment:
   development:
     branch: development
     commands:
-      - zip -r $(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip *
+      - zip -r $(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip * -x *.git -x composer.phar -x terraform
       - aws s3 cp $(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip s3://$(./terraform output -state=terraform-infrastructure/dev/services/osman/terraform.tfstate auto_deploy_bucket_name)/$(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip
