@@ -43,6 +43,11 @@ class Response
     return $this->meta;
   }
 
+  public function setVersion($version)
+  {
+      $this->meta->version = (string)$version;
+  }
+
   /**
    * Set teh Response Count
    *

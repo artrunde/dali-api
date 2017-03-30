@@ -70,6 +70,9 @@ class JSONResponse extends HTTPResponse
             $this->setContent(json_encode($this->data));
         }
 
+        // Set version in header
+        $this->setHeader('X-rodin-version', $this->meta->version);
+
         // Send content
         return parent::send();
 
