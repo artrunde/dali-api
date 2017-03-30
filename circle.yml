@@ -16,6 +16,9 @@ test:
     - ./terraform output -state=terraform-infrastructure/dev/services/osman/terraform.tfstate auto_deploy_bucket_name
     - ./terraform output -state=terraform-infrastructure/prd/services/rodin/custom-domain-mapping/terraform.tfstate lambda_staging
     - ./terraform output -state=terraform-infrastructure/prd/services/osman/terraform.tfstate auto_deploy_bucket_name
+    - npm test
+  post:
+    - ./vendor/bin/phpunit
 deployment:
   production:
     branch: master
