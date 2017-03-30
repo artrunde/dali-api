@@ -13,7 +13,7 @@ class DebugTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         // TODO get this from ENV
-        $this->http = new GuzzleHttp\Client(['base_uri' => 'https://api-rodin-dev.artrunde.com/v1/public/']);
+        $this->http = new GuzzleHttp\Client( ['base_uri' => getenv('ACTIVE_V1_URL')] );
     }
 
     public function tearDown()
@@ -23,7 +23,7 @@ class DebugTest extends PHPUnit_Framework_TestCase
 
     public function test_should_return200_when_called()
     {
-        $response = $this->http->request('GET', 'debug/');
+        $response = $this->http->request('GET', 'public/debug/');
         $this->assertEquals(200, $response->getStatusCode());
     }
 
