@@ -7,29 +7,21 @@ compile:
 dependencies:
   pre:
     - wget https://releases.hashicorp.com/terraform/0.9.2/terraform_0.9.2_linux_amd64.zip
-    - unzip terraform_0.9.2_linux_amd64.zip
+    - unzip test/terraform_0.9.2_linux_amd64.zip
     - ./terraform --version
 test:
   override:
-    - git clone git@github.com:artrunde/terraform-infrastructure.git --branch master
-    - ./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active
-    - ./terraform output -state=terraform-infrastructure/dev/services/osman/terraform.tfstate auto_deploy_bucket_name
-    - ./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate active_v1_url
-    - ./terraform output -state=terraform-infrastructure/prd/services/rodin/custom-domain-mapping/terraform.tfstate lambda_staging
-    - ./terraform output -state=terraform-infrastructure/prd/services/osman/terraform.tfstate auto_deploy_bucket_name
-    - ./terraform output -state=terraform-infrastructure/prd/services/rodin/custom-domain-mapping/terraform.tfstate active_v1_url
+    - git clone git@github.com:artrunde/terraform-infrastructure.git
+    - ./terraform output -state=terraform-infrastructure/dev/services/osman/terraform.tfstate
+    - ./terraform output -state=terraform-infrastructure/dev/services/rodin-multideploy/v1/terraform.tfstate
     - npm test
 deployment:
-  production:
-    branch: master
+  v1:
+    tag: /v[1]+(\.[0-9]+)*/
+    owner: artrunde
     commands:
-      - zip -r $(./terraform output -state=terraform-infrastructure/prd/services/rodin/custom-domain-mapping/terraform.tfstate lambda_staging).zip * -x .git/\* -x composer.phar -x terraform-infrastructure/\* -x \*.zip -x .\* -x terraform
-      - aws s3 cp $(./terraform output -state=terraform-infrastructure/prd/services/rodin/custom-domain-mapping/terraform.tfstate lambda_staging).zip s3://$(./terraform output -state=terraform-infrastructure/prd/services/osman/terraform.tfstate auto_deploy_bucket_name)/$(./terraform output -state=terraform-infrastructure/prd/services/rodin/custom-domain-mapping/terraform.tfstate lambda_staging).zip
-      - export envionment=$(./terraform output -state=terraform-infrastructure/prd/services/rodin/custom-domain-mapping/terraform.tfstate active_v1_url)
-      - sleep 20 && ./vendor/bin/phpunit
+      - ./deploy.bash $CIRCLE_SHA1
   development:
     branch: development
     commands:
-      - zip -r $(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip * -x .git/\* -x composer.phar -x terraform-infrastructure/\* -x \*.zip -x .\* -x terraform
-      - aws s3 cp $(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip s3://$(./terraform output -state=terraform-infrastructure/dev/services/osman/terraform.tfstate auto_deploy_bucket_name)/$(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip
-      - sleep 20 && ACTIVE_V1_URL=$(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate active_v1_url) ./vendor/bin/phpunit
+      - ./deploy.bash $CIRCLE_SHA1
