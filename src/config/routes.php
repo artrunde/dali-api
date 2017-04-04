@@ -14,7 +14,7 @@ $di->set('router', function () {
 
     // Create a group with a common module and controller
     $v1 = new RouterGroup();
-    $v1->setPrefix('(\/v1|\/green|\/blue)');
+    $v1->setPrefix('(\/v1/|\/)');
 
 
     /**
@@ -23,7 +23,7 @@ $di->set('router', function () {
 
     // Define a route
     $v1->addGet(
-        "/public/search-terms/{search_terms:}",
+        "public/search-terms/{search_terms:}",
         [
             "controller" => "Search_Terms",
             "action"     => "search",
@@ -31,7 +31,7 @@ $di->set('router', function () {
     );
 
     $v1->addPost(
-        "/public/queries/places/",
+        "public/queries/places/",
         [
             "controller" => "Queries",
             "action"     => "createPlace",
@@ -39,7 +39,7 @@ $di->set('router', function () {
     );
 
     $v1->addGet(
-        "/public/places/{place_id:}",
+        "public/places/{place_id:}",
         [
             "controller" => "Places",
             "action"     => "get",
@@ -47,7 +47,7 @@ $di->set('router', function () {
     );
 
     $v1->addGet(
-        "/public/places/",
+        "public/places/",
         [
             "controller" => "Places",
             "action"     => "getBulk",
@@ -55,7 +55,7 @@ $di->set('router', function () {
     );
 
     $v1->addGet(
-        "/public/debug/",
+        "public/debug/",
         [
             "controller" => "Index",
             "action"     => "debug",
