@@ -35,10 +35,15 @@ function deploy_staging() {
 	echo "Running staging..."
 	LAMBDA_FUNCTION=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate lambda_integrations | jq -r ".value.$STAGING_DEPLOYMENT")
 	S3_DEPLOY_BUCKET=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/osman/terraform.tfstate auto_deploy_bucket_name | jq -r ".value")
+	s3_upload
+
+}
+
+function s3_upload() {
+
 	echo "Zipping to $LAMBDA_FUNCTION.zip..."
-	zip -r "$LAMBDA_FUNCTION".zip * -x .git/\* -x composer.phar -x terraform-infrastructure/\* -x \*.zip -x .\* -x terraform
+	zip -qr "$LAMBDA_FUNCTION".zip * -x .git/\* -x composer.phar -x terraform-infrastructure/\* -x \*.zip -x .\* -x terraform
 	echo "Uploading $LAMBDA_FUNCTION.zip to bucket $S3_DEPLOY_BUCKET..."
-	ls -lastr
 	aws s3 cp "$LAMBDA_FUNCTION".zip s3://"$S3_DEPLOY_BUCKET"/"$LAMBDA_FUNCTION".zip
 	# Set output from lasr command
 	OUT=$?
