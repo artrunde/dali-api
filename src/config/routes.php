@@ -14,7 +14,7 @@ $di->set('router', function () {
 
     // Create a group with a common module and controller
     $v1 = new RouterGroup();
-    $v1->setPrefix('/v1');
+    $v1->setPrefix('(\/v1|\/green|\/blue)');
 
 
     /**
