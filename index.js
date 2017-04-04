@@ -27,8 +27,7 @@ exports.handler = function(event, context) {
 
     // Get function name. This will have a suffix with environment
     // var environment = context.functionName.split('_').slice(-2);
-    var environment = context.functionName.split(/[\s_]+/);
-    environment =  environment[environment.length-2];
+    var environment = context.functionName.slice(-3);
     console.log("Environment: " + JSON.stringify(environment));
 
     var stage = event.requestContext.stage;
