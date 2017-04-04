@@ -7,9 +7,10 @@ class ResponseMeta
 
     public function __construct()
     {
-        $this->version = trim(file_get_contents(__DIR__ . '/../../../version'));
+        $this->version      = trim(file_get_contents(__DIR__ . '/../../../version'));
+        $this->environment  = getenv('ENVIRONMENT');
+        $this->stage        = getenv('STAGE');
 
-        $this->environment = getenv('ENVIRONMENT');
     }
 
     /** @var int */
@@ -28,5 +29,10 @@ class ResponseMeta
      * @var string
      */
     public $environment;
+
+    /**
+     * @var string
+     */
+    public $stage;
 
 }

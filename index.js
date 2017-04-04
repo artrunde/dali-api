@@ -31,6 +31,8 @@ exports.handler = function(event, context) {
     environment =  environment[environment.length-2];
     console.log("Environment: " + JSON.stringify(environment));
 
+    var stage = event.requestContext.stage;
+
     // Create HTTP object
     httpObject = Object.assign({
         REDIRECT_STATUS: 200,
@@ -46,7 +48,8 @@ exports.handler = function(event, context) {
         AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
         AWS_SESSION_TOKEN: process.env.AWS_SESSION_TOKEN,
         EVENT_PARAMS: JSON.stringify(event),
-        ENVIRONMENT: environment // dev/stg/prd
+        ENVIRONMENT: environment, // dev/prd
+        STAGE: stage // green/blue
     }, headers);
 
     function serialize( obj ) {

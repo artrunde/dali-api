@@ -30,7 +30,7 @@
     "requestContext": {
         "accountId": "401237329133",
         "resourceId": "utm77k",
-        "stage": "1",
+        "stage": "green",
         "requestId": "ce45c517-152d-11e7-93b7-d9417a313cbf",
         "identity": {
             "cognitoIdentityPoolId": null,
