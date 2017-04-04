@@ -13,7 +13,7 @@ test:
   override:
     - git clone git@github.com:artrunde/terraform-infrastructure.git
     - ./terraform output -state=terraform-infrastructure/dev/services/osman/terraform.tfstate
-    - ./terraform output -state=terraform-infrastructure/dev/services/rodin/v1/terraform.tfstate
+    - ./terraform output -state=terraform-infrastructure/dev/services/rodin/v1/terraform.tfstate active
     - npm test
 deployment:
   v1:
