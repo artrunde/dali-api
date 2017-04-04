@@ -14,8 +14,6 @@ function command() {
 
 	if [[ "$GIT_COMMIT_DESC" == *"[deploy=staging]"* ]]; then
 		DEPLOYMENT_ACTION="staging"
-	elif [[ "$GIT_COMMIT_DESC" == *"[deploy=new-active]"* ]]; then
-		DEPLOYMENT_ACTION="new-active"
 	elif [[ "$GIT_COMMIT_DESC" == *"[deploy=active]"* ]]; then
 		DEPLOYMENT_ACTION="active"
 	else
@@ -48,6 +46,13 @@ function deploy_staging() {
 
 }
 
+function deploy_active() {
+	echo "Running active..."
+	LAMBDA_FUNCTION=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate lambda_integrations | jq -r ".value.$ACTIVE_DEPLOYMENT")
+	S3_DEPLOY_BUCKET=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/osman/terraform.tfstate auto_deploy_bucket_name | jq -r ".value")
+	s3_upload
+}
+
 function s3_upload() {
 
 	echo "Zipping to $LAMBDA_FUNCTION.zip..."
@@ -63,17 +68,6 @@ function s3_upload() {
 	   exit 1
 	fi
 
-}
-
-function deploy_new_active() {
-	echo "Running new active..."
-}
-
-function deploy_active() {
-	echo "Running active..."
-	LAMBDA_FUNCTION=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate lambda_integrations | jq -r ".value.$ACTIVE_DEPLOYMENT")
-	S3_DEPLOY_BUCKET=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/osman/terraform.tfstate auto_deploy_bucket_name | jq -r ".value")
-	s3_upload
 }
 
 function do_nothing() {
@@ -112,9 +106,6 @@ echo "Deploy to: $DEPLOYMENT_ACTION"
 case "$DEPLOYMENT_ACTION" in
 "staging")
     deploy_staging
-    ;;
-"new-active")
-    deploy_new_active
     ;;
 "active")
     deploy_active
