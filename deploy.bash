@@ -10,12 +10,6 @@ MAJOR_VERSION=${MAJOR_VERSION:1:1}
 # Get name of active deployment
 ACTIVE_DEPLOYMENT=$(./terraform output -state=terraform-infrastructure/dev/services/rodin/v1/terraform.tfstate active)
 
-# - zip -r $(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip * -x .git/\* -x composer.phar -x terraform-infrastructure/\* -x \*.zip -x .\* -x terraform
-#      - aws s3 cp $(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip s3://$(./terraform output -state=terraform-infrastructure/dev/services/osman/terraform.tfstate auto_deploy_bucket_name)/$(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate lambda_active).zip
-#      - sleep 20 && ACTIVE_V1_URL=$(./terraform output -state=terraform-infrastructure/dev/services/rodin/custom-domain-mapping/terraform.tfstate active_v1_url) ./vendor/bin/phpunit
-#
-#
-
 function command() {
 
 	if [[ "$GIT_COMMIT_DESC" == *"[deploy=staging]"* ]]; then
@@ -43,8 +37,8 @@ function deploy_staging() {
 	S3_DEPLOY_BUCKET=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/osman/terraform.tfstate auto_deploy_bucket_name | jq -r ".value")
 	echo "Zipping to $LAMBDA_FUNCTION.zip..."
 	zip -r LAMBDA_FUNCTION.zip * -x .git/\* -x composer.phar -x terraform-infrastructure/\* -x \*.zip -x .\* -x terraform
-	echo "Uploading to bucket $S3_DEPLOY_BUCKET..."
-	aws s3 cp $LAMBDA_FUNCTION.zip s3://$S3_DEPLOY_BUCKET/$LAMBDA_FUNCTION.zip
+	echo "Uploading $LAMBDA_FUNCTION.zip to bucket $S3_DEPLOY_BUCKET..."
+	aws s3 cp "$LAMBDA_FUNCTION".zip s3://"$S3_DEPLOY_BUCKET"/"$LAMBDA_FUNCTION".zip
 	api_test
 }
 
