@@ -25,10 +25,19 @@ function command() {
 }
 
 function api_test() {
+
 	echo "Running integration test..."
 	echo "Sleeping for 20 sec..."
 	sleep 20
 	ACTIVE_V1_URL=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_url | jq -r ".value") ./vendor/bin/phpunit
+
+	# Set output from last command
+	if [ $? -eq 0 ];then
+		echo "Test successful..."
+	else
+	   echo "Integration test failed!"
+	   exit 1
+	fi
 }
 
 function deploy_staging() {
@@ -45,9 +54,9 @@ function s3_upload() {
 	zip -qr "$LAMBDA_FUNCTION".zip * -x .git/\* -x composer.phar -x terraform-infrastructure/\* -x \*.zip -x .\* -x terraform
 	echo "Uploading $LAMBDA_FUNCTION.zip to bucket $S3_DEPLOY_BUCKET..."
 	aws s3 cp "$LAMBDA_FUNCTION".zip s3://"$S3_DEPLOY_BUCKET"/"$LAMBDA_FUNCTION".zip
-	# Set output from lasr command
-	OUT=$?
-	if [ $OUT -eq 0 ];then
+
+	# Set output from last command
+	if [ $? -eq 0 ];then
 	   api_test
 	else
 	   echo "Upload to S3 failed!"
