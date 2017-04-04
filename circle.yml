@@ -13,15 +13,15 @@ test:
   override:
     - git clone git@github.com:artrunde/terraform-infrastructure.git
     - ./terraform output -state=terraform-infrastructure/dev/services/osman/terraform.tfstate
-    - ./terraform output -state=terraform-infrastructure/dev/services/rodin-multideploy/v1/terraform.tfstate
+    - ./terraform output -state=terraform-infrastructure/dev/services/rodin/v1/terraform.tfstate
     - npm test
 deployment:
   v1:
     tag: /v[1]+(\.[0-9]+)*/
     owner: artrunde
     commands:
-      - ./deploy.bash $CIRCLE_SHA1
+      - ./deploy.bash $CIRCLE_SHA1 prd
   development:
     branch: development
     commands:
-      - ./deploy.bash $CIRCLE_SHA1
+      - ./deploy.bash $CIRCLE_SHA1 dev
