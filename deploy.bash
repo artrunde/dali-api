@@ -57,7 +57,7 @@ function deploy_active() {
 function s3_upload() {
 
     echo "Creating buildnr. $CIRCLE_BUILD_NUM"
-    echo "$CIRCLE_BUILD_NUM" >> buildnr
+    echo "$CIRCLE_BUILD_NUM" > buildnr
 	echo "Zipping to $LAMBDA_FUNCTION.zip..."
 	zip -qr "$LAMBDA_FUNCTION".zip * -x .git/\* -x composer.phar -x terraform-infrastructure/\* -x \*.zip -x .\* -x terraform
 	echo "Uploading $LAMBDA_FUNCTION.zip to bucket $S3_DEPLOY_BUCKET..."
