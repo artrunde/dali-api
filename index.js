@@ -36,8 +36,8 @@ exports.handler = function(event, context) {
     httpObject = Object.assign({
         REDIRECT_STATUS: 200,
         REQUEST_METHOD: requestMethod,
-        SCRIPT_FILENAME: 'src/public/index.php',
-        SCRIPT_NAME: '/src/public/index.php',
+        SCRIPT_FILENAME: 'src/v1/public/index.php',
+        SCRIPT_NAME: '/src/v1/public/index.php',
         PATH_INFO: '/',
         SERVER_NAME: serverName,
         SERVER_PROTOCOL: 'HTTP/1.1',
@@ -60,7 +60,7 @@ exports.handler = function(event, context) {
     }
 
     // Spawn the PHP CGI process with a bunch of environment variables that describe the request.
-    var php = spawn('./bin/php-cgi', ['-dextension=bin/phalcon.so','src/public/index.php'], {
+    var php = spawn('./bin/php-cgi', ['-dextension=bin/phalcon.so','src/v1/public/index.php'], {
         env: httpObject
     });
 

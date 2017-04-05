@@ -1,6 +1,7 @@
 #!/bin/bash
 GIT_COMMIT_DESC=$(git log --format=oneline -n 1 $1)
 ENVIRONMENT=$2
+CIRCLE_BUILD_NUM=$3
 
 # Get version from filename and trim whitespaces
 MAJOR_VERSION=$(<version)
@@ -8,7 +9,7 @@ MAJOR_VERSION="$(echo -e "${MAJOR_VERSION}" | tr -d '[:space:]')"
 MAJOR_VERSION=${MAJOR_VERSION:1:1}
 
 # Get name of active deployment
-ACTIVE_DEPLOYMENT=$(./terraform output -state=terraform-infrastructure/dev/services/rodin/v1/terraform.tfstate active)
+ACTIVE_DEPLOYMENT=$(./terraform output -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active)
 
 function command() {
 
@@ -27,7 +28,7 @@ function api_test() {
 	echo "Running integration tests..."
 	echo "Sleeping for 5 sec..."
 	sleep 5
-	dredd swagger/api_v1.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_base_url | jq -r ".value")
+	dredd src/v"$MAJOR_VERSION"/swagger/v1/public.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_base_url | jq -r ".value")
 
 	# Set output from last command
 	if [ $? -eq 0 ];then
@@ -55,6 +56,8 @@ function deploy_active() {
 
 function s3_upload() {
 
+    echo "Creating buildnr. $CIRCLE_BUILD_NUM"
+    echo "$CIRCLE_BUILD_NUM" >> buildnr
 	echo "Zipping to $LAMBDA_FUNCTION.zip..."
 	zip -qr "$LAMBDA_FUNCTION".zip * -x .git/\* -x composer.phar -x terraform-infrastructure/\* -x \*.zip -x .\* -x terraform
 	echo "Uploading $LAMBDA_FUNCTION.zip to bucket $S3_DEPLOY_BUCKET..."

@@ -35,7 +35,7 @@ class Application extends BaseApplication
 
 		$loader->registerFiles(
 			[
-				'../../vendor/autoload.php',
+				'../../../vendor/autoload.php',
 			]
 		);
 

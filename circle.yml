@@ -23,8 +23,8 @@ deployment:
     tag: '/v[1]+(\.[0-9]+)*/'
     owner: artrunde
     commands:
-      - ./deploy.bash $CIRCLE_SHA1 prd
+      - ./deploy.bash $CIRCLE_SHA1 prd $CIRCLE_BUILD_NUM
   development:
     branch: development
     commands:
-      - ./deploy.bash $CIRCLE_SHA1 dev
+      - ./deploy.bash $CIRCLE_SHA1 dev $CIRCLE_BUILD_NUM
