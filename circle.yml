@@ -26,5 +26,5 @@ deployment:
     branch: development
     commands:
       - ./deploy.bash $CIRCLE_SHA1 dev
-      - sleep 20
+      - sleep 5
       - dredd
