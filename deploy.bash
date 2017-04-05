@@ -87,7 +87,7 @@ fi
 
 if [ "$ACTIVE_DEPLOYMENT" == "blue" ]; then
 	STAGING_DEPLOYMENT="green"
-elif [ "$ENVIRONMENT" == "green" ]; then
+elif [ "$ACTIVE_DEPLOYMENT" == "green" ]; then
 	STAGING_DEPLOYMENT="blue"
 fi
 

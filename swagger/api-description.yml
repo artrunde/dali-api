@@ -22,4 +22,4 @@ paths:
               event_params:
                 type: object
             required:
-              - message
+              - event_params
