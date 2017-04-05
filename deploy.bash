@@ -24,10 +24,10 @@ function command() {
 
 function api_test() {
 
-	echo "Running integration test..."
-	echo "Sleeping for 20 sec..."
-	sleep 20
-	ACTIVE_V1_URL=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_url | jq -r ".value") ./vendor/bin/phpunit
+	echo "Running integration tests..."
+	echo "Sleeping for 5 sec..."
+	sleep 5
+	dredd swagger/api_v1.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_url | jq -r ".value")
 
 	# Set output from last command
 	if [ $? -eq 0 ];then
@@ -62,8 +62,7 @@ function s3_upload() {
 
 	# Set output from last command
 	if [ $? -eq 0 ];then
-	   # api_test
-	   echo "No Tests here.."
+	   api_test
 	else
 	   echo "Upload to S3 failed!"
 	   exit 1

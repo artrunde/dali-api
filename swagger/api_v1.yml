@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   version: "1.0"
-  title: Example API
+  title: Artrunde Public API
   license:
     name: MIT
 host: api-rodin-dev.artrunde.com
@@ -15,7 +15,7 @@ paths:
         - application/json; charset=utf-8
       responses:
         200:
-          description: "Get debug"
+          description: "Get debug information"
           schema:
             type: object
             properties:
