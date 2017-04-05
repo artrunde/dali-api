@@ -48,7 +48,7 @@ class JSONResponse extends HTTPResponse
     public function send()
     {
         // Set headers
-        $this->setContentType('application/json; charset=utf-8');
+        $this->setContentType('application/json','utf-8');
 
         if (empty($this->messages)) {
             $this->messages = null;

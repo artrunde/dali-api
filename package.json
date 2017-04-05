@@ -9,9 +9,7 @@
   "dependencies": {
     "http-string-parser": "^0.0.5"
   },
-  "devDependencies": {
-    "lambda-local": "^1.4.2"
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "lambda-local -l index.js -e test/lambda/event.json"
   },

@@ -9,7 +9,7 @@ dependencies:
     - wget https://releases.hashicorp.com/terraform/0.9.2/terraform_0.9.2_linux_amd64.zip
     - unzip terraform_0.9.2_linux_amd64.zip
     - ./terraform --version
-    - npm install -g dredd@3.3.1
+    - npm install -g dredd@3.3.1 lambda-local@1.4.2
 test:
   override:
     - git clone git@github.com:artrunde/terraform-infrastructure.git
