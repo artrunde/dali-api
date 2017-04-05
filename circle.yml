@@ -13,8 +13,10 @@ dependencies:
 test:
   override:
     - git clone git@github.com:artrunde/terraform-infrastructure.git
-    - ./terraform output -state=terraform-infrastructure/dev/services/osman/terraform.tfstate
+    - ./terraform output -state=terraform-infrastructure/dev/services/osman/terraform.tfstate auto_deploy_bucket_name
     - ./terraform output -state=terraform-infrastructure/dev/services/rodin/v1/terraform.tfstate active
+    - ./terraform output -state=terraform-infrastructure/dev/services/rodin/v1/terraform.tfstate active_base_url
+    - ./terraform output -state=terraform-infrastructure/dev/services/rodin/v1/terraform.tfstate active_url
     - npm test
 deployment:
   v1:

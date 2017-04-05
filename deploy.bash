@@ -27,7 +27,7 @@ function api_test() {
 	echo "Running integration tests..."
 	echo "Sleeping for 5 sec..."
 	sleep 5
-	dredd swagger/api_v1.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_url | jq -r ".value")
+	dredd swagger/api_v1.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_base_url | jq -r ".value")
 
 	# Set output from last command
 	if [ $? -eq 0 ];then
