@@ -24,6 +24,29 @@ class PlacesController extends BaseController
 
     }
 
+    public function createPlaceAction()
+    {
+
+        $body = $this->request->getJsonRawBody();
+
+        if( !empty($body->url_id) ) {
+
+            // Get place
+            $place = Places::factory('RodinAPI\Models\Places')->create();
+
+            $place->url_id      = $body->url_id;
+            $place->place_id    = uniqid();
+
+            $place->save();
+
+            return new PlaceResponse($place->place_id , $place->url_id);
+
+        } else {
+            throw new BadRequestException('Bad place request');
+        }
+
+    }
+
     /**
      * @return PlacesResponse
      * @throws BadRequestException

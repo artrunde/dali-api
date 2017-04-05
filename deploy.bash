@@ -62,7 +62,8 @@ function s3_upload() {
 
 	# Set output from last command
 	if [ $? -eq 0 ];then
-	   api_test
+	   # api_test
+	   echo "No Tests here.."
 	else
 	   echo "Upload to S3 failed!"
 	   exit 1

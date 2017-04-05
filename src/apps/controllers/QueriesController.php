@@ -18,7 +18,7 @@ class QueriesController extends BaseController
     public function createPlaceAction()
     {
         /**
-         * Get JSON body as array
+         * Get JSON body
          */
         $body = $this->request->getJsonRawBody();
 

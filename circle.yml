@@ -9,6 +9,7 @@ dependencies:
     - wget https://releases.hashicorp.com/terraform/0.9.2/terraform_0.9.2_linux_amd64.zip
     - unzip terraform_0.9.2_linux_amd64.zip
     - ./terraform --version
+    - npm install -g dredd@3.3.1
 test:
   override:
     - git clone git@github.com:artrunde/terraform-infrastructure.git
@@ -17,7 +18,7 @@ test:
     - npm test
 deployment:
   v1:
-    tag: /v[1]+(\.[0-9]+)*/
+    tag: '/v[1]+(\.[0-9]+)*/'
     owner: artrunde
     commands:
       - ./deploy.bash $CIRCLE_SHA1 prd
@@ -25,3 +26,5 @@ deployment:
     branch: development
     commands:
       - ./deploy.bash $CIRCLE_SHA1 dev
+      - sleep 20
+      - dredd

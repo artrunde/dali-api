@@ -46,6 +46,14 @@ $di->set('router', function () {
         ]
     );
 
+    $v1->addPost(
+        "/public/places/",
+        [
+            "controller" => "Places",
+            "action"     => "createPlace",
+        ]
+    );
+
     $v1->addGet(
         "/public/places/",
         [
