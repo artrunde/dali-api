@@ -3,3 +3,4 @@ node_modules/
 vendor/
 composer.phar
 terraform*
+local_deploy.bash
