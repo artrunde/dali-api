@@ -33,7 +33,7 @@ paths:
         tags:
           - "Tags"
         summary: "Query tags"
-        description: "Search for multiple tags with a search term"
+        description: "Search for multiple tags with a search term. You can add multiple category filters with the , delimiter e.g category=art_form,city"
         operationId: "findTagsBySearchTerm"
         produces:
           - application/json
@@ -44,6 +44,19 @@ paths:
             required: true
             type: string
             x-example: "berlin"
+          - name: "category"
+            in: "query"
+            description: "Categories to filter tags by"
+            required: true
+            type: "array"
+            items:
+              type: "string"
+              enum:
+              - "art_form"
+              - "city"
+              - "all"
+              default: "all"
+            collectionFormat: "csv"
         responses:
           200:
             description: "Successful result"

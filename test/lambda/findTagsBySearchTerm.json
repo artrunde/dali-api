@@ -23,7 +23,8 @@
         "X-Forwarded-Proto": "https"
     },
     "queryStringParameters": {
-        "search": "Ber"
+        "query": "ber",
+        "category": "all,city"
     },
     "pathParameters": {
         "proxy": "debug"

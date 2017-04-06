@@ -20,16 +20,22 @@ $di->set('router', function () {
     # PUBLIC ROUTES
     # ------------------------------------------------------------------------------
 
-    // Define a route
+    /**
+     * TAGS
+     */
+
     $v1->addGet(
-        "/public/tags/{search_term:}",
+        "/public/tags/",
         [
             "controller" => "Search_Terms",
             "action"     => "search",
         ]
     );
 
-    // Define a route
+    /**
+     * Places
+     */
+
     $v1->addGet(
         "/public/places/{place_id:}",
         [
@@ -37,6 +43,10 @@ $di->set('router', function () {
             "action"     => "get",
         ]
     );
+
+    /**
+     * Debug
+     */
 
     $v1->addGet(
         "/public/debug/",
