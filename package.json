@@ -11,7 +11,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "lambda-local -l index.js -e test/lambda/event.json"
+    "test": "lambda-local -l index.js -e test/lambda/debugUrl.json"
   },
   "repository": {
     "type": "git",

@@ -2,6 +2,7 @@
 GIT_COMMIT_DESC=$(git log --format=oneline -n 1 $1)
 ENVIRONMENT=$2
 CIRCLE_BUILD_NUM=$3
+DATE=$(date +%Y%m%d)
 
 # Get version from filename and trim whitespaces
 MAJOR_VERSION=$(<version)
@@ -9,7 +10,7 @@ MAJOR_VERSION="$(echo -e "${MAJOR_VERSION}" | tr -d '[:space:]')"
 MAJOR_VERSION=${MAJOR_VERSION:1:1}
 
 # Get name of active deployment
-ACTIVE_DEPLOYMENT=$(./terraform output -state=terraform-infrastructure/dev/services/rodin/v1/terraform.tfstate active)
+ACTIVE_DEPLOYMENT=$(./terraform output -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v1/terraform.tfstate active)
 
 function deployment_command() {
 
@@ -28,7 +29,15 @@ function api_test() {
 	echo "Running integration tests..."
 	echo "Sleeping for 5 sec..."
 	sleep 5
-	dredd src/v"$MAJOR_VERSION"/swagger/public.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_base_url | jq -r ".value")
+
+	# Determing if staging or active deployment. This will case different tests URLs
+	if [ "$DEPLOYMENT_ACTION" == "staging" ]; then
+		echo "Testing against $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate urls | jq -r ".value.$STAGING_DEPLOYMENT")"
+		dredd src/v"$MAJOR_VERSION"/swagger/public/api-description.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate urls | jq -r ".value.$STAGING_DEPLOYMENT")
+	elif [ "$DEPLOYMENT_ACTION" == "active" ]; then
+		echo "Testing against $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_base_url | jq -r ".value")"
+		dredd src/v"$MAJOR_VERSION"/swagger/public/api-description.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_base_url | jq -r ".value")
+	fi
 
 	# Set output from last command
 	if [ $? -eq 0 ];then
@@ -40,7 +49,7 @@ function api_test() {
 }
 
 function deploy_staging() {
-	echo "Running staging..."
+	echo "Running staging $STAGING_DEPLOYMENT..."
 	LAMBDA_FUNCTION=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate lambda_integrations | jq -r ".value.$STAGING_DEPLOYMENT")
 	S3_DEPLOY_BUCKET=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/osman/terraform.tfstate auto_deploy_bucket_name | jq -r ".value")
 	s3_upload
@@ -48,7 +57,7 @@ function deploy_staging() {
 }
 
 function deploy_active() {
-	echo "Running active..."
+	echo "Running active $ACTIVE_DEPLOYMENT..."
 	LAMBDA_FUNCTION=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate lambda_integrations | jq -r ".value.$ACTIVE_DEPLOYMENT")
 	S3_DEPLOY_BUCKET=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/osman/terraform.tfstate auto_deploy_bucket_name | jq -r ".value")
 	s3_upload
@@ -57,7 +66,7 @@ function deploy_active() {
 function s3_upload() {
 
     echo "Creating buildnr. $CIRCLE_BUILD_NUM"
-    echo "$CIRCLE_BUILD_NUM" > buildnr
+    echo "$DATE-$CIRCLE_BUILD_NUM" > buildnr
 	echo "Zipping to $LAMBDA_FUNCTION.zip..."
 	zip -qr "$LAMBDA_FUNCTION".zip * -x .git/\* -x composer.phar -x terraform-infrastructure/\* -x \*.zip -x .\* -x terraform
 	echo "Uploading $LAMBDA_FUNCTION.zip to bucket $S3_DEPLOY_BUCKET..."

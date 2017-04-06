@@ -16,27 +16,25 @@ $di->set('router', function () {
     $v1 = new RouterGroup();
     $v1->setPrefix('/v1');
 
+    # ------------------------------------------------------------------------------
+    # PUBLIC ROUTES
+    # ------------------------------------------------------------------------------
 
     /**
-     * OPEN ROUTES
+     * TAGS
      */
 
-    // Define a route
     $v1->addGet(
-        "/public/search-terms/{search_terms:}",
+        "/public/tags/",
         [
             "controller" => "Search_Terms",
             "action"     => "search",
         ]
     );
 
-    $v1->addPost(
-        "/public/queries/places/",
-        [
-            "controller" => "Queries",
-            "action"     => "createPlace",
-        ]
-    );
+    /**
+     * Places
+     */
 
     $v1->addGet(
         "/public/places/{place_id:}",
@@ -46,21 +44,9 @@ $di->set('router', function () {
         ]
     );
 
-    $v1->addPost(
-        "/public/places/",
-        [
-            "controller" => "Places",
-            "action"     => "createPlace",
-        ]
-    );
-
-    $v1->addGet(
-        "/public/places/",
-        [
-            "controller" => "Places",
-            "action"     => "getBulk",
-        ]
-    );
+    /**
+     * Debug
+     */
 
     $v1->addGet(
         "/public/debug/",

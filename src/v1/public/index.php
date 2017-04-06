@@ -156,7 +156,7 @@ try {
     $request    = $di->get('request');
 
     if ( $request->isJSON() ) {
-        $json = new JSONResponse($response,true);
+        $json = new JSONResponse($response, true);
         return $json->send();
     }
 

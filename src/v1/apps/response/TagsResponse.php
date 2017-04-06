@@ -1,7 +1,7 @@
 <?php
 namespace RodinAPI\Response;
 
-class PlacesResponse extends ResponseArray
+class TagsResponse extends ResponseArray
 {
 
 }

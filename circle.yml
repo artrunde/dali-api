@@ -17,10 +17,14 @@ test:
     - ./terraform output -state=terraform-infrastructure/dev/services/rodin/v1/terraform.tfstate active
     - ./terraform output -state=terraform-infrastructure/dev/services/rodin/v1/terraform.tfstate active_base_url
     - ./terraform output -state=terraform-infrastructure/dev/services/rodin/v1/terraform.tfstate active_url
+    - ./terraform output -state=terraform-infrastructure/prd/services/osman/terraform.tfstate auto_deploy_bucket_name
+    - ./terraform output -state=terraform-infrastructure/prd/services/rodin/v1/terraform.tfstate active
+    - ./terraform output -state=terraform-infrastructure/prd/services/rodin/v1/terraform.tfstate active_base_url
+    - ./terraform output -state=terraform-infrastructure/prd/services/rodin/v1/terraform.tfstate active_url
     - npm test
 deployment:
   v1:
-    tag: '/v[1]+(\.[0-9]+)*/'
+    tag: '/v[0-1]+(\.[0-9]+)*/'
     owner: artrunde
     commands:
       - ./deploy.bash $CIRCLE_SHA1 prd $CIRCLE_BUILD_NUM
