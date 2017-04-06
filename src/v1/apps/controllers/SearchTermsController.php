@@ -2,36 +2,45 @@
 
 namespace RodinAPI\Controllers;
 
-use RodinAPI\Models\SearchTerms;
-use RodinAPI\Response\SearchTermResponse;
-use RodinAPI\Response\SearchTermsResponse;
+use RodinAPI\Exceptions\ItemNotFoundException;
+use RodinAPI\Models\Tags;
+use RodinAPI\Response\DebugResponse;
+use RodinAPI\Response\TagResponse;
+use RodinAPI\Response\TagsResponse;
 
 class SearchTermsController extends BaseController
 {
 
-    public function searchAction($searchTerm)
+	public function searchAction($searchTerm)
 	{
-        /**
-         * @var SearchTerms $searchTerms
-         */
-       $searchTerms = SearchTerms::factory('RodinAPI\Models\SearchTerms')
-            ->where('search_term_id', '=', $searchTerm)
-            ->limit(10)
-            ->findMany();
+	    // TODO get the from ODM
+        $tag1 = Tags::factory('RodinAPI\Models\Tags');
+        $tag3 = Tags::factory('RodinAPI\Models\Tags');
+        $tag2 = Tags::factory('RodinAPI\Models\Tags');
 
-       $response = new SearchTermsResponse();
+        $tag1->tag_id   = '553677a0000';
+        $tag1->category = 'city';
+        $tag1->info     = array( "en" => array( "name" => "Berlin, Germany" ) );
 
-        /**
-         * @var SearchTerms $searchTerm
-         */
-       foreach( $searchTerms as $searchTerm ) {
+        $tag2->tag_id   = 'accd212eee';
+        $tag2->category = 'city';
+        $tag2->info     = array( "en" => array( "name" => "Bergen, Norway" ) );
 
-           $searchTermResponse = new SearchTermResponse($searchTerm->search_term_id, $searchTerm->tag_priority_id, $searchTerm->category, $searchTerm->tag_id);
+        $tag3->tag_id   = '0166ab3516';
+        $tag3->category = 'city';
+        $tag3->info     = array( "en" => array( "name" => "Bergois, France" ) );
 
-           $response->addResponse($searchTermResponse);
-       }
+	    $responseArray = new TagsResponse();
 
-       return $response;
+        $response1 = new TagResponse($tag1->tag_id, $tag1->category, $tag1->info);
+        $response2 = new TagResponse($tag2->tag_id, $tag2->category, $tag2->info);
+        $response3 = new TagResponse($tag3->tag_id, $tag3->category, $tag3->info);
+
+        $responseArray->addResponse($response1);
+        $responseArray->addResponse($response2);
+        $responseArray->addResponse($response3);
+
+        return $responseArray;
 
 	}
 

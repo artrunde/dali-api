@@ -12,6 +12,7 @@ schemes:
   - https
 
 paths:
+
   /debug/:
     get:
       summary: Get debug information
@@ -25,12 +26,58 @@ paths:
           schema:
             $ref: "#/definitions/Debug"
 
+  /tags/:
+      get:
+        tags:
+        - "Tags"
+        summary: "Query tags"
+        description: "Search for multiple tags with a search term"
+        operationId: "findTagsBySearchTerm"
+        produces:
+          - "application/json; charset=utf-8"
+        parameters:
+          - name: "search"
+            in: "query"
+            description: "Query for searching tags"
+            required: true
+            type: "string"
+            x-example: "Ber"
+        responses:
+          200:
+            description: "Successful result"
+            schema:
+              type: "array"
+              items:
+                $ref: "#/definitions/Tags"
+
 ### ref-compiler: BEGIN
 definitions:
+
   Debug:
-    type: object
+    type: "object"
     properties:
       event_params:
-        type: object
+        type: "object"
     required:
       - "event_params"
+
+  Tags:
+      type: "object"
+      properties:
+        tag_id:
+          type: "string"
+        category:
+          type: "string"
+        info:
+          type: "object"
+          properties:
+            en:
+              type: "object"
+              properties:
+                name:
+                  type: "string"
+                  example: "Berlin, Germany"
+      required:
+        - "tag_id"
+        - "type"
+        - "info"
