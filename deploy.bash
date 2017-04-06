@@ -28,7 +28,13 @@ function api_test() {
 	echo "Running integration tests..."
 	echo "Sleeping for 5 sec..."
 	sleep 5
-	dredd src/v"$MAJOR_VERSION"/swagger/public/api-description.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_base_url | jq -r ".value")
+
+	# Determin iof staging or active deployment. This will case different tests URLs
+	if [ "$DEPLOYMENT_ACTION" == "staging" ]; then
+		dredd src/v"$MAJOR_VERSION"/swagger/public/api-description.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate urls | jq -r ".value.$STAGING_DEPLOYMENT")
+	elif [ "$DEPLOYMENT_ACTION" == "active" ]; then
+		dredd src/v"$MAJOR_VERSION"/swagger/public/api-description.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_base_url | jq -r ".value")
+	fi
 
 	# Set output from last command
 	if [ $? -eq 0 ];then
@@ -40,7 +46,7 @@ function api_test() {
 }
 
 function deploy_staging() {
-	echo "Running staging..."
+	echo "Running staging $STAGING_DEPLOYMENT..."
 	LAMBDA_FUNCTION=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate lambda_integrations | jq -r ".value.$STAGING_DEPLOYMENT")
 	S3_DEPLOY_BUCKET=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/osman/terraform.tfstate auto_deploy_bucket_name | jq -r ".value")
 	s3_upload
@@ -48,7 +54,7 @@ function deploy_staging() {
 }
 
 function deploy_active() {
-	echo "Running active..."
+	echo "Running active $ACTIVE_DEPLOYMENT..."
 	LAMBDA_FUNCTION=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate lambda_integrations | jq -r ".value.$ACTIVE_DEPLOYMENT")
 	S3_DEPLOY_BUCKET=$(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/osman/terraform.tfstate auto_deploy_bucket_name | jq -r ".value")
 	s3_upload

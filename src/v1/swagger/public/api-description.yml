@@ -15,7 +15,9 @@ paths:
 
   /debug/:
     get:
-      summary: Get debug information
+      summary: "Get debug information"
+      description: "Get debug information about query"
+      operationId: "debugUrl"
       tags:
           - Debug
       produces:
