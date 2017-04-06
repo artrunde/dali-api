@@ -11,7 +11,7 @@ MAJOR_VERSION=${MAJOR_VERSION:1:1}
 # Get name of active deployment
 ACTIVE_DEPLOYMENT=$(./terraform output -state=terraform-infrastructure/dev/services/rodin/v1/terraform.tfstate active)
 
-function command() {
+function deployment_command() {
 
 	if [[ "$GIT_COMMIT_DESC" == *"[deploy=staging]"* ]]; then
 		DEPLOYMENT_ACTION="staging"
@@ -78,10 +78,8 @@ function do_nothing() {
 	exit 1
 }
 
-if [ "$ENVIRONMENT" == "dev" ]; then
-	command
-elif [ "$ENVIRONMENT" == "prd" ]; then
-	command
+if [ "$ENVIRONMENT" == "dev" ] || [ "$ENVIRONMENT" == "prd"  ]; then
+	deployment_command
 else
 	"Unknown environment: $ENVIRONMENT"
 	exit 1
