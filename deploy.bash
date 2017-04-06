@@ -2,6 +2,7 @@
 GIT_COMMIT_DESC=$(git log --format=oneline -n 1 $1)
 ENVIRONMENT=$2
 CIRCLE_BUILD_NUM=$3
+DATE=$(date +%Y%m%d)
 
 # Get version from filename and trim whitespaces
 MAJOR_VERSION=$(<version)
@@ -65,7 +66,7 @@ function deploy_active() {
 function s3_upload() {
 
     echo "Creating buildnr. $CIRCLE_BUILD_NUM"
-    echo "$CIRCLE_BUILD_NUM" > buildnr
+    echo "$DATE-$CIRCLE_BUILD_NUM" > buildnr
 	echo "Zipping to $LAMBDA_FUNCTION.zip..."
 	zip -qr "$LAMBDA_FUNCTION".zip * -x .git/\* -x composer.phar -x terraform-infrastructure/\* -x \*.zip -x .\* -x terraform
 	echo "Uploading $LAMBDA_FUNCTION.zip to bucket $S3_DEPLOY_BUCKET..."

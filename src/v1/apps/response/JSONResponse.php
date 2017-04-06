@@ -71,7 +71,7 @@ class JSONResponse extends HTTPResponse
         }
 
         // Set version in header
-        $this->setHeader('X-rodin-version', $this->meta->version.'-'.$this->meta->build);
+        $this->setHeader('X-rodin-version', $this->meta->version.' build '.$this->meta->build);
 
         // Send content
         return parent::send();
