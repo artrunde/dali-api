@@ -27,16 +27,17 @@ exports.handler = function(event, context) {
 
     // Get function name. This will have a suffix with environment
     // var environment = context.functionName.split('_').slice(-2);
-    var environment = context.functionName.split(/[\s_]+/);
-    environment =  environment[environment.length-2];
+    var environment = context.functionName.slice(-3);
     console.log("Environment: " + JSON.stringify(environment));
+
+    var stage = event.requestContext.stage;
 
     // Create HTTP object
     httpObject = Object.assign({
         REDIRECT_STATUS: 200,
         REQUEST_METHOD: requestMethod,
-        SCRIPT_FILENAME: 'src/public/index.php',
-        SCRIPT_NAME: '/src/public/index.php',
+        SCRIPT_FILENAME: 'src/v1/public/index.php',
+        SCRIPT_NAME: '/src/v1/public/index.php',
         PATH_INFO: '/',
         SERVER_NAME: serverName,
         SERVER_PROTOCOL: 'HTTP/1.1',
@@ -46,7 +47,8 @@ exports.handler = function(event, context) {
         AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
         AWS_SESSION_TOKEN: process.env.AWS_SESSION_TOKEN,
         EVENT_PARAMS: JSON.stringify(event),
-        ENVIRONMENT: environment // dev/stg/prd
+        ENVIRONMENT: environment, // dev/prd
+        STAGE: stage // green/blue
     }, headers);
 
     function serialize( obj ) {
@@ -58,7 +60,7 @@ exports.handler = function(event, context) {
     }
 
     // Spawn the PHP CGI process with a bunch of environment variables that describe the request.
-    var php = spawn('./bin/php-cgi', ['-dextension=bin/phalcon.so','src/public/index.php'], {
+    var php = spawn('./bin/php-cgi', ['-dextension=bin/phalcon.so','src/v1/public/index.php'], {
         env: httpObject
     });
 

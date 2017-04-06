@@ -1,28 +1,26 @@
 {
-  "name": "demo-aws-lambda-php-template",
+  "name": "rodin-php-lambda-proxy",
   "version": "1.0.0",
-  "description": "Testing PHP and Lambda",
-  "main": "dynamodb-localhost.js",
+  "description": "Rodin PHP and AWS Lambda proxy",
+  "main": "",
   "directories": {
     "test": "test"
   },
   "dependencies": {
     "http-string-parser": "^0.0.5"
   },
-  "devDependencies": {
-    "dynamodb-local": "0.0.14"
-  },
+  "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "lambda-local -l index.js -e test/lambda/event.json"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/artrunde/demo-aws-lambda-php-template.git"
+    "url": "git+https://github.com/artrunde/rodin-php-lambda-proxy.git"
   },
   "author": "Karsten Jakobsen",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/artrunde/demo-aws-lambda-php-template/issues"
+    "url": "https://github.com/artrunde/rodin-php-lambda-proxy/issues"
   },
-  "homepage": "https://github.com/artrunde/demo-aws-lambda-php-template#readme"
+  "homepage": "https://github.com/artrunde/rodin-php-lambda-proxy#readme"
 }

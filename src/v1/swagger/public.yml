@@ -1,0 +1,26 @@
+swagger: "2.0"
+info:
+  version: "1.0"
+  title: Artrunde Public API
+  license:
+    name: MIT
+host: api-rodin-dev.artrunde.com
+basePath: /v1/public
+schemes:
+  - https
+paths:
+  /debug/:
+    get:
+      produces:
+        - application/json; charset=utf-8
+      responses:
+        200:
+          description: "Get debug information"
+          schema:
+            type: object
+            properties:
+              event_params:
+                type: object
+            required:
+              - event_params
+
