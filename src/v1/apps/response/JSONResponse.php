@@ -48,7 +48,7 @@ class JSONResponse extends HTTPResponse
     public function send()
     {
         // Set headers
-        $this->setContentType('application/json','utf-8');
+        $this->setContentType('application/json');
 
         if (empty($this->messages)) {
             $this->messages = null;
@@ -71,7 +71,7 @@ class JSONResponse extends HTTPResponse
         }
 
         // Set version in header
-        $this->setHeader('X-rodin-version', $this->meta->version);
+        $this->setHeader('X-rodin-version', $this->meta->version.'-'.$this->meta->build);
 
         // Send content
         return parent::send();

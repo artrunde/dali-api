@@ -29,10 +29,12 @@ function api_test() {
 	echo "Sleeping for 5 sec..."
 	sleep 5
 
-	# Determin iof staging or active deployment. This will case different tests URLs
+	# Determing if staging or active deployment. This will case different tests URLs
 	if [ "$DEPLOYMENT_ACTION" == "staging" ]; then
+		echo "Testing against $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate urls | jq -r ".value.$STAGING_DEPLOYMENT")"
 		dredd src/v"$MAJOR_VERSION"/swagger/public/api-description.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate urls | jq -r ".value.$STAGING_DEPLOYMENT")
 	elif [ "$DEPLOYMENT_ACTION" == "active" ]; then
+		echo "Testing against $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_base_url | jq -r ".value")"
 		dredd src/v"$MAJOR_VERSION"/swagger/public/api-description.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_base_url | jq -r ".value")
 	fi
 

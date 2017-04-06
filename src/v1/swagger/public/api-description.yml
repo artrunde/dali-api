@@ -19,9 +19,9 @@ paths:
       description: "Get debug information about query"
       operationId: "debugUrl"
       tags:
-          - Debug
+          - "Debug"
       produces:
-        - application/json; charset=utf-8
+        - application/json
       responses:
         200:
           description: "Debug information"
@@ -36,50 +36,99 @@ paths:
         description: "Search for multiple tags with a search term"
         operationId: "findTagsBySearchTerm"
         produces:
-          - "application/json; charset=utf-8"
+          - application/json
         parameters:
-          - name: "search"
+          - name: "query"
             in: "query"
             description: "Query for searching tags"
             required: true
-            type: "string"
-            x-example: "Ber"
+            type: string
+            x-example: "berlin"
         responses:
           200:
             description: "Successful result"
             schema:
-              type: "array"
+              type: array
               items:
                 $ref: "#/definitions/Tags"
+          400:
+            description: "Bad request"
+            schema:
+              $ref: "#/definitions/Error"
 
 ### ref-compiler: BEGIN
 definitions:
 
+  ErrorMessages:
+    type: object
+    properties:
+      text:
+        type: string
+        example: "Invalid query"
+      type:
+        type: string
+        example: "warning"
+
+  Error:
+    type: object
+    properties:
+      meta:
+        type: object
+        properties:
+          statusCode:
+            type: integer
+            example: 404
+          statusMessage:
+            type: string
+            example: "Item(s) not found"
+          count:
+            type: integer
+            example: 1
+          version:
+            type: string
+            example: "v1.1.0"
+          environment:
+            type: string
+            example: "dev"
+          stage:
+            type: string
+            example: "stagename"
+          build:
+            type: string
+            example: "555"
+      messages:
+        type: array
+        items:
+          $ref: "#/definitions/ErrorMessages"
+      data:
+        type: string
+        example: null
+
   Debug:
-    type: "object"
+    type: object
     properties:
       event_params:
-        type: "object"
+        type: object
     required:
       - "event_params"
 
   Tags:
-      type: "object"
+      type: object
       properties:
         tag_id:
-          type: "string"
+          type: string
           example: "5c000a452245"
         category:
-          type: "string"
+          type: string
           example: "city"
         info:
-          type: "object"
+          type: object
           properties:
             en:
-              type: "object"
+              type: object
               properties:
                 name:
-                  type: "string"
+                  type: string
                   example: "Berlin, Germany"
       required:
         - "tag_id"
