@@ -29,6 +29,15 @@ $di->set('router', function () {
         ]
     );
 
+    // Define a route
+    $v1->addGet(
+        "/public/places/{place_id:}",
+        [
+            "controller" => "Places",
+            "action"     => "get",
+        ]
+    );
+
     $v1->addGet(
         "/public/debug/",
         [

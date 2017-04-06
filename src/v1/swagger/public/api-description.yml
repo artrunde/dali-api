@@ -31,7 +31,7 @@ paths:
   /tags/:
       get:
         tags:
-        - "Tags"
+          - "Tags"
         summary: "Query tags"
         description: "Search for multiple tags with a search term"
         operationId: "findTagsBySearchTerm"
@@ -39,7 +39,7 @@ paths:
           - application/json
         parameters:
           - name: "query"
-            in: "query"
+            in: query
             description: "Query for searching tags"
             required: true
             type: string
@@ -56,6 +56,32 @@ paths:
             schema:
               $ref: "#/definitions/Error"
 
+  /places/{place_id}:
+      get:
+        tags:
+          - "Places"
+        summary: "Get place data"
+        description: "Retrieve data about a specific gallery, museum or exhibition"
+        operationId: "findPlaceByID"
+        produces:
+          - application/json
+        parameters:
+          - name: "place_id"
+            in: path
+            description: "Place unique identifier"
+            required: true
+            type: string
+            x-example: "45111ac0e7803"
+        responses:
+          200:
+            description: "Successful result"
+            schema:
+              $ref: "#/definitions/Places"
+          404:
+            description: "Not found"
+            schema:
+              $ref: "#/definitions/Error"
+
 ### ref-compiler: BEGIN
 definitions:
 
@@ -64,7 +90,7 @@ definitions:
     properties:
       text:
         type: string
-        example: "Invalid query"
+        example: "Item(s) not found"
       type:
         type: string
         example: "warning"
@@ -102,7 +128,6 @@ definitions:
           $ref: "#/definitions/ErrorMessages"
       data:
         type: string
-        example: null
 
   Debug:
     type: object
@@ -130,7 +155,55 @@ definitions:
                 name:
                   type: string
                   example: "Berlin, Germany"
+        create_time:
+          type: string
+          example: "2010-12-21T17:42:34+00:00"
       required:
         - "tag_id"
         - "category"
         - "info"
+        - "create_time"
+
+  Places:
+    type: object
+    properties:
+      place_id:
+        type: string
+        example: "45111ac0e7803"
+      url_path:
+        type: string
+        example: "the-big-place-of-arts"
+      name:
+        type: string
+        example: "The Big Place of Arts"
+      address:
+        type: object
+        properties:
+          address_1:
+            type: string
+            example: "Mullberry road 122"
+          address_2:
+            type: string
+            example: ""
+          postal_code:
+            type: string
+            example: "5000"
+          country:
+            type: string
+            example: "Denmark"
+          country_abbrev:
+            type: string
+            example: "dk"
+      vat_number:
+        type: string
+        example: "01234567"
+      create_time:
+        type: string
+        example: "2010-12-21T17:42:34+00:00"
+    required:
+      - "place_id"
+      - "url_path"
+      - "name"
+      - "address"
+      - "vat_number"
+      - "create_time"
