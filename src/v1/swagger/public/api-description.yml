@@ -68,8 +68,10 @@ definitions:
       properties:
         tag_id:
           type: "string"
+          example: "5c000a452245"
         category:
           type: "string"
+          example: "city"
         info:
           type: "object"
           properties:
@@ -81,5 +83,5 @@ definitions:
                   example: "Berlin, Germany"
       required:
         - "tag_id"
-        - "type"
+        - "category"
         - "info"
