@@ -10,18 +10,20 @@ class Tags extends ODM {
 
 	public $category;
 
-	public $info;
+	public $label;
 
     public $create_time;
 
 	protected $_table_name = 'rodin_tags_v1';
 
-	protected $_hash_key   = 'tag_id';
+	protected $_hash_key = 'tag_id';
+
+    protected $_range_key = 'category';
 
 	protected $_schema = array(
 		'tag_id'        => 'S',
 		'category'      => 'S',
-		'info'          => 'S',
+        'label'         => 'S',
         'create_time'   => 'S'
 	);
 

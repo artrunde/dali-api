@@ -33,7 +33,7 @@ paths:
         tags:
           - "Tags"
         summary: "Query tags"
-        description: "Search for multiple tags with a search term. You can add multiple category filters with the , delimiter e.g category=art_form,city"
+        description: "Search for multiple tags. You can add multiple category filters with a comma delimiter e.g category=art_form,city. Note that either 'query' or 'category' must be present"
         operationId: "findTagsBySearchTerm"
         produces:
           - application/json
@@ -41,13 +41,28 @@ paths:
           - name: "query"
             in: query
             description: "Query for searching tags"
-            required: true
+            required: false
             type: string
             x-example: "berlin"
+          - name: "locale"
+            in: query
+            description: "Locale"
+            required: true
+            type: string
+            x-example: "en"
+          - name: "limit"
+            in: query
+            description: "Limit amount of results"
+            required: false
+            type: integer
+            maximum: 100
+            minimum: 1
+            x-example: 50
+            default: 10
           - name: "category"
             in: "query"
             description: "Categories to filter tags by"
-            required: true
+            required: false
             type: "array"
             items:
               type: "string"
@@ -159,23 +174,17 @@ definitions:
         category:
           type: string
           example: "city"
-        info:
-          type: object
-          properties:
-            en:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: "Berlin, Germany"
-        create_time:
+        locale:
           type: string
-          example: "2010-12-21T17:42:34+00:00"
+          example: "en"
+        label:
+          type: "string"
+          example: "Berlin, Germany"
       required:
         - "tag_id"
         - "category"
-        - "info"
-        - "create_time"
+        - "locale"
+        - "label"
 
   Places:
     type: object

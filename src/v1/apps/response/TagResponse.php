@@ -15,28 +15,28 @@ class TagResponse extends Response
     public $category;
 
     /**
-     * @var string
+     * @var
      */
-    public $info;
+    public $locale;
 
     /**
      * @var string
      */
-    public $create_time;
+    public $label;
 
     /**
      * TagResponse constructor.
      * @param $tag_id
      * @param $category
-     * @param $info
-     * @param $create_time
+     * @param $locale
+     * @param $label
      */
-    public function __construct($tag_id, $category, $info, $create_time)
+    public function __construct($tag_id, $category, $locale, $label)
     {
         $this->tag_id       = $tag_id;
         $this->category     = $category;
-        $this->info         = $info;
-        $this->create_time  = $create_time;
+        $this->locale       = $locale;
+        $this->label        = $label;
 
         parent::__construct();
     }
