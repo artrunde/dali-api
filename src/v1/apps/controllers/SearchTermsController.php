@@ -23,9 +23,9 @@ class SearchTermsController extends BaseController
 
         // TODO get these from search terms
 	    $bulk = array (
-            array('f6b6090ae5ac4681a7e3eead1cf9f9af', $locale.'_city'),
-            array('bfbba1b0046d4e3c955a741a8b4e1ab3', $locale.'_city'),
-            array('03356a88fafa43a289c6bf5c9cf51b89', $locale.'_city')
+            array('city_f6b6090ae5ac4681a7e3eead1cf9f9af', $locale),
+            array('city_bfbba1b0046d4e3c955a741a8b4e1ab3', $locale),
+            array('city_03356a88fafa43a289c6bf5c9cf51b89', $locale)
         );
 
         $tags = Tags::factory('RodinAPI\Models\Tags')->batchGetItems($bulk);
@@ -49,9 +49,9 @@ class SearchTermsController extends BaseController
 
             foreach($tags as $tag) {
 
-                $exploded = explode('_', $tag->category);
+                $exploded = explode('_', $tag->tag_id);
 
-                $response = new TagResponse($tag->tag_id, $exploded[1], $exploded[0], $tag->label);
+                $response = new TagResponse($exploded[1], $exploded[0], $tag->belongs_to, $tag->label);
 
                 $responseArray->addResponse($response);
             }

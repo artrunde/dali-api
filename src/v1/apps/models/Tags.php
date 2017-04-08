@@ -8,7 +8,7 @@ class Tags extends ODM {
 
 	public $tag_id;
 
-	public $category;
+	public $belongs_to;
 
 	public $label;
 
@@ -18,11 +18,11 @@ class Tags extends ODM {
 
 	protected $_hash_key = 'tag_id';
 
-    protected $_range_key = 'category';
+    protected $_range_key = 'belongs_to';
 
 	protected $_schema = array(
 		'tag_id'        => 'S',
-		'category'      => 'S',
+		'belongs_to'    => 'S',
         'label'         => 'S',
         'create_time'   => 'S'
 	);
