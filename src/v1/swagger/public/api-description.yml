@@ -43,7 +43,7 @@ paths:
             description: "Query for searching tags"
             required: false
             type: string
-            x-example: "berlin"
+            x-example: "berl"
           - name: "locale"
             in: query
             description: "Locale"

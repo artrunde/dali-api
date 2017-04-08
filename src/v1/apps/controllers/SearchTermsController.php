@@ -3,6 +3,8 @@
 namespace RodinAPI\Controllers;
 
 use RodinAPI\Exceptions\BadRequestException;
+use RodinAPI\Exceptions\ItemNotFoundException;
+use RodinAPI\Models\SearchTerms;
 use RodinAPI\Models\Tags;
 use RodinAPI\Response\TagResponse;
 use RodinAPI\Response\TagsResponse;
@@ -13,53 +15,60 @@ class SearchTermsController extends BaseController
 	public function searchAction()
 	{
 
+	    // Get all tags
         $query      = $this->request->getQuery('query');
         $category   = $this->request->getQuery('category');
         $locale     = $this->request->getQuery('locale');
         $limit      = $this->request->getQuery('limit');
 
-        $locale = (empty($locale))? 'en' : $locale;
-        $limit  = (empty($limit))? '10' : $limit;
+        $search_terms = SearchTerms::factory('RodinAPI\Models\SearchTerms')
+            ->where('search_term', '', $locale.'_'.$query)
+            ->findMany();
 
-        // TODO get these from search terms
-	    $bulk = array (
-            array('city_f6b6090ae5ac4681a7e3eead1cf9f9af', $locale),
-            array('city_bfbba1b0046d4e3c955a741a8b4e1ab3', $locale),
-            array('city_03356a88fafa43a289c6bf5c9cf51b89', $locale)
-        );
+        $searchResult = array();
 
-        $tags = Tags::factory('RodinAPI\Models\Tags')->batchGetItems($bulk);
-
-        if(!empty($category)) {
-            // Parse category
-            $category = explode(',',$category);
+        foreach ($search_terms as $search_term) {
+            $searchResult[] = array($search_term->tag_id, $locale);
         }
 
-	    // Check query param
-        if( !empty($query) || !empty($category) ) {
-
-            $responseArray = new TagsResponse();
+        if( count($searchResult) > 0 ) {
 
             /**
-             * Slice array with limit. TODO do this before bulk
+             * Slice array with limit.
              */
-            if( count($tags) > $limit) {
-                $tags = array_slice( $tags, 0, $limit );
+            if (count($searchResult) > $limit) {
+                $searchResult = array_slice($searchResult, 0, $limit);
             }
 
-            foreach($tags as $tag) {
+            $tags = Tags::factory('RodinAPI\Models\Tags')->batchGetItems($searchResult);
 
-                $exploded = explode('_', $tag->tag_id);
-
-                $response = new TagResponse($exploded[1], $exploded[0], $tag->belongs_to, $tag->label);
-
-                $responseArray->addResponse($response);
+            if (!empty($category)) {
+                // Parse category
+                $category = explode(',', $category);
             }
 
-            return $responseArray;
+            // Check query param
+            if (!empty($query) || !empty($category)) {
+
+                $responseArray = new TagsResponse();
+
+                foreach ($tags as $tag) {
+
+                    $exploded = explode('_', $tag->tag_id);
+
+                    $response = new TagResponse($exploded[1], $exploded[0], $tag->belongs_to, $tag->label);
+
+                    $responseArray->addResponse($response);
+                }
+
+                return $responseArray;
+
+            } else {
+                throw new BadRequestException('Invalid query');
+            }
 
         } else {
-            throw new BadRequestException('Invalid query');
+            throw new ItemNotFoundException('No tags found');
         }
 
 	}
