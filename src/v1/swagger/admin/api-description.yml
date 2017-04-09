@@ -1,0 +1,128 @@
+swagger: "2.0"
+
+info:
+  version: "1.0"
+  title: Artrunde Public API
+  license:
+    name: MIT
+host: api-rodin-dev.artrunde.com
+
+basePath: /v1/admin
+schemes:
+  - https
+
+paths:
+
+  /debug/:
+    get:
+      summary: "Get debug information"
+      description: "Get debug information about query"
+      operationId: "debugUrl"
+      tags:
+          - "Debug"
+      produces:
+        - application/json
+      responses:
+        200:
+          description: "Debug information"
+          schema:
+            $ref: "#/definitions/Debug"
+
+  /tags/:
+      post:
+        tags:
+          - "Tags"
+        summary: "Create a tag"
+        description: "Create a new tag. After creation the tag will be split up and made searchable by search terms en specified language"
+        operationId: "createSearchableTag"
+        consumes:
+          - application/json
+        produces:
+          - application/json
+        parameters:
+          - name: "body"
+            in: body
+            description: "Query for searching tags"
+            required: true
+            schema:
+            $ref: "#/definitions/Tags"
+        responses:
+          200:
+            description: "Successful result"
+            schema:
+              type: array
+              items:
+                $ref: "#/definitions/Tags"
+          400:
+            description: "Bad request"
+            schema:
+              $ref: "#/definitions/Error"
+
+
+### ref-compiler: BEGIN
+definitions:
+
+  ErrorMessages:
+    type: object
+    properties:
+      text:
+        type: string
+        example: "Item(s) not found"
+      type:
+        type: string
+        example: "warning"
+
+  Error:
+    type: object
+    properties:
+      meta:
+        type: object
+        properties:
+          statusCode:
+            type: integer
+            example: 404
+          statusMessage:
+            type: string
+            example: "Item(s) not found"
+          count:
+            type: integer
+            example: 1
+          version:
+            type: string
+            example: "v1.1.0"
+          environment:
+            type: string
+            example: "dev"
+          stage:
+            type: string
+            example: "stagename"
+          build:
+            type: string
+            example: "555"
+      messages:
+        type: array
+        items:
+          $ref: "#/definitions/ErrorMessages"
+      data:
+        type: string
+
+  Tags:
+      type: object
+      properties:
+        tag_id:
+          type: string
+          example: "5c000a452245"
+        category:
+          type: string
+          example: "city"
+        locale:
+          type: string
+          example: "en"
+        label:
+          type: "string"
+          example: "Berlin, Germany"
+      required:
+        - "tag_id"
+        - "category"
+        - "locale"
+        - "label"

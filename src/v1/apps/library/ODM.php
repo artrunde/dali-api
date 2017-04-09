@@ -570,7 +570,7 @@ class ODM
 		);
 
 		// Merge $options to $args
-		$option_names = array('ScanIndexForward', 'QueryFilter');
+		$option_names = array('ScanIndexForward', 'QueryFilter','Select');
 
 		foreach ($option_names as $option_name) {
 			if (isset($options[$option_name])) {

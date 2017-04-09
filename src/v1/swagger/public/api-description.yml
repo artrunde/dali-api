@@ -78,7 +78,7 @@ paths:
             schema:
               type: array
               items:
-                $ref: "#/definitions/Tags"
+                $ref: "#/definitions/Tag"
           400:
             description: "Bad request"
             schema:
@@ -165,26 +165,50 @@ definitions:
     required:
       - "event_params"
 
-  Tags:
-      type: object
-      properties:
-        tag_id:
-          type: string
-          example: "5c000a452245"
-        category:
-          type: string
-          example: "city"
-        locale:
-          type: string
-          example: "en"
-        label:
-          type: "string"
-          example: "Berlin, Germany"
-      required:
-        - "tag_id"
-        - "category"
-        - "locale"
-        - "label"
+  Tag:
+    type: object
+    properties:
+      tag_id:
+        type: string
+        example: "5c000a452245"
+      category:
+        type: string
+        enum:
+          - "city"
+        example: "city"
+      locale:
+        type: string
+        example: "en"
+        enum:
+          - "en"
+          - "dk"
+      label:
+        type: "string"
+        example: "Berlin, Germany"
+    required:
+      - "tag_id"
+      - "category"
+      - "locale"
+      - "label"
+
+  PlacesAddress:
+    type: object
+    properties:
+      address_1:
+        type: string
+        example: "Mullberry road 122"
+      address_2:
+        type: string
+        example: ""
+      postal_code:
+        type: string
+        example: "5000"
+      country:
+        type: string
+        example: "Denmark"
+      country_abbrev:
+        type: string
+        example: "dk"
 
   Places:
     type: object
@@ -199,23 +223,7 @@ definitions:
         type: string
         example: "The Big Place of Arts"
       address:
-        type: object
-        properties:
-          address_1:
-            type: string
-            example: "Mullberry road 122"
-          address_2:
-            type: string
-            example: ""
-          postal_code:
-            type: string
-            example: "5000"
-          country:
-            type: string
-            example: "Denmark"
-          country_abbrev:
-            type: string
-            example: "dk"
+        $ref: "#/definitions/PlacesAddress"
       vat_number:
         type: string
         example: "01234567"
