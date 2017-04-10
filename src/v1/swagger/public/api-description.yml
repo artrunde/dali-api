@@ -7,13 +7,13 @@ info:
     name: MIT
 host: api-rodin-dev.artrunde.com
 
-basePath: /v1/public
+basePath: /v1
 schemes:
   - https
 
 paths:
 
-  /debug/:
+  /admin/debug:
     get:
       summary: "Get debug information"
       description: "Get debug information about query"
@@ -28,87 +28,55 @@ paths:
           schema:
             $ref: "#/definitions/Debug"
 
-  /tags/:
-      get:
+  /admin/tags:
+      post:
         tags:
-          - "Tags"
-        summary: "Query tags"
-        description: "Search for multiple tags. You can add multiple category filters with a comma delimiter e.g category=art_form,city. Note that either 'query' or 'category' must be present"
-        operationId: "findTagsBySearchTerm"
+        - "Tag"
+        summary: "Create tag"
+        description: "Create a new tag with labels"
+        operationId: "createNewTag"
+        consumes:
+        - application/json
         produces:
-          - application/json
+        - application/json
         parameters:
-          - name: "query"
-            in: query
-            description: "Query for searching tags"
-            required: false
-            type: string
-            x-example: "berl"
-          - name: "locale"
-            in: query
-            description: "Locale"
-            required: true
-            type: string
-            x-example: "en"
-          - name: "limit"
-            in: query
-            description: "Limit amount of results"
-            required: false
-            type: integer
-            maximum: 100
-            minimum: 1
-            x-example: 50
-            default: 10
-          - name: "category"
-            in: "query"
-            description: "Categories to filter tags by"
-            required: false
-            type: "array"
-            items:
-              type: "string"
-              enum:
-              - "art_form"
-              - "city"
-              - "all"
-              default: "all"
-            collectionFormat: "csv"
+        - in: "body"
+          name: "body"
+          description: "Tag object that needs to be added"
+          required: true
+          schema:
+            $ref: "#/definitions/Tag"
         responses:
           200:
             description: "Successful result"
             schema:
-              type: array
-              items:
-                $ref: "#/definitions/Tag"
-          400:
-            description: "Bad request"
-            schema:
-              $ref: "#/definitions/Error"
+              $ref: "#/definitions/Tag"
 
-  /places/{place_id}:
-      get:
-        tags:
-          - "Places"
-        summary: "Get place data"
-        description: "Retrieve data about a specific gallery, museum or exhibition"
-        operationId: "findPlaceByID"
-        produces:
-          - application/json
-        parameters:
-          - name: "place_id"
-            in: path
-            description: "Place unique identifier"
-            required: true
-            type: string
-            x-example: "45111ac0e7803"
-        responses:
-          200:
-            description: "Successful result"
-            schema:
-              $ref: "#/definitions/Places"
-          404:
-            description: "Not found"
-            schema:
-              $ref: "#/definitions/Error"
+  /admin/tags/{tag_id}:
+    get:
+      tags:
+        - "Tag"
+      summary: "Get tag"
+      description: "Retrieve data about a specific tag"
+      operationId: "getTagByID"
+      produces:
+        - application/json
+      parameters:
+        - name: "tag_id"
+          in: path
+          description: "Tag unique identifier"
+          required: true
+          type: string
+          x-example: "country-name_58eb7321e71b7"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/Tag"
+        404:
+          description: "Not found"
+          schema:
+            $ref: "#/definitions/Error"
 
 ### ref-compiler: BEGIN
 definitions:
@@ -165,75 +133,46 @@ definitions:
     required:
       - "event_params"
 
+  TagCategory:
+    type: object
+    properties:
+      class:
+        type: string
+        example: "city"
+      attribute:
+        type: string
+        example: "name"
+    required:
+      - "class"
+      - "attribute"
+
+  TagLabel:
+    type: object
+    properties:
+      locale:
+        type: string
+        enum:
+          - "en"
+          - "dk"
+      label:
+        type: string
+        example: "Berlin"
+    required:
+      - "locale"
+      - "label"
+
   Tag:
     type: object
     properties:
       tag_id:
         type: string
-        example: "5c000a452245"
       category:
-        type: string
-        enum:
-          - "city"
-        example: "city"
-      locale:
-        type: string
-        example: "en"
-        enum:
-          - "en"
-          - "dk"
-      label:
-        type: "string"
-        example: "Berlin, Germany"
+        $ref: "#/definitions/TagCategory"
+      labels:
+        type: array
+        items:
+          $ref: "#/definitions/TagLabel"
     required:
       - "tag_id"
       - "category"
-      - "locale"
-      - "label"
-
-  PlacesAddress:
-    type: object
-    properties:
-      address_1:
-        type: string
-        example: "Mullberry road 122"
-      address_2:
-        type: string
-        example: ""
-      postal_code:
-        type: string
-        example: "5000"
-      country:
-        type: string
-        example: "Denmark"
-      country_abbrev:
-        type: string
-        example: "dk"
-
-  Places:
-    type: object
-    properties:
-      place_id:
-        type: string
-        example: "45111ac0e7803"
-      url_path:
-        type: string
-        example: "the-big-place-of-arts"
-      name:
-        type: string
-        example: "The Big Place of Arts"
-      address:
-        $ref: "#/definitions/PlacesAddress"
-      vat_number:
-        type: string
-        example: "01234567"
-      create_time:
-        type: string
-        example: "2010-12-21T17:42:34+00:00"
-    required:
-      - "place_id"
-      - "url_path"
-      - "name"
-      - "address"
-      - "vat_number"
-      - "create_time"
+      - "labels"

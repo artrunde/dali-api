@@ -14,31 +14,10 @@ class SearchTermsController extends BaseController
 
     public function createAction()
     {
-
+        // Get body
         $body = $this->request->getJsonRawBody();
 
-        $tags = Tags::factory('RodinAPI\Models\Tags')
-            ->where('label', '=', $body->tag->label)
-            ->where('belongs_to', '=', $body->tag->locale)
-            ->index('LabelBelongsToIndex')
-            ->findFirst(array('Select' => 'ALL_PROJECTED_ATTRIBUTES'));
-
-        if( empty($tags) ) {
-
-            $tag = Tags::factory('RodinAPI\Models\Tags')->create();
-
-            $tag->tag_id = uniqid($body->tag->category . '_');
-            $tag->belongs_to = $body->tag->locale;
-            $tag->create_time = date('c');
-            $tag->label = $body->tag->label;
-
-            $tag->save();
-
-            return new TagResponse($tag->tag_id, $body->tag->category, $body->tag->locale, $tag->label);
-
-        } else {
-            throw new BadRequestException('Tag does already exist for this locale');
-        }
+        var_dump($body);die;
 
     }
 

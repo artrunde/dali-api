@@ -20,11 +20,63 @@ $di->set('router', function () {
     # ADMIN ROUTES
     # ------------------------------------------------------------------------------
 
-    $v1->addPost(
-        "/admin/tags/",
+    /**
+     * Debug
+     */
+
+    $v1->addGet(
+        "/admin/debug",
         [
-            "controller" => "Search_Terms",
+            "controller" => "Index",
+            "action"     => "debug",
+        ]
+    );
+
+    $v1->addPost(
+        "/admin/tags",
+        [
+            "controller" => "Tags",
             "action"     => "create",
+        ]
+    );
+
+    $v1->addGet(
+        "/admin/tags/{tag_id:}",
+        [
+            "controller" => "Tags",
+            "action"     => "get",
+        ]
+    );
+
+    $v1->addGet(
+        "/admin/tags/{tag_id:}/labels/{locale:}",
+        [
+            "controller" => "Tags",
+            "action"     => "getLabel",
+        ]
+    );
+
+    $v1->addPut(
+        "/admin/tags/{tag_id:}/labels/{locale:}",
+        [
+            "controller" => "Tags",
+            "action"     => "updateLabel",
+        ]
+    );
+
+    $v1->addDelete(
+        "/admin/tags/{tag_id:}/labels/{locale:}",
+        [
+            "controller" => "Tags",
+            "action"     => "deleteLabel",
+        ]
+    );
+
+    $v1->addPost(
+        "/admin/tags/{tag_id:}/labels/{locale:}",
+        [
+            "controller" => "Tags",
+            "action"     => "createLabel",
         ]
     );
 
@@ -38,7 +90,7 @@ $di->set('router', function () {
      */
 
     $v1->addGet(
-        "/public/tags/",
+        "/public/tags",
         [
             "controller" => "Search_Terms",
             "action"     => "search",
@@ -54,18 +106,6 @@ $di->set('router', function () {
         [
             "controller" => "Places",
             "action"     => "get",
-        ]
-    );
-
-    /**
-     * Debug
-     */
-
-    $v1->addGet(
-        "/public/debug/",
-        [
-            "controller" => "Index",
-            "action"     => "debug",
         ]
     );
 

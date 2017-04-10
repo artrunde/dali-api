@@ -27,4 +27,32 @@ class SearchTerms extends ODM {
         'create_time'   => 'S'
 	);
 
+	public static function createSearchTermsForTag( Tags $tag, $priority = 1 ) {
+
+        $string = $tag->label;
+        $label  = $string;
+        $length = strlen($label);
+
+        $searchTerm = SearchTerms::factory('RodinAPI\Models\SearchTerms')->create();
+
+        for ( $i = 3; $i <= $length; $i++  ) {
+
+            try {
+
+                $searchTerm->search_term    = $tag->belongs_to.'_'.substr($label, 0, $i);
+                $searchTerm->tag_id         = $tag->tag_id;
+                $searchTerm->priority       = $priority;
+
+                $searchTerm->save();
+
+            } catch (\Exception $e) {
+                var_dump($e);die;
+            }
+
+        }
+
+        return true;
+
+    }
+
 }
