@@ -33,10 +33,10 @@ function api_test() {
 	# Determing if staging or active deployment. This will case different tests URLs
 	if [ "$DEPLOYMENT_ACTION" == "staging" ]; then
 		echo "Testing against $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate urls | jq -r ".value.$STAGING_DEPLOYMENT")"
-		dredd src/v"$MAJOR_VERSION"/swagger/public/api-description.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate urls | jq -r ".value.$STAGING_DEPLOYMENT")
+		dredd src/v"$MAJOR_VERSION"/swagger/public/api-description.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate urls | jq -r ".value.$STAGING_DEPLOYMENT") --language ./vendor/bin/dredd-hooks-php --hookfiles ./hooks.php
 	elif [ "$DEPLOYMENT_ACTION" == "active" ]; then
 		echo "Testing against $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_base_url | jq -r ".value")"
-		dredd src/v"$MAJOR_VERSION"/swagger/public/api-description.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_base_url | jq -r ".value")
+		dredd src/v"$MAJOR_VERSION"/swagger/public/api-description.yml $(./terraform output -json -state=terraform-infrastructure/"$ENVIRONMENT"/services/rodin/v"$MAJOR_VERSION"/terraform.tfstate active_base_url | jq -r ".value") --language ./vendor/bin/dredd-hooks-php --hookfiles ./hooks.php
 	fi
 
 	# Set output from last command
