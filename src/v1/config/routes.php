@@ -36,7 +36,7 @@ $di->set('router', function () {
         "/admin/tags",
         [
             "controller" => "Tags",
-            "action"     => "create",
+            "action"     => "createTag",
         ]
     );
 
@@ -44,9 +44,19 @@ $di->set('router', function () {
         "/admin/tags/{tag_id:}",
         [
             "controller" => "Tags",
-            "action"     => "get",
+            "action"     => "getTag",
         ]
     );
+
+    $v1->addDelete(
+        "/admin/tags/{tag_id:}",
+        [
+            "controller" => "Tags",
+            "action"     => "deleteTag",
+        ]
+    );
+
+    /*
 
     $v1->addGet(
         "/admin/tags/{tag_id:}/labels/{locale:}",
@@ -80,7 +90,7 @@ $di->set('router', function () {
         ]
     );
 
-
+*/
     # ------------------------------------------------------------------------------
     # PUBLIC ROUTES
     # ------------------------------------------------------------------------------

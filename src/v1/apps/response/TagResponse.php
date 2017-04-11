@@ -22,14 +22,14 @@ class TagResponse extends Response
     /**
      * TagResponse constructor.
      * @param $tag_id
-     * @param TagCategoryResponse $category
+     * @param $category
      * @param TagLabelsResponse|null $labels
      */
-    public function __construct( $tag_id, TagCategoryResponse $category, TagLabelsResponse $labels = null )
+    public function __construct( $tag_id, $category, TagLabelsResponse $labels = null )
     {
         $this->tag_id       = $tag_id;
         $this->category     = $category;
-        $this->labels       = $labels;
+        $this->labels       = $labels === null ? array() : $labels;
 
         parent::__construct();
     }

@@ -29,6 +29,18 @@ class Tags extends ODM {
 	);
 
     /**
+     * @param $tag_id
+     * @return mixed
+     */
+    public static function getCategoryFromTagId($tag_id) {
+
+        $categoryExploded = explode('_', $tag_id);
+
+        return $categoryExploded[0];
+
+    }
+
+    /**
      * @param $label
      * @param $locale
      * @param $category_class
@@ -67,14 +79,12 @@ class Tags extends ODM {
     }
 
     /**
-     * @param $locale
-     * @param $category_class
-     * @param $category_attribute
-     * @return $this|bool
+     * @param $category
+     * @return $this
      */
-    public static function createTagNoLabels( $category_class, $category_attribute )
+    public static function createTagNoLabels( $category )
     {
-        $tag_prefix = $category_class.'-'.$category_attribute.'_';
+        $tag_prefix = $category.'_';
 
         $tag = Tags::factory('RodinAPI\Models\Tags')->create();
 

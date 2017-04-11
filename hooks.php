@@ -2,35 +2,40 @@
 
 require_once 'vendor/autoload.php';
 
+global $STASH;
+
 use Dredd\Hooks;
 
-Hooks::before("Tag > /v1/admin/tags > Create tag > 200 > application/json", function(&$transaction) {
+function replaceURI($needle, $haystack, $replace) {
 
-    $array = array(
-        "category" => array (
-            "class"     => "country",
-            "attribute" => "name"
-        ),
-        "labels" => array (
-            array(
-                "locale" => "en",
-			    "label" => uniqid("dredd_country_")
-            ),
-            array(
-                "locale" => "dk",
-                "label" => uniqid("dredd_land_")
-            )
-        )
-    );
+    $pos = strpos($haystack, $needle);
 
-    $transaction->request->body = json_encode($array);
+    if ($pos !== false) {
+        $haystack = substr_replace($haystack, $replace, $pos, strlen($needle));
+    }
+
+    return $haystack;
+
+}
+
+Hooks::beforeEach(function(&$transaction) {
+   echo $transaction->name;
+});
+
+Hooks::after("Tag > /v1/admin/tags > Create a tag > 200 > application/json", function(&$transaction) {
+
+    global $STASH;
+
+    $parsedBody = json_decode($transaction->real->body);
+
+    $STASH['tag_id'] = $parsedBody->tag_id;
 
 });
 
-Hooks::before("Tag > /v1/admin/tags/{tag_id} > Get tag > *", function(&$transaction) {
+Hooks::before("Tag > /v1/admin/tags/{tag_id} > *", function(&$transaction) {
 
+    global $STASH;
 
-    var_dump($transaction);
-    die;
+    $transaction->fullPath = replaceURI("tagid", $transaction->fullPath, $STASH['tag_id']);
 
 });

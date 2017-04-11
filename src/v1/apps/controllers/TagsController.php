@@ -8,6 +8,7 @@ use RodinAPI\Models\TagCategories;
 use RodinAPI\Models\TagLabels;
 use RodinAPI\Models\Tags;
 use RodinAPI\Response\TagCategoryResponse;
+use RodinAPI\Response\TagDeleteResponse;
 use RodinAPI\Response\TagLabelResponse;
 use RodinAPI\Response\TagLabelsResponse;
 use RodinAPI\Response\TagResponse;;
@@ -20,7 +21,7 @@ class TagsController extends BaseController
      * @return TagResponse
      * @throws ItemNotFoundException
      */
-    public function getAction($tag_id)
+    public function getTagAction($tag_id)
     {
 
         $tags = Tags::factory('RodinAPI\Models\Tags')
@@ -35,17 +36,16 @@ class TagsController extends BaseController
 
                 foreach ($tags as $tag) {
 
-                    $category           = TagCategories::getCategoryFromTagId($tag_id);
-                    $categoryResponse   = new TagCategoryResponse($category->class, $category->attribute);
+                    $category = Tags::getCategoryFromTagId($tag_id);
 
                     if( TagLabels::validLocale($tag->belongs_to) ) {
-                        $labelResponse      = new TagLabelResponse($tag->belongs_to, $tag->label);
+                        $labelResponse      = new TagLabelResponse($category, $tag->belongs_to, $tag->label);
                         $labelsResponse->addResponse($labelResponse);
                     }
 
                 }
 
-                return new TagResponse( $tag_id, $categoryResponse, $labelsResponse  );
+                return new TagResponse( $tag_id, $category, $labelsResponse  );
 
             }
 
@@ -72,66 +72,48 @@ class TagsController extends BaseController
 
     }
 
-    public function updateLabelAction($tag_id, $locale)
-    {
-        // Get body
-        $body = $this->request->getJsonRawBody();
-
-        $tag = Tags::factory('RodinAPI\Models\Tags')->findOne($tag_id, $locale);
-
-        if( !empty($tag) ) {
-
-            $tag->label = $body->label;
-            $tag->save();
-
-            return new TagLabelResponse($locale, $tag->label);
-
-        }
-
-        throw new ItemNotFoundException('Could not find specified label');
-
-    }
-
-    public function deleteLabelAction($tag_id, $locale)
+    public function deleteTagAction($tag_id)
     {
 
-        $tag = Tags::factory('RodinAPI\Models\Tags')->findOne($tag_id, $locale);
+        $tags = Tags::factory('RodinAPI\Models\Tags')->where('tag_id','=',$tag_id)->findMany();
 
-        if( !empty($tag) ) {
-            $tag->delete();
-            $this->response->setStatusCode(200);
-            $this->response->send();
-            $this->response->setJsonContent(null);
-            die;
+        foreach( $tags as $tag ) {
+            $tagDeleted = Tags::factory('RodinAPI\Models\Tags')->findOne($tag->tag_id, $tag->belongs_to)->delete();
         }
 
-        throw new ItemNotFoundException('Could not find specified label');
+        if( !empty($tagDeleted) ) {
+            return new TagDeleteResponse($tag_id);
+        }
+
+        throw new ItemNotFoundException('Could not find specified tag');
 
     }
-
-
 
     /**
      * @return TagResponse
      * @throws BadRequestException
      */
-    public function createAction()
+    public function createTagAction()
     {
         // Get body
         $body = $this->request->getJsonRawBody();
 
-        $tag = Tags::createTagNoLabels( $body->category->class, $body->category->attribute );
+        $tag = Tags::createTagNoLabels( $body->category );
 
         if( $tag !== false ) {
 
             // Create labels
             if( !empty($body->labels) ) {
+
                 $tagLabelsResponse = $this->createLabel($tag->tag_id, $body->labels);
+
+                return new TagResponse( $tag->tag_id, $body->category, $tagLabelsResponse );
+
+            } else {
+
+                return new TagResponse( $tag->tag_id, $body->category );
+
             }
-
-            $category = new TagCategoryResponse( $body->category->class, $body->category->attribute );
-
-            return new TagResponse( $tag->tag_id, $category, $tagLabelsResponse );
 
         } else {
             throw new BadRequestException('Tag does already exist for this locale');
@@ -180,12 +162,10 @@ class TagsController extends BaseController
 
                 if ($tagLabel !== false) {
 
-                    $tagLabelResponse =  new TagLabelResponse($label->locale, $label->label);
+                    $tagLabelResponse =  new TagLabelResponse(Tags::getCategoryFromTagId($tag_id), $label->locale, $label->label);
 
                     $tagLabelsResponse->addResponse($tagLabelResponse);
 
-                } else {
-                    throw new BadRequestException('Tag does already exist for this locale');
                 }
 
             }

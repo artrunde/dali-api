@@ -29,28 +29,32 @@ paths:
             $ref: "#/definitions/Debug"
 
   /admin/tags:
-      post:
-        tags:
-        - "Tag"
-        summary: "Create tag"
-        description: "Create a new tag with labels"
-        operationId: "createNewTag"
-        consumes:
-        - application/json
-        produces:
-        - application/json
-        parameters:
-        - in: "body"
-          name: "body"
-          description: "Tag object that needs to be added"
-          required: true
+    post:
+      tags:
+      - "Tag"
+      summary: "Create a tag"
+      description: "Create a new tag with labels."
+      operationId: "createNewTag"
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Tag object that needs to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/TagInput"
+      responses:
+        200:
+          description: "Successful result"
           schema:
             $ref: "#/definitions/Tag"
-        responses:
-          200:
-            description: "Successful result"
-            schema:
-              $ref: "#/definitions/Tag"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
 
   /admin/tags/{tag_id}:
     get:
@@ -67,14 +71,40 @@ paths:
           description: "Tag unique identifier"
           required: true
           type: string
-          x-example: "country-name_58eb7321e71b7"
+          x-example: "tagid"
       responses:
         200:
           description: "Successful result"
           schema:
             $ref: "#/definitions/Tag"
         404:
-          description: "Not found"
+          description: "Item not found"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+        - "Tag"
+      summary: "Delete tag"
+      description: "Delete a specific tag and all its labels"
+      operationId: "deleteTagByID"
+      produces:
+        - application/json
+      parameters:
+        - name: "tag_id"
+          in: path
+          description: "Tag unique identifier"
+          required: true
+          type: string
+          x-example: "tagid"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            properties:
+              tag_id:
+                type: string
+        404:
+          description: "Item not found"
           schema:
             $ref: "#/definitions/Error"
 
@@ -99,7 +129,9 @@ definitions:
         properties:
           statusCode:
             type: integer
-            example: 404
+            enum:
+              - 400
+              - 404
           statusMessage:
             type: string
             example: "Item(s) not found"
@@ -133,22 +165,13 @@ definitions:
     required:
       - "event_params"
 
-  TagCategory:
-    type: object
-    properties:
-      class:
-        type: string
-        example: "city"
-      attribute:
-        type: string
-        example: "name"
-    required:
-      - "class"
-      - "attribute"
-
   TagLabel:
     type: object
     properties:
+      category:
+        type: string
+        enum:
+          - "countryname"
       locale:
         type: string
         enum:
@@ -161,15 +184,38 @@ definitions:
       - "locale"
       - "label"
 
+  TagInput:
+    type: object
+    properties:
+      category:
+        type: string
+        enum:
+          - "countryname"
+      labels:
+        type: array
+        minItems: 0
+        maxItems: 2
+        uniqueItems: true
+        items:
+          $ref: "#/definitions/TagLabel"
+    required:
+      - "category"
+      - "labels"
+
   Tag:
     type: object
     properties:
       tag_id:
         type: string
       category:
-        $ref: "#/definitions/TagCategory"
+        type: string
+        enum:
+          - "countryname"
       labels:
         type: array
+        minItems: 0
+        maxItems: 2
+        uniqueItems: true
         items:
           $ref: "#/definitions/TagLabel"
     required:

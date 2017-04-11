@@ -7,6 +7,11 @@ class TagLabelResponse extends Response
     /**
      * @var string
      */
+    public $category;
+
+    /**
+     * @var string
+     */
     public $locale;
 
     /**
@@ -15,12 +20,14 @@ class TagLabelResponse extends Response
     public $label;
 
     /**
-     * TagLabelsResponse constructor.
+     * TagLabelResponse constructor.
+     * @param $category
      * @param $locale
      * @param $label
      */
-    public function __construct($locale, $label)
+    public function __construct($category, $locale, $label)
     {
+        $this->category = $category;
         $this->locale   = $locale;
         $this->label    = $label;
 
