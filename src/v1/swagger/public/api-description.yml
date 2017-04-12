@@ -56,6 +56,60 @@ paths:
           schema:
             $ref: "#/definitions/Error"
 
+  /admin/tags/{tag_id}/labels:
+    get:
+      tags:
+        - "Tag"
+      summary: "Get labels"
+      description: "Retrieve all labels for a specific tag"
+      operationId: "getAllLabelsByTagID"
+      produces:
+        - application/json
+      parameters:
+        - name: "tag_id"
+          in: path
+          description: "Tag unique identifier"
+          required: true
+          type: string
+          x-example: "tagid"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Label"
+
+  /admin/tags/{tag_id}/labels/{locale}:
+    get:
+      tags:
+        - "Tag"
+      summary: "Get a label"
+      description: "Retrieve infomration about a specific label"
+      operationId: "getLabelByLocale"
+      produces:
+        - application/json
+      parameters:
+        - name: "tag_id"
+          in: path
+          description: "Tag unique identifier"
+          required: true
+          type: string
+          x-example: "tagid"
+        - name: "locale"
+          in: path
+          description: "Label locale"
+          required: true
+          type: string
+          enum:
+            - "en"
+            - "dk"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/Label"
+
   /admin/tags/{tag_id}:
     get:
       tags:
@@ -165,13 +219,9 @@ definitions:
     required:
       - "event_params"
 
-  TagLabel:
+  Label:
     type: object
     properties:
-      category:
-        type: string
-        enum:
-          - "countryname"
       locale:
         type: string
         enum:
@@ -190,14 +240,15 @@ definitions:
       category:
         type: string
         enum:
-          - "countryname"
+          - "country_name"
+          - "city_name"
       labels:
         type: array
-        minItems: 0
+        minItems: 1
         maxItems: 2
         uniqueItems: true
         items:
-          $ref: "#/definitions/TagLabel"
+          $ref: "#/definitions/Label"
     required:
       - "category"
       - "labels"
@@ -210,14 +261,15 @@ definitions:
       category:
         type: string
         enum:
-          - "countryname"
+          - "country_name"
+          - "city_name"
       labels:
         type: array
         minItems: 0
         maxItems: 2
         uniqueItems: true
         items:
-          $ref: "#/definitions/TagLabel"
+          $ref: "#/definitions/Label"
     required:
       - "tag_id"
       - "category"

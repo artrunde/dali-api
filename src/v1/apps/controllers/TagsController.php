@@ -7,7 +7,6 @@ use RodinAPI\Exceptions\ItemNotFoundException;
 use RodinAPI\Models\TagCategories;
 use RodinAPI\Models\TagLabels;
 use RodinAPI\Models\Tags;
-use RodinAPI\Response\TagCategoryResponse;
 use RodinAPI\Response\TagDeleteResponse;
 use RodinAPI\Response\TagLabelResponse;
 use RodinAPI\Response\TagLabelsResponse;
@@ -34,12 +33,14 @@ class TagsController extends BaseController
 
             if( !empty($tags) ) {
 
+                $category = Tags::getCategoryFromMultipleTags($tags);
+
+                // Find labels
                 foreach ($tags as $tag) {
 
-                    $category = Tags::getCategoryFromTagId($tag_id);
+                    if( TagLabels::validLocale( TagLabels::getLocale($tag->belongs_to) ) ) {
 
-                    if( TagLabels::validLocale($tag->belongs_to) ) {
-                        $labelResponse      = new TagLabelResponse($category, $tag->belongs_to, $tag->label);
+                        $labelResponse = new TagLabelResponse(TagLabels::getLocale($tag->belongs_to), $tag->label);
                         $labelsResponse->addResponse($labelResponse);
                     }
 
@@ -55,20 +56,49 @@ class TagsController extends BaseController
 
     }
 
-    public function getLabelAction($tag_id, $locale)
+    public function getAllLabelsAction($tag_id)
     {
 
-        $tag = Tags::factory('RodinAPI\Models\Tags')->findOne($tag_id, $locale);
+        $tags = Tags::factory('RodinAPI\Models\Tags')->where('tag_id', '=', $tag_id)->findMany();
 
-        if( !empty($tag) ) {
+        $labelsResponse = new TagLabelsResponse();
 
-            if( TagLabels::validLocale($locale) ) {
-                return new TagLabelResponse($locale, $tag->label);
+        if( !empty($tags) ) {
+
+            foreach ( $tags as $tag ) {
+
+                if( strpos($tag->belongs_to, 'locale_') !== false ) {
+
+                    $response = new TagLabelResponse(TagLabels::getLocale($tag->belongs_to), $tag->label);
+
+                    $labelsResponse->addResponse($response);
+                }
+
             }
 
         }
 
-        throw new ItemNotFoundException('Could not find specified label');
+        return $labelsResponse;
+
+    }
+
+    /**
+     * @param $tag_id
+     * @param $locale
+     * @return TagLabelResponse
+     * @throws ItemNotFoundException
+     */
+    public function getLabelAction($tag_id, $locale)
+    {
+
+        $tag = Tags::factory('RodinAPI\Models\Tags')->findOne($tag_id, 'locale_'.$locale);
+
+        if( !empty($tag) ) {
+
+            return new TagLabelResponse(TagLabels::getLocale($tag->belongs_to), $tag->label);
+        }
+
+        throw new ItemNotFoundException('Label not found');
 
     }
 
@@ -105,7 +135,7 @@ class TagsController extends BaseController
             // Create labels
             if( !empty($body->labels) ) {
 
-                $tagLabelsResponse = $this->createLabel($tag->tag_id, $body->labels);
+                $tagLabelsResponse = $this->createLabel($tag->tag_id, $body->category, $body->labels);
 
                 return new TagResponse( $tag->tag_id, $body->category, $tagLabelsResponse );
 
@@ -145,11 +175,11 @@ class TagsController extends BaseController
 
     /**
      * @param $tag_id
+     * @param $category
      * @param $labels
      * @return TagLabelsResponse
-     * @throws BadRequestException
      */
-    protected function createLabel($tag_id, $labels) {
+    protected function createLabel($tag_id, $category, $labels) {
 
         $tagLabelsResponse = new TagLabelsResponse();
 
@@ -158,11 +188,11 @@ class TagsController extends BaseController
 
             foreach ( $labels as $label ) {
 
-                $tagLabel = Tags::createLabel( $tag_id, $label->locale, $label->label );
+                $tagLabel = Tags::createLabel( $tag_id, $category, $label->locale, $label->label );
 
                 if ($tagLabel !== false) {
 
-                    $tagLabelResponse =  new TagLabelResponse(Tags::getCategoryFromTagId($tag_id), $label->locale, $label->label);
+                    $tagLabelResponse =  new TagLabelResponse($label->locale, $label->label);
 
                     $tagLabelsResponse->addResponse($tagLabelResponse);
 

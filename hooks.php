@@ -29,6 +29,37 @@ Hooks::after("Tag > /v1/admin/tags > Create a tag > 200 > application/json", fun
     $parsedBody = json_decode($transaction->real->body);
 
     $STASH['tag_id'] = $parsedBody->tag_id;
+    $STASH['labels'] = $parsedBody->labels;
+
+});
+
+Hooks::before("Tag > /v1/admin/tags/{tag_id}/labels > *", function(&$transaction) {
+
+    global $STASH;
+
+    $transaction->fullPath = replaceURI("tagid", $transaction->fullPath, $STASH['tag_id']);
+
+});
+
+Hooks::before("Tag > /v1/admin/tags/{tag_id}/labels/{locale} > Get a label > 200 > application/json", function(&$transaction) {
+
+    global $STASH;
+
+    if( empty($STASH['labels']) ) {
+        $transaction->skip = true;
+    } else {
+        $transaction->fullPath = replaceURI("tagid", $transaction->fullPath, $STASH['tag_id']);
+    }
+
+});
+
+Hooks::before("Tag > /v1/admin/tags/{tag_id}/labels > Get labels > 200 > application/json", function(&$transaction) {
+
+    global $STASH;
+
+    if( empty($STASH['labels']) ) {
+        $transaction->skip = true;
+    }
 
 });
 

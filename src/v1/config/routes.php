@@ -32,6 +32,10 @@ $di->set('router', function () {
         ]
     );
 
+    /**
+     * Tags
+     */
+
     $v1->addPost(
         "/admin/tags",
         [
@@ -53,6 +57,38 @@ $di->set('router', function () {
         [
             "controller" => "Tags",
             "action"     => "deleteTag",
+        ]
+    );
+
+    /**
+     * Labels
+     */
+
+    $v1->addGet(
+        "/admin/tags/{tag_id:}/labels",
+        [
+            "controller" => "Tags",
+            "action"     => "getAllLabels",
+        ]
+    );
+
+    $v1->addGet(
+        "/admin/tags/{tag_id:}/labels/{locale:}",
+        [
+            "controller" => "Tags",
+            "action"     => "getLabel",
+        ]
+    );
+
+    /**
+     * Search terms
+     */
+
+    $v1->addPost(
+        "/admin/search-terms",
+        [
+            "controller" => "Search_Terms",
+            "action"     => "create",
         ]
     );
 

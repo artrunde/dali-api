@@ -28,15 +28,28 @@ class Tags extends ODM {
         'create_time'   => 'S'
 	);
 
+    public static function getCategory($belongs_to)
+    {
+        return str_replace('category_', '', $belongs_to);
+    }
+
     /**
-     * @param $tag_id
+     * @param array $tags
      * @return mixed
      */
-    public static function getCategoryFromTagId($tag_id) {
+    public static function getCategoryFromMultipleTags(array $tags)
+    {
 
-        $categoryExploded = explode('_', $tag_id);
+        /**
+         * @var Tags $tag
+         */
+        foreach ($tags as $tag) {
 
-        return $categoryExploded[0];
+            if( strpos($tag->belongs_to, 'category_') !== false ) {
+                return self::getCategory($tag->belongs_to);
+            }
+
+        }
 
     }
 
@@ -84,14 +97,12 @@ class Tags extends ODM {
      */
     public static function createTagNoLabels( $category )
     {
-        $tag_prefix = $category.'_';
-
         $tag = Tags::factory('RodinAPI\Models\Tags')->create();
 
-        $tag_id             = uniqid($tag_prefix);
+        $tag_id             = uniqid();
 
         $tag->tag_id        = $tag_id;
-        $tag->belongs_to    = $tag_id;      // Belongs to self. Later will labels and locales can be added
+        $tag->belongs_to    = 'category_'.$category;      // Belongs to self. Later will labels and locales can be added
         $tag->create_time   = date('c');
 
         $tag->save();
@@ -101,27 +112,31 @@ class Tags extends ODM {
 
     /**
      * @param $tag_id
+     * @param $category
      * @param $locale
      * @param $label
      * @return $this|bool
      */
-    public static function createLabel( $tag_id, $locale, $label )
+    public static function createLabel( $tag_id, $category, $locale, $label )
     {
 
-        $tag = Tags::factory('RodinAPI\Models\Tags')->findOne($tag_id, $tag_id);
+        $tag = Tags::factory('RodinAPI\Models\Tags')->findOne($tag_id, 'category_'.$category);
 
         if( !empty($tag) ) {
 
             $tagNew = Tags::factory('RodinAPI\Models\Tags')->create();
 
-            $tagNew->tag_id     = $tag_id;
-            $tagNew->belongs_to    = $locale;
+            $tagNew->tag_id         = $tag_id;
+            $tagNew->belongs_to    = 'locale_'.$locale;
             $tagNew->label         = $label;
             $tagNew->create_time   = date('c');
 
             try {
+
                 $tagNew->save();
+
                 return $tagNew;
+
             } catch (\Exception $e) {
                 return false;
             }

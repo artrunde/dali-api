@@ -3,12 +3,6 @@ namespace RodinAPI\Response;
 
 class TagLabelResponse extends Response
 {
-
-    /**
-     * @var string
-     */
-    public $category;
-
     /**
      * @var string
      */
@@ -25,9 +19,8 @@ class TagLabelResponse extends Response
      * @param $locale
      * @param $label
      */
-    public function __construct($category, $locale, $label)
+    public function __construct($locale, $label)
     {
-        $this->category = $category;
         $this->locale   = $locale;
         $this->label    = $label;
 
