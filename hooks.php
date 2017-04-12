@@ -22,51 +22,44 @@ Hooks::beforeEach(function(&$transaction) {
    echo $transaction->name;
 });
 
-Hooks::after("Tag > /v1/admin/tags > Create a tag > 200 > application/json", function(&$transaction) {
+Hooks::after("Artist > /v1/admin/artists > Create artist > 200 > application/json", function(&$transaction) {
 
     global $STASH;
 
     $parsedBody = json_decode($transaction->real->body);
 
-    $STASH['tag_id'] = $parsedBody->tag_id;
-    $STASH['labels'] = $parsedBody->labels;
+    $STASH['artist']['artist_id'] = $parsedBody->artist_id;
+    $STASH['artist']['locales'] = $parsedBody->locales;
 
 });
 
-Hooks::before("Tag > /v1/admin/tags/{tag_id}/labels > *", function(&$transaction) {
+Hooks::after("Cities > /v1/admin/cities > Create city > 200 > application/json", function(&$transaction) {
 
     global $STASH;
 
-    $transaction->fullPath = replaceURI("tagid", $transaction->fullPath, $STASH['tag_id']);
+    $parsedBody = json_decode($transaction->real->body);
+
+    $STASH['city']['city_id'] = $parsedBody->city_id;
+    $STASH['city']['locales'] = $parsedBody->locales;
 
 });
 
-Hooks::before("Tag > /v1/admin/tags/{tag_id}/labels/{locale} > Get a label > 200 > application/json", function(&$transaction) {
+Hooks::before("Artist > /v1/admin/artists/{artist_id} > *", function(&$transaction) {
 
     global $STASH;
 
-    if( empty($STASH['labels']) ) {
-        $transaction->skip = true;
-    } else {
-        $transaction->fullPath = replaceURI("tagid", $transaction->fullPath, $STASH['tag_id']);
-    }
+    $transaction->fullPath = replaceURI("artist_id", $transaction->fullPath, $STASH['artist']['artist_id']);
+
+    echo $transaction->fullPath ;
 
 });
 
-Hooks::before("Tag > /v1/admin/tags/{tag_id}/labels > Get labels > 200 > application/json", function(&$transaction) {
+Hooks::before("City > /v1/admin/cities/{city_id} > *", function(&$transaction) {
 
     global $STASH;
 
-    if( empty($STASH['labels']) ) {
-        $transaction->skip = true;
-    }
+    $transaction->fullPath = replaceURI("city_id", $transaction->fullPath, $STASH['city']['city_id']);
 
-});
-
-Hooks::before("Tag > /v1/admin/tags/{tag_id} > *", function(&$transaction) {
-
-    global $STASH;
-
-    $transaction->fullPath = replaceURI("tagid", $transaction->fullPath, $STASH['tag_id']);
+    echo $transaction->fullPath ;
 
 });

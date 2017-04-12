@@ -3,6 +3,7 @@
 namespace RodinAPI;
 
 use Aws\DynamoDb\DynamoDbClient;
+use Aws\DynamoDb\Marshaler;
 use RodinAPI\Exceptions\HandledException;
 use RodinAPI\Exceptions\InternalErrorException;
 use RodinAPI\Request\LambdaRequest;
@@ -91,6 +92,13 @@ class Application extends BaseApplication
 				]);
 			}
 		);
+
+        $di->setShared(
+            "dynamoDBMarshaler",
+            function () {
+                return new Marshaler();
+            }
+        );
 
         $this->setDI($di);
 

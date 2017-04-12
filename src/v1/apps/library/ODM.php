@@ -7,27 +7,6 @@ use Phalcon\Di;
 class ODM
 {
 
-    /**
-     * @return string
-     */
-    public static function getGUID(){
-
-        mt_srand((double)microtime()*10000);//optional for php 4.2.0 and up.
-
-        $charid = strtoupper(md5(uniqid(rand(), true)));
-        $hyphen = chr(45);// "-"
-        $uuid = chr(123)// "{"
-            .substr($charid, 0, 8).$hyphen
-            .substr($charid, 8, 4).$hyphen
-            .substr($charid,12, 4).$hyphen
-            .substr($charid,16, 4).$hyphen
-            .substr($charid,20,12)
-            .chr(125);// "}"
-
-        return $uuid;
-
-    }
-
 	// Log of all queries run, mapped by connection key, only populated if logging is enabled
 	protected static $_query_log = array();
 
@@ -451,10 +430,16 @@ class ODM
 			$type = $this->_getDataType($key);
 
 			if ($type == 'S') {
+
 				$value = strval($value);
+
 			} elseif ( $type == 'N') {
 
 				$value = is_float($value + 0) ? strval($value) : (int) $value; // AWS only takes strings when dealing with floats
+
+            } elseif ( $type == 'M') {
+
+                $value = $this->getMarshaler()->unmarshalJson($value);
 			}
 
 			if( property_exists($this, $key) ) {
@@ -557,12 +542,22 @@ class ODM
 	/**
 	 * Return DynamoDbClient instance
 	 *
-	 * @return \Aws\DynamoDb\DynamoDbClient
+	 * @return \Aws\DynamoDb\Marshaler
 	 */
-	public function getClient()
+	public function getMarshaler()
 	{
-		return Di::getDefault()->get('dynamoDBClient');
+		return Di::getDefault()->get('dynamoDBMarshaler');
 	}
+
+    /**
+     * Return DynamoDbClient instance
+     *
+     * @return \Aws\DynamoDb\DynamoDbClient
+     */
+    public function getClient()
+    {
+        return Di::getDefault()->get('dynamoDBClient');
+    }
 
 	/**
 	 * query
@@ -1049,13 +1044,23 @@ class ODM
 	protected function _formatAttributes($array)
 	{
 		$result = array();
+
 		foreach ($array as $key => $value) {
+
 			$type = $this->_getDataType($key);
+
 			if ($type == 'S' || $type == 'N') {
-				$value = strval($value);
+
+                $value = strval($value);
+
+            } elseif( $type = 'M' ) {
+			    $value = $this->getMarshaler()->marshalJson($value);
 			}
+
 			$result[$key] = array($type => $value);
+
 		}
+
 		return $result;
 	}
 

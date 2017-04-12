@@ -1,5 +1,7 @@
 <?php
-namespace RodinAPI\Response;
+namespace RodinAPI\Response\Debug;
+
+use RodinAPI\Response\Response;
 
 class DebugResponse extends Response
 {
@@ -9,7 +11,8 @@ class DebugResponse extends Response
     public $event_params = null;
 
     /**
-     * @param string $env_params
+     * DebugResponse constructor.
+     * @param $event_params
      */
     public function __construct($event_params)
     {

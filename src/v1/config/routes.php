@@ -32,126 +32,76 @@ $di->set('router', function () {
         ]
     );
 
+
     /**
-     * Tags
+     * Tags - Cities
      */
 
     $v1->addPost(
-        "/admin/tags",
+        "/admin/cities",
         [
-            "controller" => "Tags",
-            "action"     => "createTag",
-        ]
-    );
-
-    $v1->addGet(
-        "/admin/tags/{tag_id:}",
-        [
-            "controller" => "Tags",
-            "action"     => "getTag",
-        ]
-    );
-
-    $v1->addDelete(
-        "/admin/tags/{tag_id:}",
-        [
-            "controller" => "Tags",
-            "action"     => "deleteTag",
-        ]
-    );
-
-    /**
-     * Labels
-     */
-
-    $v1->addGet(
-        "/admin/tags/{tag_id:}/labels",
-        [
-            "controller" => "Tags",
-            "action"     => "getAllLabels",
-        ]
-    );
-
-    $v1->addGet(
-        "/admin/tags/{tag_id:}/labels/{locale:}",
-        [
-            "controller" => "Tags",
-            "action"     => "getLabel",
-        ]
-    );
-
-    /**
-     * Search terms
-     */
-
-    $v1->addPost(
-        "/admin/search-terms",
-        [
-            "controller" => "Search_Terms",
+            "controller" => "Cities",
             "action"     => "create",
         ]
     );
 
-    /*
-
     $v1->addGet(
-        "/admin/tags/{tag_id:}/labels/{locale:}",
+        "/admin/cities/{tag_id:}",
         [
-            "controller" => "Tags",
-            "action"     => "getLabel",
+            "controller" => "Cities",
+            "action"     => "get",
         ]
     );
 
     $v1->addPut(
-        "/admin/tags/{tag_id:}/labels/{locale:}",
+        "/admin/cities/{tag_id:}",
         [
-            "controller" => "Tags",
-            "action"     => "updateLabel",
+            "controller" => "Cities",
+            "action"     => "update",
         ]
     );
 
     $v1->addDelete(
-        "/admin/tags/{tag_id:}/labels/{locale:}",
+        "/admin/cities/{tag_id:}",
         [
-            "controller" => "Tags",
-            "action"     => "deleteLabel",
+            "controller" => "Cities",
+            "action"     => "delete",
         ]
     );
+
+    /**
+     * Artists
+     */
 
     $v1->addPost(
-        "/admin/tags/{tag_id:}/labels/{locale:}",
+        "/admin/artists",
         [
-            "controller" => "Tags",
-            "action"     => "createLabel",
+            "controller" => "Artists",
+            "action"     => "create",
         ]
     );
 
-*/
-    # ------------------------------------------------------------------------------
-    # PUBLIC ROUTES
-    # ------------------------------------------------------------------------------
-
-    /**
-     * TAGS
-     */
-
     $v1->addGet(
-        "/public/tags",
+        "/admin/artists/{tag_id:}",
         [
-            "controller" => "Search_Terms",
-            "action"     => "search",
-        ]
-    );
-
-    /**
-     * Places
-     */
-
-    $v1->addGet(
-        "/public/places/{place_id:}",
-        [
-            "controller" => "Places",
+            "controller" => "Artists",
             "action"     => "get",
+        ]
+    );
+
+    $v1->addDelete(
+        "/admin/artists/{tag_id:}",
+        [
+            "controller" => "Artists",
+            "action"     => "delete",
+        ]
+    );
+
+    $v1->addPut(
+        "/admin/artists/{tag_id:}",
+        [
+            "controller" => "Artists",
+            "action"     => "update",
         ]
     );
 

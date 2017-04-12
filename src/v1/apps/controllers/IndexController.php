@@ -3,7 +3,7 @@
 namespace RodinAPI\Controllers;
 
 use RodinAPI\Exceptions\ItemNotFoundException;
-use RodinAPI\Response\DebugResponse;
+use RodinAPI\Response\Debug\DebugResponse;
 
 class IndexController extends BaseController
 {
