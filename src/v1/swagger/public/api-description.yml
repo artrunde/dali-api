@@ -157,7 +157,7 @@ paths:
       tags:
       - "City"
       summary: "Create city"
-      description: "Create a new city with locale information."
+      description: "Create a new city with locale information"
       operationId: "createNewCity"
       consumes:
       - application/json
