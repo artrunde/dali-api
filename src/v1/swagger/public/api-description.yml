@@ -155,7 +155,7 @@ paths:
   /admin/cities:
     post:
       tags:
-      - "Cities"
+      - "City"
       summary: "Create city"
       description: "Create a new city with locale information."
       operationId: "createNewCity"
