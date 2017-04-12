@@ -33,7 +33,7 @@ Hooks::after("Artist > /v1/admin/artists > Create artist > 200 > application/jso
 
 });
 
-Hooks::after("Cities > /v1/admin/cities > Create city > 200 > application/json", function(&$transaction) {
+Hooks::after("City > /v1/admin/cities > Create city > 200 > application/json", function(&$transaction) {
 
     global $STASH;
 
