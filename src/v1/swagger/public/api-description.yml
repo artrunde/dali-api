@@ -7,13 +7,17 @@ info:
     name: MIT
 host: api-rodin-dev.artrunde.com
 
-basePath: /v1/public
+basePath: /v1
 schemes:
   - https
 
 paths:
 
-  /debug/:
+  #######################
+  ###     DEBUG       ###
+  #######################
+
+  /admin/debug:
     get:
       summary: "Get debug information"
       description: "Get debug information about query"
@@ -28,74 +32,285 @@ paths:
           schema:
             $ref: "#/definitions/Debug"
 
-  /tags/:
+  #######################
+  ###     ARTISTS     ###
+  #######################
+
+  /admin/artists:
+    post:
+      tags:
+      - "Artist"
+      summary: "Create artist"
+      description: "Create a new artist with locale information."
+      operationId: "createNewArtist"
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Artist object that needs to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/ArtistInput"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/ArtistResult"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+
+  /admin/artists/{artist_id}:
+    get:
+      tags:
+        - "Artist"
+      summary: "Get artist"
+      description: "Retrieve data about a specific artist"
+      operationId: "getArtistByID"
+      produces:
+        - application/json
+      parameters:
+        - name: "artist_id"
+          in: path
+          description: "Artist unique identifier"
+          required: true
+          type: string
+          x-example: "artist_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/ArtistResult"
+        404:
+          description: "Item not found"
+          schema:
+            $ref: "#/definitions/Error"
+    put:
+      tags:
+        - "Artist"
+      summary: "Update artist"
+      description: "Update data about a specific artist"
+      operationId: "updateArtistByID"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: "artist_id"
+          in: path
+          description: "Artist unique identifier"
+          required: true
+          type: string
+          x-example: "artist_id"
+        - name: "body"
+          in: "body"
+          description: "Artist object that needs to be updated"
+          required: true
+          schema:
+            $ref: "#/definitions/ArtistInput"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/ArtistResult"
+        404:
+          description: "Item not found"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+        - "Artist"
+      summary: "Delete artist"
+      description: "Delete a specific artist and all relations"
+      operationId: "deleteArtistByID"
+      produces:
+        - application/json
+      parameters:
+        - name: "artist_id"
+          in: path
+          description: "Artist unique identifier"
+          required: true
+          type: string
+          x-example: "artist_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            properties:
+              artist_id:
+                type: string
+        404:
+          description: "Artist not found"
+          schema:
+            $ref: "#/definitions/Error"
+
+  ########################
+  ###      CITIES      ###
+  ########################
+
+  /admin/cities:
+    post:
+      tags:
+      - "City"
+      summary: "Create city"
+      description: "Create a new city with locale information"
+      operationId: "createNewCity"
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "City object that needs to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/CityInput"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/CityResult"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+
+  /admin/cities/{city_id}:
+    get:
+      tags:
+        - "City"
+      summary: "Get city"
+      description: "Retrieve data about a specific city"
+      operationId: "getCityByID"
+      produces:
+        - application/json
+      parameters:
+        - name: "city_id"
+          in: path
+          description: "City unique identifier"
+          required: true
+          type: string
+          x-example: "city_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/CityResult"
+        404:
+          description: "Item not found"
+          schema:
+            $ref: "#/definitions/Error"
+    put:
+      tags:
+        - "City"
+      summary: "Update city"
+      description: "Update data about a specific city"
+      operationId: "updateCityByID"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: "city_id"
+          in: path
+          description: "City unique identifier"
+          required: true
+          type: string
+          x-example: "city_id"
+        - name: "body"
+          in: "body"
+          description: "City object that needs to be updated"
+          required: true
+          schema:
+            $ref: "#/definitions/CityInput"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/CityResult"
+        404:
+          description: "Item not found"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+        - "City"
+      summary: "Delete city"
+      description: "Delete a specific city and all its relations"
+      operationId: "deleteCityByID"
+      produces:
+        - application/json
+      parameters:
+        - name: "city_id"
+          in: path
+          description: "City unique identifier"
+          required: true
+          type: string
+          x-example: "city_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            properties:
+              city_id:
+                type: string
+        404:
+          description: "City not found"
+          schema:
+            $ref: "#/definitions/Error"
+
+  #####################
+  ###      TAGS     ###
+  #####################
+
+  /public/tags?query={query}&locale={locale}:
       get:
         tags:
-          - "Tags"
+          - "Tag"
         summary: "Query tags"
-        description: "Search for multiple tags with a search term. You can add multiple category filters with the , delimiter e.g category=art_form,city"
-        operationId: "findTagsBySearchTerm"
+        description: "Query database for tags"
+        operationId: "queryTags"
         produces:
           - application/json
         parameters:
           - name: "query"
-            in: query
-            description: "Query for searching tags"
+            in: path
+            description: "Search term to query"
             required: true
             type: string
             x-example: "berlin"
-          - name: "category"
-            in: "query"
-            description: "Categories to filter tags by"
-            required: true
-            type: "array"
-            items:
-              type: "string"
-              enum:
-              - "art_form"
-              - "city"
-              - "all"
-              default: "all"
-            collectionFormat: "csv"
-        responses:
-          200:
-            description: "Successful result"
-            schema:
-              type: array
-              items:
-                $ref: "#/definitions/Tags"
-          400:
-            description: "Bad request"
-            schema:
-              $ref: "#/definitions/Error"
-
-  /places/{place_id}:
-      get:
-        tags:
-          - "Places"
-        summary: "Get place data"
-        description: "Retrieve data about a specific gallery, museum or exhibition"
-        operationId: "findPlaceByID"
-        produces:
-          - application/json
-        parameters:
-          - name: "place_id"
+          - name: "locale"
             in: path
-            description: "Place unique identifier"
+            description: "Language to search against"
             required: true
             type: string
-            x-example: "45111ac0e7803"
+            enum:
+            - "en"
+            - "dk"
+            x-example: "en"
         responses:
           200:
             description: "Successful result"
             schema:
-              $ref: "#/definitions/Places"
+              type: "array"
+              items:
+                $ref: "#/definitions/TagResult"
           404:
-            description: "Not found"
+            description: "Items not found"
             schema:
               $ref: "#/definitions/Error"
 
 ### ref-compiler: BEGIN
+
+############################
+###     Definitions      ###
+############################
+
 definitions:
 
   ErrorMessages:
@@ -116,7 +331,9 @@ definitions:
         properties:
           statusCode:
             type: integer
-            example: 404
+            enum:
+              - 400
+              - 404
           statusMessage:
             type: string
             example: "Item(s) not found"
@@ -142,6 +359,10 @@ definitions:
       data:
         type: string
 
+  ###########################################################
+  ###                     DEBUG                           ###
+  ###########################################################
+
   Debug:
     type: object
     properties:
@@ -150,73 +371,189 @@ definitions:
     required:
       - "event_params"
 
-  Tags:
-      type: object
-      properties:
-        tag_id:
-          type: string
-          example: "5c000a452245"
-        category:
-          type: string
-          example: "city"
-        info:
-          type: object
-          properties:
-            en:
-              type: object
-              properties:
-                name:
-                  type: string
-                  example: "Berlin, Germany"
-        create_time:
-          type: string
-          example: "2010-12-21T17:42:34+00:00"
-      required:
-        - "tag_id"
-        - "category"
-        - "info"
-        - "create_time"
+  #######################################################
+  ###                    ARTISTS                      ###
+  #######################################################
 
-  Places:
+  ArtistResult:
     type: object
     properties:
-      place_id:
+      artist_id:
         type: string
-        example: "45111ac0e7803"
-      url_path:
-        type: string
-        example: "the-big-place-of-arts"
-      name:
-        type: string
-        example: "The Big Place of Arts"
-      address:
+      locales:
         type: object
         properties:
-          address_1:
-            type: string
-            example: "Mullberry road 122"
-          address_2:
-            type: string
-            example: ""
-          postal_code:
-            type: string
-            example: "5000"
-          country:
-            type: string
-            example: "Denmark"
-          country_abbrev:
-            type: string
-            example: "dk"
-      vat_number:
+          en:
+            $ref: "#/definitions/ArtistLocales"
+          dk:
+            $ref: "#/definitions/ArtistLocales"
+        required:
+          - "en"
+          - "dk"
+      born_date:
         type: string
-        example: "01234567"
-      create_time:
-        type: string
-        example: "2010-12-21T17:42:34+00:00"
+        example: "2017-04-12T10:50:46+00:00"
+      status:
+        $ref: "#/definitions/ArtistStatusEnum"
+      searchable:
+        type: boolean
     required:
-      - "place_id"
-      - "url_path"
-      - "name"
-      - "address"
-      - "vat_number"
-      - "create_time"
+      - "artist_id"
+      - "locales"
+      - "born_date"
+      - "status"
+      - "searchable"
+
+  ArtistStatusEnum:
+    type: string
+    enum:
+      - "deceased"
+      - "fictive"
+      - "alive"
+
+  ArtistInput:
+    type: object
+    properties:
+      locales:
+        type: object
+        properties:
+          en:
+            $ref: "#/definitions/ArtistLocales"
+          dk:
+            $ref: "#/definitions/ArtistLocales"
+        required:
+          - "en"
+          - "dk"
+      born_date:
+        type: string
+        example: "2017-04-12T10:50:46+00:00"
+      status:
+        $ref: "#/definitions/ArtistStatusEnum"
+      searchable:
+        type: boolean
+    required:
+      - "locales"
+      - "born_date"
+      - "status"
+      - "searchable"
+
+  ArtistLocales:
+    type: object
+    properties:
+      first_name:
+        type: string
+        pattern: "[a-z0-9]{1,64}"
+        minLength: 1
+        maxLength: 64
+      last_name:
+        type: string
+        pattern: "[a-z0-9]{1,64}"
+        minLength: 1
+        maxLength: 64
+      nickname:
+        type: string
+        pattern: "[a-z0-9]{1,64}"
+        minLength: 1
+        maxLength: 64
+    required:
+      - "first_name"
+      - "last_name"
+      - "nickname"
+
+
+  #######################################################
+  ###                    CITIES                       ###
+  #######################################################
+
+  CityResult:
+    type: object
+    properties:
+      city_id:
+        type: string
+      country_code:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      locales:
+        type: object
+        properties:
+          en:
+            $ref: "#/definitions/CityLocales"
+          dk:
+            $ref: "#/definitions/CityLocales"
+        required:
+          - "en"
+          - "dk"
+      searchable:
+        type: boolean
+    required:
+      - "city_id"
+      - "country_code"
+      - "latitude"
+      - "longitude"
+      - "locales"
+      - "searchable"
+
+  CityInput:
+    type: object
+    properties:
+      country_code:
+        type: string
+      latitude:
+        type: number
+      longitude:
+        type: number
+      locales:
+        type: object
+        properties:
+          en:
+            $ref: "#/definitions/CityLocales"
+          dk:
+            $ref: "#/definitions/CityLocales"
+        required:
+          - "en"
+          - "dk"
+      searchable:
+        type: boolean
+    required:
+      - "country_code"
+      - "latitude"
+      - "longitude"
+      - "locales"
+      - "searchable"
+
+  CityLocales:
+    type: object
+    properties:
+      city_name:
+        type: string
+        example: "Berlin"
+        x-example: "Berlin"
+    required:
+      - "city_name"
+
+  #############################################
+  ###                    TAGS               ###
+  #############################################
+
+  TagResult:
+    type: object
+    properties:
+      tag_id:
+        type: string
+      query:
+        type: string
+      locale:
+        type: string
+        enum:
+        - "en"
+        - "dk"
+      label:
+        type: string
+    required:
+      - "tag_id"
+      - "query"
+      - "locale"
+      - "label"

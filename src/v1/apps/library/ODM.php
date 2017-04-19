@@ -430,10 +430,20 @@ class ODM
 			$type = $this->_getDataType($key);
 
 			if ($type == 'S') {
+
 				$value = strval($value);
+
 			} elseif ( $type == 'N') {
 
 				$value = is_float($value + 0) ? strval($value) : (int) $value; // AWS only takes strings when dealing with floats
+
+            } elseif ( $type == 'BOOL') {
+
+                $value = is_bool($value) ? $value : (bool) $value;
+
+            } elseif ( $type == 'M') {
+
+                $value = $this->getMarshaler()->unmarshalJson($value);
 			}
 
 			if( property_exists($this, $key) ) {
@@ -536,12 +546,22 @@ class ODM
 	/**
 	 * Return DynamoDbClient instance
 	 *
-	 * @return \Aws\DynamoDb\DynamoDbClient
+	 * @return \Aws\DynamoDb\Marshaler
 	 */
-	public function getClient()
+	public function getMarshaler()
 	{
-		return Di::getDefault()->get('dynamoDBClient');
+		return Di::getDefault()->get('dynamoDBMarshaler');
 	}
+
+    /**
+     * Return DynamoDbClient instance
+     *
+     * @return \Aws\DynamoDb\DynamoDbClient
+     */
+    public function getClient()
+    {
+        return Di::getDefault()->get('dynamoDBClient');
+    }
 
 	/**
 	 * query
@@ -570,7 +590,7 @@ class ODM
 		);
 
 		// Merge $options to $args
-		$option_names = array('ScanIndexForward', 'QueryFilter');
+		$option_names = array('ScanIndexForward', 'QueryFilter','Select');
 
 		foreach ($option_names as $option_name) {
 			if (isset($options[$option_name])) {
@@ -721,7 +741,7 @@ class ODM
 		}
 
 		$client = $this->getClient();
-		$item   = $client->putItem($args);
+		$item = $client->putItem($args);
 
 		return $item;
 	}
@@ -1028,13 +1048,27 @@ class ODM
 	protected function _formatAttributes($array)
 	{
 		$result = array();
+
 		foreach ($array as $key => $value) {
+
 			$type = $this->_getDataType($key);
+
 			if ($type == 'S' || $type == 'N') {
-				$value = strval($value);
+
+                $value = strval($value);
+
+            } elseif ( $type == 'BOOL') {
+
+                $value = is_bool($value) ? $value : (bool) $value;
+
+            } elseif( $type = 'M' ) {
+			    $value = $this->getMarshaler()->marshalJson($value);
 			}
+
 			$result[$key] = array($type => $value);
+
 		}
+
 		return $result;
 	}
 

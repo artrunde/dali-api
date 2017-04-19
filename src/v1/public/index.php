@@ -3,7 +3,9 @@
 namespace RodinAPI;
 
 use Aws\DynamoDb\DynamoDbClient;
+use Aws\DynamoDb\Marshaler;
 use RodinAPI\Exceptions\HandledException;
+use RodinAPI\Exceptions\InternalErrorException;
 use RodinAPI\Request\LambdaRequest;
 use RodinAPI\Response\JSONResponse;
 use RodinAPI\Response\ResponseArray;
@@ -29,7 +31,8 @@ class Application extends BaseApplication
                 'RodinAPI\Library'     => '../apps/library/',
                 'RodinAPI\Request'     => '../apps/request/',
                 'RodinAPI\Response'    => '../apps/response/',
-                'RodinAPI\Exceptions'  => '../apps/exceptions/'
+                'RodinAPI\Exceptions'  => '../apps/exceptions/',
+                'RodinAPI\Factories'   => '../apps/factories/'
             ]
         );
 
@@ -91,6 +94,13 @@ class Application extends BaseApplication
 			}
 		);
 
+        $di->setShared(
+            "dynamoDBMarshaler",
+            function () {
+                return new Marshaler();
+            }
+        );
+
         $this->setDI($di);
 
     }
@@ -118,8 +128,24 @@ class Application extends BaseApplication
 
         if ( $request->isJSON() ) {
 
-            $json = new JSONResponse($controllerResponse);
-            return $json->send();
+            if ( is_a($controllerResponse, 'RodinAPI\Response\Response') ) {
+
+                $json = new JSONResponse($controllerResponse);
+                return $json->send();
+
+            } elseif ( empty($controllerResponse) ) {
+
+                $this->response->setStatusCode(200);
+                $this->response->setJsonContent(null);
+                $this->response->setContentType('application/json');
+
+                return $this->response->send();
+
+            } else {
+
+                throw new InternalErrorException('Unknown handled response');
+
+            }
 
         }
     }

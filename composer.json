@@ -6,5 +6,8 @@
     },
     "scripts": {
         "test": "./vendor/bin/phpunit"
+    },
+    "require-dev": {
+        "ddelnano/dredd-hooks-php": "^1.1"
     }
 }
