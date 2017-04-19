@@ -105,6 +105,26 @@ $di->set('router', function () {
         ]
     );
 
+    /**
+     * Search Terms
+     */
+    $v1->addPost(
+        "/admin/search-terms",
+        [
+            "controller" => "Search_Terms",
+            "action"     => "create",
+        ]
+    );
+
+    $v1->addDelete(
+        "/admin/search-terms/{tag_id:}",
+        [
+            "controller" => "Search_Terms",
+            "action"     => "delete"
+        ]
+    );
+
+
     // Add the group to the router
     $router->mount($v1);
 

@@ -2,6 +2,7 @@
 
 namespace RodinAPI\Models;
 
+use RodinAPI\Factories\SearchTermFactory;
 use RodinAPI\Library\ODM;
 
 class City extends ODM {
@@ -20,6 +21,8 @@ class City extends ODM {
 
     public $locales;
 
+    public $searchable;
+
     public $create_time;
 
 	protected $_table_name = 'rodin_tags_v1';
@@ -35,6 +38,7 @@ class City extends ODM {
         'latitude'      => 'N',
         'locales'       => 'M', // Map
         'longitude'     => 'N',
+        'searchable'    => 'BOOL',
         'create_time'   => 'S'
 	);
 
@@ -48,9 +52,10 @@ class City extends ODM {
      * @param $latitude
      * @param $longitude
      * @param $locales
-     * @return City $city
+     * @param $searchable
+     * @return $this
      */
-    public static function createCityTag( $country_code, $latitude, $longitude, $locales )
+    public static function createCityTag( $country_code, $latitude, $longitude, $locales, $searchable )
     {
         $city = City::factory('RodinAPI\Models\City')->create();
 
@@ -63,8 +68,16 @@ class City extends ODM {
         $city->longitude     = $longitude;
         $city->locales       = json_encode($locales);;
         $city->create_time   = date('c');
+        $city->searchable    = $searchable;
 
         $city->save();
+
+        if( true === $city->searchable ) {
+
+            $searchTerm = SearchTermFactory::factory( $city->tag_id );
+            $searchTerm->create();
+
+        }
 
         return $city;
     }

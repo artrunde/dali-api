@@ -31,7 +31,8 @@ class Application extends BaseApplication
                 'RodinAPI\Library'     => '../apps/library/',
                 'RodinAPI\Request'     => '../apps/request/',
                 'RodinAPI\Response'    => '../apps/response/',
-                'RodinAPI\Exceptions'  => '../apps/exceptions/'
+                'RodinAPI\Exceptions'  => '../apps/exceptions/',
+                'RodinAPI\Factories'   => '../apps/factories/'
             ]
         );
 

@@ -1,15 +1,15 @@
 <?php
-namespace RodinAPI\Response\Cities;
+namespace RodinAPI\Response\TagCities;
 
 use RodinAPI\Response\Response;
 
-class CityResponse extends Response
+class TagCityResponse extends Response
 {
 
     /**
      * @var string
      */
-    public $city_id;
+    public $tag_id;
 
     /**
      * @var string
@@ -29,30 +29,30 @@ class CityResponse extends Response
     /**
      * @var string
      */
-    public $locales;
+    public $locale_dk;
 
     /**
-     * @var bool
+     * @var string
      */
-    public $searchable;
+    public $locale_en;
 
     /**
-     * CityResponse constructor.
-     * @param $city_id
+     * TagCityResponse constructor.
+     * @param $tag_id
      * @param $country_code
      * @param $latitude
      * @param $longitude
-     * @param $locales
-     * @param $searchable
+     * @param $locale_dk
+     * @param $locale_en
      */
-    public function __construct( $city_id, $country_code, $latitude, $longitude, $locales, $searchable )
+    public function __construct( $tag_id, $country_code, $latitude, $longitude, $locale_dk, $locale_en )
     {
-        $this->city_id         = (string) $city_id;
+        $this->tag_id          = (string) $tag_id;
         $this->country_code    = (string) $country_code;
         $this->latitude        = (float) $latitude;
         $this->longitude       = (float) $longitude;
-        $this->locales         = json_decode($locales);
-        $this->searchable      = (bool) $searchable;
+        $this->locale_dk       = (string) $locale_dk;
+        $this->locale_en       = (string) $locale_en;
 
         parent::__construct();
     }

@@ -437,6 +437,10 @@ class ODM
 
 				$value = is_float($value + 0) ? strval($value) : (int) $value; // AWS only takes strings when dealing with floats
 
+            } elseif ( $type == 'BOOL') {
+
+                $value = is_bool($value) ? $value : (bool) $value;
+
             } elseif ( $type == 'M') {
 
                 $value = $this->getMarshaler()->unmarshalJson($value);
@@ -737,7 +741,7 @@ class ODM
 		}
 
 		$client = $this->getClient();
-		$item   = $client->putItem($args);
+		$item = $client->putItem($args);
 
 		return $item;
 	}
@@ -1052,6 +1056,10 @@ class ODM
 			if ($type == 'S' || $type == 'N') {
 
                 $value = strval($value);
+
+            } elseif ( $type == 'BOOL') {
+
+                $value = is_bool($value) ? $value : (bool) $value;
 
             } elseif( $type = 'M' ) {
 			    $value = $this->getMarshaler()->marshalJson($value);

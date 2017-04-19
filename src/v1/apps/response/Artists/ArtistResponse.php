@@ -27,13 +27,27 @@ class ArtistResponse extends Response
      */
     public $status;
 
+    /**
+     * @var bool
+     */
+    public $searchable;
 
-    public function __construct( $artist_id, $locales, $born_date, $status )
+
+    /**
+     * ArtistResponse constructor.
+     * @param $artist_id
+     * @param $locales
+     * @param $born_date
+     * @param $status
+     * @param $searchable
+     */
+    public function __construct( $artist_id, $locales, $born_date, $status, $searchable )
     {
         $this->artist_id   = (string) $artist_id;
         $this->locales     = json_decode($locales);
         $this->born_date   = (string) $born_date;
         $this->status      = (string) $status;
+        $this->searchable  = (bool) $searchable;
 
         parent::__construct();
     }

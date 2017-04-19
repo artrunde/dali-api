@@ -355,11 +355,14 @@ definitions:
         example: "2017-04-12T10:50:46+00:00"
       status:
         $ref: "#/definitions/ArtistStatusEnum"
+      searchable:
+        type: boolean
     required:
       - "artist_id"
       - "locales"
       - "born_date"
       - "status"
+      - "searchable"
 
   ArtistStatusEnum:
     type: string
@@ -386,26 +389,32 @@ definitions:
         example: "2017-04-12T10:50:46+00:00"
       status:
         $ref: "#/definitions/ArtistStatusEnum"
+      searchable:
+        type: boolean
     required:
       - "locales"
       - "born_date"
       - "status"
+      - "searchable"
 
   ArtistLocales:
     type: object
     properties:
       first_name:
         type: string
-        example: "Hans"
-        x-example: "hans"
+        pattern: "[a-z0-9]{1,64}"
+        minLength: 1
+        maxLength: 64
       last_name:
         type: string
-        example: "Hans"
-        x-example: "hans"
+        pattern: "[a-z0-9]{1,64}"
+        minLength: 1
+        maxLength: 64
       nickname:
         type: string
-        example: "Hans"
-        x-example: "hans"
+        pattern: "[a-z0-9]{1,64}"
+        minLength: 1
+        maxLength: 64
     required:
       - "first_name"
       - "last_name"
@@ -437,12 +446,15 @@ definitions:
         required:
           - "en"
           - "dk"
+      searchable:
+        type: boolean
     required:
       - "city_id"
       - "country_code"
       - "latitude"
       - "longitude"
       - "locales"
+      - "searchable"
 
   CityInput:
     type: object
@@ -463,11 +475,14 @@ definitions:
         required:
           - "en"
           - "dk"
+      searchable:
+        type: boolean
     required:
       - "country_code"
       - "latitude"
       - "longitude"
       - "locales"
+      - "searchable"
 
   CityLocales:
     type: object

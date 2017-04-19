@@ -5,6 +5,7 @@ namespace RodinAPI\Controllers;
 use RodinAPI\Exceptions\BadRequestException;
 use RodinAPI\Exceptions\ItemNotFoundException;
 use RodinAPI\Models\Artist;
+use RodinAPI\Models\SearchTerm;
 use RodinAPI\Response\Artists\ArtistDeleteResponse;
 use RodinAPI\Response\Artists\ArtistResponse;
 
@@ -17,7 +18,11 @@ class ArtistsController extends BaseController
         $artists = Artist::factory('RodinAPI\Models\Artist')->where('tag_id','=',$artist_id)->findMany();
 
         foreach( $artists as $artist ) {
+
             $deleted = Artist::factory('RodinAPI\Models\Artist')->findOne($artist->tag_id, $artist->belongs_to)->delete();
+
+            // Delete terms as well
+            SearchTerm::deleteSearchTerm($artist->tag_id);
         }
 
         if( !empty($deleted) ) {
@@ -36,11 +41,10 @@ class ArtistsController extends BaseController
      */
     public function getAction($city_id)
     {
-
         $artist = Artist::factory('RodinAPI\Models\Artist')->findOne($city_id, Artist::CATEGORY);
 
         if( !empty($artist) ) {
-            return new ArtistResponse( $artist->tag_id, $artist->locales, $artist->born_date, $artist->status );
+            return new ArtistResponse( $artist->tag_id, $artist->locales, $artist->born_date, $artist->status, $artist->searchable );
         }
 
         throw new ItemNotFoundException('Could not find specified artist');
@@ -56,11 +60,11 @@ class ArtistsController extends BaseController
         // Get body
         $body = $this->request->getJsonRawBody();
 
-        $artist = Artist::createArtistTag( $body->locales, $body->born_date, $body->status );
+        $artist = Artist::createArtistTag( $body->locales, $body->born_date, $body->status, $body->searchable );
 
         if( $artist !== false ) {
 
-            return new ArtistResponse( $artist->tag_id, $artist->locales, $artist->born_date, $artist->status );
+            return new ArtistResponse( $artist->tag_id, $artist->locales, $artist->born_date, $artist->status, $artist->searchable );
 
         } else {
             throw new BadRequestException('Artist does already exist');
@@ -86,10 +90,11 @@ class ArtistsController extends BaseController
             $artist->born_date    = $body->born_date;
             $artist->status       = $body->status;
             $artist->locales      = json_encode($body->locales);
+            $artist->searchable   = (bool) $body->searchable;
 
             $artist->save();
 
-            return new ArtistResponse( $artist_id, $artist->locales, $artist->born_date, $artist->status  );
+            return new ArtistResponse( $artist_id, $artist->locales, $artist->born_date, $artist->status, $artist->searchable );
         }
 
         throw new ItemNotFoundException('Could not find specified city');

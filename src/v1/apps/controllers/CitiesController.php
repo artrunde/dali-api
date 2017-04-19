@@ -5,6 +5,7 @@ namespace RodinAPI\Controllers;
 use RodinAPI\Exceptions\BadRequestException;
 use RodinAPI\Exceptions\ItemNotFoundException;
 use RodinAPI\Models\City;
+use RodinAPI\Models\SearchTerm;
 use RodinAPI\Response\Cities\CityDeleteResponse;
 use RodinAPI\Response\Cities\CityResponse;
 
@@ -17,7 +18,12 @@ class CitiesController extends BaseController
         $cities = City::factory('RodinAPI\Models\City')->where('tag_id','=',$city_id)->findMany();
 
         foreach( $cities as $city ) {
+
             $deleted = City::factory('RodinAPI\Models\City')->findOne($city->tag_id, $city->belongs_to)->delete();
+
+            // Delete terms as well
+            SearchTerm::deleteSearchTerm($city->tag_id);
+
         }
 
         if( !empty($deleted) ) {
@@ -39,7 +45,7 @@ class CitiesController extends BaseController
         $city = City::factory('RodinAPI\Models\City')->findOne($city_id, City::CATEGORY);
 
         if( !empty($city) ) {
-            return new CityResponse( $city_id, $city->country_code, $city->latitude, $city->longitude, $city->locales  );
+            return new CityResponse( $city_id, $city->country_code, $city->latitude, $city->longitude, $city->locales, $city->searchable );
         }
 
         throw new ItemNotFoundException('Could not find specified city');
@@ -64,11 +70,12 @@ class CitiesController extends BaseController
             $city->country_code = $body->country_code;
             $city->latitude     = $body->latitude;
             $city->longitude    = $body->longitude;
+            $city->searchable   = (bool) $body->searchable;
             $city->locales      = json_encode($body->locales);
 
             $city->save();
 
-            return new CityResponse( $city_id, $city->country_code, $city->latitude, $city->longitude, $city->locales  );
+            return new CityResponse( $city_id, $city->country_code, $city->latitude, $city->longitude, $city->locales, $city->searchable );
         }
 
         throw new ItemNotFoundException('Could not find specified city');
@@ -84,11 +91,11 @@ class CitiesController extends BaseController
         // Get body
         $body = $this->request->getJsonRawBody();
 
-        $city = City::createCityTag( $body->country_code, $body->latitude, $body->longitude, $body->locales );
+        $city = City::createCityTag( $body->country_code, $body->latitude, $body->longitude, $body->locales, $body->searchable );
 
         if( $city !== false ) {
 
-            return new CityResponse( $city->tag_id, $city->country_code, $city->latitude, $city->longitude, $city->locales );
+            return new CityResponse( $city->tag_id, $city->country_code, $city->latitude, $city->longitude, $city->locales, $city->searchable );
 
         } else {
             throw new BadRequestException('City does already exist');

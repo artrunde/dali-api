@@ -2,6 +2,7 @@
 
 namespace RodinAPI\Models;
 
+use RodinAPI\Factories\SearchTermFactory;
 use RodinAPI\Library\ODM;
 
 class Artist extends ODM {
@@ -18,6 +19,8 @@ class Artist extends ODM {
 
     public $status;
 
+    public $searchable;
+
     public $create_time;
 
 	protected $_table_name = 'rodin_tags_v1';
@@ -32,6 +35,7 @@ class Artist extends ODM {
         'locales'       => 'M', // Map
         'born_date'     => 'S',
         'status'        => 'S',
+        'searchable'    => 'BOOL',
         'create_time'   => 'S'
 	);
 
@@ -44,22 +48,31 @@ class Artist extends ODM {
      * @param $locales
      * @param $born_date
      * @param $status
-     * @return Artist $artist
+     * @param $searchable
+     * @return $this
      */
-    public static function createArtistTag( $locales, $born_date, $status )
+    public static function createArtistTag( $locales, $born_date, $status, $searchable )
     {
         $artist = Artist::factory('RodinAPI\Models\Artist')->create();
 
-        $artist_id            = uniqid('artist_');
+        $artist_id = uniqid('artist_');
 
-        $artist->tag_id       = $artist_id;
-        $artist->belongs_to   = self::CATEGORY;
-        $artist->locales      = json_encode($locales);
-        $artist->born_date    = (string) $born_date;
-        $artist->status       = (string) $status;
-        $artist->create_time  = date('c');
+        $artist->tag_id = $artist_id;
+        $artist->belongs_to = self::CATEGORY;
+        $artist->locales = json_encode($locales);
+        $artist->born_date = (string)$born_date;
+        $artist->status = (string)$status;
+        $artist->create_time = date('c');
+        $artist->searchable = $searchable;
 
         $artist->save();
+
+        if( true === $artist->searchable ) {
+
+            $searchTerm = SearchTermFactory::factory( $artist->tag_id );
+            $searchTerm->create();
+
+        }
 
         return $artist;
     }
