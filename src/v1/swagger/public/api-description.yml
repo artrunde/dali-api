@@ -264,6 +264,46 @@ paths:
           schema:
             $ref: "#/definitions/Error"
 
+  #####################
+  ###      TAGS     ###
+  #####################
+
+  /public/tags?query={query}&locale={locale}:
+      get:
+        tags:
+          - "Tag"
+        summary: "Query tags"
+        description: "Query database for tags"
+        operationId: "queryTags"
+        produces:
+          - application/json
+        parameters:
+          - name: "query"
+            in: path
+            description: "Search term to query"
+            required: true
+            type: string
+            x-example: "berlin"
+          - name: "locale"
+            in: path
+            description: "Language to search against"
+            required: true
+            type: string
+            enum:
+            - "en"
+            - "dk"
+            x-example: "en"
+        responses:
+          200:
+            description: "Successful result"
+            schema:
+              type: "array"
+              items:
+                $ref: "#/definitions/TagResult"
+          404:
+            description: "Items not found"
+            schema:
+              $ref: "#/definitions/Error"
 
 ### ref-compiler: BEGIN
 
@@ -493,3 +533,27 @@ definitions:
         x-example: "Berlin"
     required:
       - "city_name"
+
+  #############################################
+  ###                    TAGS               ###
+  #############################################
+
+  TagResult:
+    type: object
+    properties:
+      tag_id:
+        type: string
+      query:
+        type: string
+      locale:
+        type: string
+        enum:
+        - "en"
+        - "dk"
+      label:
+        type: string
+    required:
+      - "tag_id"
+      - "query"
+      - "locale"
+      - "label"

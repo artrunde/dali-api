@@ -16,34 +16,26 @@ class SearchTermsController extends BaseController
 {
 
     /**
-     * @return SearchTermResponse
+     * @return SearchTermsResponse
      */
-    public function createAction()
-    {
-        // Get body
-        $body = $this->request->getJsonRawBody();
-
-        $searchTerm = SearchTermFactory::factory( $body->tag_id );
-        $searchTerm->create();
-
-        return new SearchTermResponse($body->tag_id);
-
-    }
-
-    public function deleteAction($tag_id)
+    public function queryAction()
     {
 
-        $searchTerms = SearchTerm::factory('RodinAPI\Models\SearchTerm')->where('tag_id','=',$tag_id)->index('TagSearchTermIndex')->findMany();
+        $query  = $this->request->getQuery('query');
+        $locale = $this->request->getQuery('locale');
 
-        foreach( $searchTerms as $searchTerm ) {
-            $deleted = SearchTerm::factory('RodinAPI\Models\SearchTerm')->findOne($searchTerm->search_term, $searchTerm->label)->delete();
+        $searchTerms = SearchTerm::factory('RodinAPI\Models\SearchTerm')->where('search_term', '=', $locale . '_' . $query)->findMany();
+
+        $responseArray = new SearchTermsResponse();
+
+        foreach ($searchTerms as $searchTerm) {
+
+            $response = new SearchTermResponse($query, $locale, $searchTerm->tag_id, $searchTerm->label);
+            $responseArray->addResponse($response);
+
         }
 
-        if( !empty($deleted) ) {
-            return new ArtistDeleteResponse($tag_id);
-        }
-
-        throw new ItemNotFoundException('Could not find specified search term');
+        return $responseArray;
 
     }
 
