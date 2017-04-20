@@ -2,8 +2,15 @@
 
 namespace RodinAPI\Factories;
 
-abstract class SearchTermFactory {
+abstract class SearchTermFactory
+{
 
+    protected $tag_id;
+
+    public function __construct($tag_id)
+    {
+        $this->tag_id = $tag_id;
+    }
 
     public static function getTagType($tag_id)
     {

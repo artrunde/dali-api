@@ -1,6 +1,7 @@
 <?php
 namespace RodinAPI\Response\Cities;
 
+use RodinAPI\Models\LocaleTypes;
 use RodinAPI\Response\Response;
 
 class CityResponse extends Response
@@ -42,16 +43,16 @@ class CityResponse extends Response
      * @param $country_code
      * @param $latitude
      * @param $longitude
-     * @param $locales
+     * @param LocaleTypes $cityLocales
      * @param $searchable
      */
-    public function __construct( $city_id, $country_code, $latitude, $longitude, $locales, $searchable )
+    public function __construct( $city_id, $country_code, $latitude, $longitude, LocaleTypes $cityLocales, $searchable )
     {
         $this->city_id         = (string) $city_id;
         $this->country_code    = (string) $country_code;
         $this->latitude        = (float) $latitude;
         $this->longitude       = (float) $longitude;
-        $this->locales         = json_decode($locales);
+        $this->locales         = $cityLocales;
         $this->searchable      = (bool) $searchable;
 
         parent::__construct();
