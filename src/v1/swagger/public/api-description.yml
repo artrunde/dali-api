@@ -531,8 +531,19 @@ definitions:
         type: string
         example: "Berlin"
         x-example: "Berlin"
+        pattern: "[a-z0-9]{1,64}"
+        minLength: 1
+        maxLength: 64
+      country_name:
+        type: string
+        example: "Germany"
+        x-example: "Germany"
+        pattern: "[a-z0-9]{1,64}"
+        minLength: 1
+        maxLength: 64
     required:
       - "city_name"
+      - "country_name"
 
   #############################################
   ###                    TAGS               ###
@@ -545,6 +556,9 @@ definitions:
         type: string
       query:
         type: string
+        pattern: "[a-z0-9]{3,64}"
+        minLength: 3
+        maxLength: 64
       locale:
         type: string
         enum:

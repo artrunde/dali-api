@@ -45,25 +45,25 @@ class Artist extends ODM {
     }
 
     /**
-     * @param $locales
+     * @param LocaleTypes $locales
      * @param $born_date
      * @param $status
      * @param $searchable
      * @return $this
      */
-    public static function createArtistTag( $locales, $born_date, $status, $searchable )
+    public static function createArtistTag( LocaleTypes $locales, $born_date, $status, $searchable )
     {
         $artist = Artist::factory('RodinAPI\Models\Artist')->create();
 
         $artist_id = uniqid('artist_');
 
-        $artist->tag_id = $artist_id;
-        $artist->belongs_to = self::CATEGORY;
-        $artist->locales = json_encode($locales);
-        $artist->born_date = (string)$born_date;
-        $artist->status = (string)$status;
-        $artist->create_time = date('c');
-        $artist->searchable = $searchable;
+        $artist->tag_id         = $artist_id;
+        $artist->belongs_to     = self::CATEGORY;
+        $artist->locales        = json_encode($locales);
+        $artist->born_date      = (string)$born_date;
+        $artist->status         = (string)$status;
+        $artist->create_time    = date('c');
+        $artist->searchable     = $searchable;
 
         $artist->save();
 

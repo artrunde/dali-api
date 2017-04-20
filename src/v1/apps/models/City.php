@@ -51,11 +51,11 @@ class City extends ODM {
      * @param $country_code
      * @param $latitude
      * @param $longitude
-     * @param $locales
+     * @param LocaleTypes $locales
      * @param $searchable
      * @return $this
      */
-    public static function createCityTag( $country_code, $latitude, $longitude, $locales, $searchable )
+    public static function createCityTag( $country_code, $latitude, $longitude, LocaleTypes $locales, $searchable )
     {
         $city = City::factory('RodinAPI\Models\City')->create();
 
@@ -66,7 +66,7 @@ class City extends ODM {
         $city->country_code  = $country_code;
         $city->latitude      = $latitude;
         $city->longitude     = $longitude;
-        $city->locales       = json_encode($locales);;
+        $city->locales       = json_encode($locales);
         $city->create_time   = date('c');
         $city->searchable    = $searchable;
 

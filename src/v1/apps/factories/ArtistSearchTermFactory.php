@@ -8,13 +8,6 @@ use RodinAPI\Models\SearchTerm;
 class ArtistSearchTermFactory extends SearchTermFactory
 {
 
-    protected $tag_id;
-
-    public function __construct($tag_id)
-    {
-        $this->tag_id = $tag_id;
-    }
-
     public function create() {
 
         $artist = Artist::factory('RodinAPI\Models\Artist')->findOne($this->tag_id, Artist::CATEGORY);

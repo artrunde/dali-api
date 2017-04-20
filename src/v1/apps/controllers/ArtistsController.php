@@ -4,6 +4,7 @@ namespace RodinAPI\Controllers;
 
 use RodinAPI\Exceptions\BadRequestException;
 use RodinAPI\Exceptions\ItemNotFoundException;
+use RodinAPI\Factories\LocaleFactory;
 use RodinAPI\Models\Artist;
 use RodinAPI\Models\SearchTerm;
 use RodinAPI\Response\Artists\ArtistDeleteResponse;
@@ -44,7 +45,11 @@ class ArtistsController extends BaseController
         $artist = Artist::factory('RodinAPI\Models\Artist')->findOne($city_id, Artist::CATEGORY);
 
         if( !empty($artist) ) {
-            return new ArtistResponse( $artist->tag_id, $artist->locales, $artist->born_date, $artist->status, $artist->searchable );
+
+            // Create locales
+            $artistLocales = LocaleFactory::create(Artist::getCategory(), $artist->locales);
+
+            return new ArtistResponse( $artist->tag_id, $artistLocales, $artist->born_date, $artist->status, $artist->searchable );
         }
 
         throw new ItemNotFoundException('Could not find specified artist');
@@ -60,11 +65,14 @@ class ArtistsController extends BaseController
         // Get body
         $body = $this->request->getJsonRawBody();
 
-        $artist = Artist::createArtistTag( $body->locales, $body->born_date, $body->status, $body->searchable );
+        // Create locales
+        $artistLocales = LocaleFactory::create(Artist::getCategory(), $body->locales);
+
+        $artist = Artist::createArtistTag( $artistLocales, $body->born_date, $body->status, $body->searchable );
 
         if( $artist !== false ) {
 
-            return new ArtistResponse( $artist->tag_id, $artist->locales, $artist->born_date, $artist->status, $artist->searchable );
+            return new ArtistResponse( $artist->tag_id, $artistLocales, $artist->born_date, $artist->status, $artist->searchable );
 
         } else {
             throw new BadRequestException('Artist does already exist');
@@ -87,14 +95,17 @@ class ArtistsController extends BaseController
             // Get body
             $body = $this->request->getJsonRawBody();
 
+            // Create locales
+            $artistLocales        = LocaleFactory::create(Artist::getCategory(), $body->locales);
+
             $artist->born_date    = $body->born_date;
             $artist->status       = $body->status;
-            $artist->locales      = json_encode($body->locales);
+            $artist->locales      = json_encode($artistLocales);
             $artist->searchable   = (bool) $body->searchable;
 
             $artist->save();
 
-            return new ArtistResponse( $artist_id, $artist->locales, $artist->born_date, $artist->status, $artist->searchable );
+            return new ArtistResponse( $artist_id, $artistLocales, $artist->born_date, $artist->status, $artist->searchable );
         }
 
         throw new ItemNotFoundException('Could not find specified city');

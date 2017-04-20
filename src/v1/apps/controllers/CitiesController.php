@@ -4,6 +4,7 @@ namespace RodinAPI\Controllers;
 
 use RodinAPI\Exceptions\BadRequestException;
 use RodinAPI\Exceptions\ItemNotFoundException;
+use RodinAPI\Factories\LocaleFactory;
 use RodinAPI\Models\City;
 use RodinAPI\Models\SearchTerm;
 use RodinAPI\Response\Cities\CityDeleteResponse;
@@ -45,7 +46,11 @@ class CitiesController extends BaseController
         $city = City::factory('RodinAPI\Models\City')->findOne($city_id, City::CATEGORY);
 
         if( !empty($city) ) {
-            return new CityResponse( $city_id, $city->country_code, $city->latitude, $city->longitude, $city->locales, $city->searchable );
+
+            // Create locales
+            $cityLocales = LocaleFactory::create('city', $city->locales);
+
+            return new CityResponse( $city_id, $city->country_code, $city->latitude, $city->longitude, $cityLocales, $city->searchable );
         }
 
         throw new ItemNotFoundException('Could not find specified city');
@@ -67,15 +72,18 @@ class CitiesController extends BaseController
             // Get body
             $body = $this->request->getJsonRawBody();
 
+            // Create locales
+            $cityLocales        = LocaleFactory::create('city', $body->locales);
+
             $city->country_code = $body->country_code;
             $city->latitude     = $body->latitude;
             $city->longitude    = $body->longitude;
             $city->searchable   = (bool) $body->searchable;
-            $city->locales      = json_encode($body->locales);
+            $city->locales      = json_encode($cityLocales);
 
             $city->save();
 
-            return new CityResponse( $city_id, $city->country_code, $city->latitude, $city->longitude, $city->locales, $city->searchable );
+            return new CityResponse( $city_id, $city->country_code, $city->latitude, $city->longitude, $cityLocales, $city->searchable );
         }
 
         throw new ItemNotFoundException('Could not find specified city');
@@ -91,11 +99,14 @@ class CitiesController extends BaseController
         // Get body
         $body = $this->request->getJsonRawBody();
 
-        $city = City::createCityTag( $body->country_code, $body->latitude, $body->longitude, $body->locales, $body->searchable );
+        // Create locales
+        $cityLocales = LocaleFactory::create('city', $body->locales);
+
+        $city = City::createCityTag( $body->country_code, $body->latitude, $body->longitude, $cityLocales, $body->searchable );
 
         if( $city !== false ) {
 
-            return new CityResponse( $city->tag_id, $city->country_code, $city->latitude, $city->longitude, $city->locales, $city->searchable );
+            return new CityResponse( $city->tag_id, $city->country_code, $city->latitude, $city->longitude, $cityLocales, $city->searchable );
 
         } else {
             throw new BadRequestException('City does already exist');
