@@ -48,6 +48,25 @@ $di->set('router', function () {
         ]
     );
 
+    /**
+     * Places
+     */
+
+    $v1->addPost(
+        "/admin/places",
+        [
+            "controller" => "Places",
+            "action"     => "create",
+        ]
+    );
+
+    $v1->addGet(
+        "/admin/places/{place_id:}",
+        [
+            "controller" => "Places",
+            "action"     => "get",
+        ]
+    );
 
     /**
      * Tags - Cities

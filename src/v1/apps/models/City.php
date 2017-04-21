@@ -59,7 +59,7 @@ class City extends ODM {
     {
         $city = City::factory('RodinAPI\Models\City')->create();
 
-        $city_id             = uniqid('city_');
+        $city_id             = uniqid();
 
         $city->tag_id        = $city_id;
         $city->belongs_to    = self::CATEGORY;
@@ -74,7 +74,7 @@ class City extends ODM {
 
         if( true === $city->searchable ) {
 
-            $searchTerm = SearchTermFactory::factory( $city->tag_id );
+            $searchTerm = SearchTermFactory::factory( $city->tag_id, 'city' );
             $searchTerm->create();
 
         }

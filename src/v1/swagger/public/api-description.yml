@@ -264,6 +264,64 @@ paths:
           schema:
             $ref: "#/definitions/Error"
 
+  ########################
+  ###      PLACES      ###
+  ########################
+
+  /admin/places:
+    post:
+      tags:
+      - "Place"
+      summary: "Create place"
+      description: "Create a new gallery,museum or exhibition with locale information"
+      operationId: "createNewPlace"
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Place object that needs to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/PlaceInput"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/PlaceResult"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+
+  /admin/places/{place_id}:
+    get:
+      tags:
+        - "Place"
+      summary: "Get place"
+      description: "Retrieve data about a specific gallery,museum or exhibition"
+      operationId: "getCityByID"
+      produces:
+        - application/json
+      parameters:
+        - name: "place_id"
+          in: path
+          description: "Place unique identifier"
+          required: true
+          type: string
+          x-example: "place_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/PlaceResult"
+        404:
+          description: "Item not found"
+          schema:
+            $ref: "#/definitions/Error"
+
   #####################
   ###      TAGS     ###
   #####################
@@ -571,3 +629,117 @@ definitions:
       - "query"
       - "locale"
       - "label"
+
+  ##########################################
+  ###               PLACES               ###
+  ##########################################
+
+  PlaceInput:
+    type: object
+    properties:
+      url:
+        type: string
+      locales:
+        type: object
+        properties:
+          en:
+            $ref: "#/definitions/PlaceLocales"
+          dk:
+            $ref: "#/definitions/PlaceLocales"
+        required:
+          - "en"
+          - "dk"
+      latitude:
+        type: number
+      longitude:
+        type: number
+      country_code:
+        type: string
+      status:
+        $ref: "#/definitions/PlaceStatusEnum"
+    required:
+      - "url"
+      - "locales"
+      - "latitude"
+      - "longitude"
+      - "country_code"
+      - "status"
+
+  PlaceResult:
+    type: object
+    properties:
+      place_id:
+        type: string
+      url:
+        type: string
+      locales:
+        type: object
+        properties:
+          en:
+            $ref: "#/definitions/PlaceLocales"
+          dk:
+            $ref: "#/definitions/PlaceLocales"
+        required:
+          - "en"
+          - "dk"
+      latitude:
+        type: number
+      longitude:
+        type: number
+      country_code:
+        type: string
+      status:
+        $ref: "#/definitions/PlaceStatusEnum"
+      create_time:
+        type: string
+    required:
+      - "place_id"
+      - "url"
+      - "locales"
+      - "latitude"
+      - "longitude"
+      - "country_code"
+      - "status"
+      - "create_time"
+
+  PlaceStatusEnum:
+    type: string
+    enum:
+      - "active"
+      - "closed"
+      - "historic"
+
+  PlaceLocales:
+    type: object
+    properties:
+      address1_name:
+        type: string
+        example: "Anna-Louisa-Karsch-Straße 2"
+        x-example: "Anna-Louisa-Karsch-Straße 2"
+        minLength: 2
+        maxLength: 64
+      postal_code:
+        type: string
+        example: "10178"
+        x-example: "10178"
+        minLength: 1
+        maxLength: 16
+      city_name:
+        type: string
+        example: "Berlin"
+        x-example: "Berlin"
+        pattern: "[a-z0-9]{1,64}"
+        minLength: 1
+        maxLength: 64
+      country_name:
+        type: string
+        example: "Germany"
+        x-example: "Germany"
+        pattern: "[a-z0-9]{1,64}"
+        minLength: 1
+        maxLength: 64
+    required:
+      - "address1_name"
+      - "postal_code"
+      - "city_name"
+      - "country_name"

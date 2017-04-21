@@ -15,10 +15,10 @@ class CitySearchTermFactory extends SearchTermFactory
         if( !empty($city) ) {
 
             // Create locales
-            $cityLocales = LocaleFactory::create('city', json_decode($city->locales));
+            $cityLocales = LocaleFactory::create(City::getCategory(), json_decode($city->locales));
 
-            $labelEN = $cityLocales->en->city_name.', '.$cityLocales->en->country_name;
-            $labelDK = $cityLocales->dk->city_name.', '.$cityLocales->dk->country_name;
+            $labelEN = City::getCategory().'_'.$cityLocales->en->city_name.', '.$cityLocales->en->country_name;
+            $labelDK = City::getCategory().'_'.$cityLocales->dk->city_name.', '.$cityLocales->dk->country_name;
 
             $termsCityEN    = self::getTerms($cityLocales->en->city_name);
             $termsCityDK    = self::getTerms($cityLocales->dk->city_name);

@@ -55,7 +55,7 @@ class Artist extends ODM {
     {
         $artist = Artist::factory('RodinAPI\Models\Artist')->create();
 
-        $artist_id = uniqid('artist_');
+        $artist_id              = uniqid();
 
         $artist->tag_id         = $artist_id;
         $artist->belongs_to     = self::CATEGORY;
@@ -69,7 +69,7 @@ class Artist extends ODM {
 
         if( true === $artist->searchable ) {
 
-            $searchTerm = SearchTermFactory::factory( $artist->tag_id );
+            $searchTerm = SearchTermFactory::factory( $artist->tag_id, 'artist' );
             $searchTerm->create();
 
         }

@@ -44,6 +44,17 @@ Hooks::after("City > /v1/admin/cities > Create city > 200 > application/json", f
 
 });
 
+Hooks::after("Place > /v1/admin/places > Create place > 200 > application/json", function(&$transaction) {
+
+    global $STASH;
+
+    $parsedBody = json_decode($transaction->real->body);
+
+    $STASH['place']['place_id'] = $parsedBody->place_id;
+    $STASH['place']['locales'] = $parsedBody->locales;
+
+});
+
 Hooks::before("Artist > /v1/admin/artists/{artist_id} > *", function(&$transaction) {
 
     global $STASH;
@@ -51,6 +62,16 @@ Hooks::before("Artist > /v1/admin/artists/{artist_id} > *", function(&$transacti
     $transaction->fullPath = replaceURI("artist_id", $transaction->fullPath, $STASH['artist']['artist_id']);
 
     echo $transaction->fullPath ;
+
+});
+
+Hooks::before("Place > /v1/admin/places/{place_id} > Get place > 200 > application/json", function(&$transaction) {
+
+    global $STASH;
+
+    $transaction->fullPath = replaceURI("place_id", $transaction->fullPath, $STASH['place']['place_id']);
+
+    echo $transaction->fullPath;
 
 });
 

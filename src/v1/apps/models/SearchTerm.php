@@ -27,6 +27,10 @@ class SearchTerm extends ODM {
         'create_time'   => 'S'
 	);
 
+	public function getLabel() {
+	    return explode('_', $this->label)[1];
+    }
+
     /**
      * @param $search_term
      * @param $label

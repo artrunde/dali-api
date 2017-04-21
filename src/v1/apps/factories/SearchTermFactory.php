@@ -22,12 +22,13 @@ abstract class SearchTermFactory
 
     /**
      * @param $tag_id
-     * @return bool|SearchTermFactory
+     * @param $type
+     * @return bool|ArtistSearchTermFactory|CitySearchTermFactory
      */
-    public static function factory( $tag_id )
+    public static function factory( $tag_id, $type )
     {
 
-        switch ( self::getTagType($tag_id) ) {
+        switch ( $type ) {
 
             case "artist":
                 return new ArtistSearchTermFactory($tag_id);
