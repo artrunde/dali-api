@@ -8,6 +8,7 @@ use RodinAPI\Factories\LocaleFactory;
 use RodinAPI\Factories\SearchTermFactory;
 use RodinAPI\Models\City;
 use RodinAPI\Models\SearchTerm;
+use RodinAPI\Models\Tag;
 use RodinAPI\Response\Cities\CityDeleteResponse;
 use RodinAPI\Response\Cities\CityResponse;
 

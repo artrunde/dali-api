@@ -10,7 +10,7 @@ class SearchTerm extends ODM {
 
 	public $label;
 
-    public $tag_id;
+    public $belongs_to;
 
     public $create_time;
 
@@ -23,7 +23,7 @@ class SearchTerm extends ODM {
 	protected $_schema = array(
         'search_term'   => 'S',
         'label'         => 'S',
-        'tag_id'        => 'S',
+        'belongs_to'    => 'S',
         'create_time'   => 'S'
 	);
 
@@ -31,20 +31,24 @@ class SearchTerm extends ODM {
 	    return explode('_', $this->label)[1];
     }
 
+    public function getType() {
+        return explode('_', $this->label)[0];
+    }
+
     /**
      * @param $search_term
      * @param $label
-     * @param $tag_id
+     * @param $belongs_to
      * @return $this
      */
-    public static function createSearchTerm( $search_term, $label, $tag_id )
+    public static function createSearchTerm( $search_term, $label, $belongs_to )
     {
 
         $searchTerm = SearchTerm::factory('RodinAPI\Models\SearchTerm')->create();
 
         $searchTerm->search_term    = strtolower($search_term);
         $searchTerm->label          = $label;
-        $searchTerm->tag_id         = $tag_id;
+        $searchTerm->belongs_to     = $belongs_to;
         $searchTerm->create_time    = date('c');
 
         $searchTerm->save();
@@ -52,10 +56,16 @@ class SearchTerm extends ODM {
         return $searchTerm;
     }
 
-    public static function deleteSearchTerm($tag_id)
+    /**
+     * @param $belongs_to
+     * @return bool
+     */
+    public static function deleteSearchTerm($belongs_to)
     {
 
-        $terms = SearchTerm::factory('RodinAPI\Models\SearchTerm')->where('tag_id','=',$tag_id)->index('TagSearchTermIndex')->findMany();
+        $deleted = false;
+
+        $terms = SearchTerm::factory('RodinAPI\Models\SearchTerm')->where('belongs_to','=',$belongs_to)->index('BelongsToSearchTermIndex')->findMany();
 
         foreach( $terms as $term ) {
             $deleted = SearchTerm::factory('RodinAPI\Models\SearchTerm')->findOne($term->search_term, $term->label)->delete();

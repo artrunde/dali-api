@@ -10,7 +10,7 @@ class ArtistSearchTermFactory extends SearchTermFactory
 
     public function create() {
 
-        $artist = Artist::factory('RodinAPI\Models\Artist')->findOne($this->tag_id, Artist::CATEGORY);
+        $artist = Artist::factory('RodinAPI\Models\Artist')->findOne($this->id, Artist::CATEGORY);
 
         if( !empty($artist) ) {
 
@@ -35,22 +35,22 @@ class ArtistSearchTermFactory extends SearchTermFactory
 
             foreach( $termsLastEN as $term ) {
                 // Create search term
-                SearchTerm::createSearchTerm('en_'.$term, $labelEN, $this->tag_id);
+                SearchTerm::createSearchTerm('en_'.$term, $labelEN, $this->id);
             }
 
             foreach( $termsFirstEN as $term ) {
                 // Create search term
-                SearchTerm::createSearchTerm('en_'.$term, $labelEN, $this->tag_id);
+                SearchTerm::createSearchTerm('en_'.$term, $labelEN, $this->id);
             }
 
             foreach( $termsLastDK as $term ) {
                 // Create search term
-                SearchTerm::createSearchTerm('dk_'.$term, $labelDK, $this->tag_id);
+                SearchTerm::createSearchTerm('dk_'.$term, $labelDK, $this->id);
             }
 
             foreach( $termsFirstDK as $term ) {
                 // Create search term
-                SearchTerm::createSearchTerm('dk_'.$term, $labelDK, $this->tag_id);
+                SearchTerm::createSearchTerm('dk_'.$term, $labelDK, $this->id);
             }
 
         } else {

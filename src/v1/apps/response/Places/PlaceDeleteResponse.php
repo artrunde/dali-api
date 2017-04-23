@@ -1,5 +1,5 @@
 <?php
-namespace RodinAPI\Response\Cities;
+namespace RodinAPI\Response\Places;
 
 use RodinAPI\Response\Response;
 
@@ -9,15 +9,15 @@ class PlaceDeleteResponse extends Response
     /**
      * @var string
      */
-    public $city_id;
+    public $place_id;
 
     /**
-     * CityDeleteResponse constructor.
-     * @param $city_id
+     * PlaceDeleteResponse constructor.
+     * @param $place_id
      */
-    public function __construct( $city_id )
+    public function __construct( $place_id )
     {
-        $this->city_id = (string) $city_id;
+        $this->place_id = (string) $place_id;
 
         parent::__construct();
     }

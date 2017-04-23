@@ -5,36 +5,33 @@ namespace RodinAPI\Factories;
 abstract class SearchTermFactory
 {
 
-    protected $tag_id;
+    protected $id;
 
-    public function __construct($tag_id)
+    public function __construct($id)
     {
-        $this->tag_id = $tag_id;
-    }
-
-    public static function getTagType($tag_id)
-    {
-        $type = explode('_', $tag_id);
-        return $type[0];
+        $this->id = $id;
     }
 
     abstract public function create();
 
     /**
-     * @param $tag_id
+     * @param $id
      * @param $type
-     * @return bool|ArtistSearchTermFactory|CitySearchTermFactory
+     * @return bool|SearchTermFactory
      */
-    public static function factory( $tag_id, $type )
+    public static function factory( $id, $type )
     {
 
         switch ( $type ) {
 
             case "artist":
-                return new ArtistSearchTermFactory($tag_id);
+                return new ArtistSearchTermFactory($id);
                 break;
             case "city":
-                return new CitySearchTermFactory($tag_id);
+                return new CitySearchTermFactory($id);
+                break;
+            case "place":
+                return new PlaceSearchTermFactory($id);
                 break;
             default:
                 return false;

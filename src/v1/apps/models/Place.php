@@ -21,6 +21,8 @@ class Place extends ODM {
 
     public $status;
 
+    public $searchable;
+
     public $create_time;
 
 	protected $_table_name = 'rodin_places_v1';
@@ -35,6 +37,7 @@ class Place extends ODM {
         'longitude'    => 'N',
         'country_code' => 'S',
         'status'       => 'S',
+        'searchable'   => 'BOOL',
         'create_time'  => 'S'
 	);
 
@@ -47,23 +50,32 @@ class Place extends ODM {
      * @param $status
      * @return $this
      */
-    public static function createPlace( $url, LocaleTypes $locales, $latitude, $longitude, $country_code, $status )
+    public static function createPlace( $url, LocaleTypes $locales, $latitude, $longitude, $country_code, $status, $searchable )
     {
 
         $place = Place::factory('RodinAPI\Models\Place')->create();
 
         $place_id               = uniqid();
 
-        $place->place_id          = $place_id;
+        $place->place_id        = $place_id;
         $place->url             = $url;
         $place->country_code    = $country_code;
         $place->latitude        = $latitude;
         $place->longitude       = $longitude;
         $place->locales         = json_encode($locales);
         $place->status          = $status;
+        $place->searchable      = (bool) $searchable;
         $place->create_time     = date('c');
 
         $place->save();
+
+        // Check if searchable
+        if( true === $place->searchable ) {
+
+            $searchTerm = SearchTermFactory::factory( $place->url, 'place' );
+            $searchTerm->create();
+
+        }
 
         return $place;
     }

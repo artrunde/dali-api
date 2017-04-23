@@ -43,6 +43,11 @@ class PlaceAdminResponse extends Response
     public $status;
 
     /**
+     * @var bool
+     */
+    public $searchable;
+
+    /**
      * @var string
      */
     public $create_time;
@@ -56,9 +61,10 @@ class PlaceAdminResponse extends Response
      * @param $longitude
      * @param $country_code
      * @param $status
+     * @param $searchable
      * @param $create_time
      */
-    public function __construct( $place_id, $url, LocaleTypes $locales, $latitude, $longitude, $country_code, $status, $create_time )
+    public function __construct( $place_id, $url, LocaleTypes $locales, $latitude, $longitude, $country_code, $status, $searchable, $create_time )
     {
         $this->place_id         = (string) $place_id;
         $this->url              = (string) $url;
@@ -67,6 +73,7 @@ class PlaceAdminResponse extends Response
         $this->longitude        = (float) $longitude;
         $this->country_code     = $country_code;
         $this->status           = $status;
+        $this->searchable       = (bool) $searchable;
         $this->create_time      = $create_time;
 
         parent::__construct();

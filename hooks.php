@@ -51,7 +51,7 @@ Hooks::after("Place > /v1/admin/places > Create place > 200 > application/json",
     $parsedBody = json_decode($transaction->real->body);
 
     $STASH['place']['place_id'] = $parsedBody->place_id;
-    $STASH['place']['locales'] = $parsedBody->locales;
+    $STASH['place']['locales']  = $parsedBody->locales;
 
 });
 
@@ -65,7 +65,7 @@ Hooks::before("Artist > /v1/admin/artists/{artist_id} > *", function(&$transacti
 
 });
 
-Hooks::before("Place > /v1/admin/places/{place_id} > Get place > 200 > application/json", function(&$transaction) {
+Hooks::before("Place > /v1/admin/places/{place_id} > *", function(&$transaction) {
 
     global $STASH;
 

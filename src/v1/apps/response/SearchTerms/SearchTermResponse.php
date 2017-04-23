@@ -9,7 +9,12 @@ class SearchTermResponse extends Response
     /**
      * @var string
      */
-    public $tag_id;
+    public $type;
+
+    /**
+     * @var string
+     */
+    public $belongs_to;
 
     /**
      * @var string
@@ -28,17 +33,19 @@ class SearchTermResponse extends Response
 
     /**
      * SearchTermResponse constructor.
+     * @param $type
      * @param $query
      * @param $locale
-     * @param $tag_id
+     * @param $belongs_to
      * @param $label
      */
-    public function __construct( $query, $locale, $tag_id, $label )
+    public function __construct( $type, $query, $locale, $belongs_to, $label )
     {
-        $this->query    = (string) $query;
-        $this->locale   = (string) $locale;
-        $this->tag_id   = (string) $tag_id;
-        $this->label    = (string) $label;
+        $this->type         = (string) $type;
+        $this->query        = (string) $query;
+        $this->locale       = (string) $locale;
+        $this->belongs_to   = (string) $belongs_to;
+        $this->label        = (string) $label;
 
         parent::__construct();
     }

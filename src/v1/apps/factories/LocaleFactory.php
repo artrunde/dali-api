@@ -42,7 +42,7 @@ class LocaleFactory
 
                 case 'place':
 
-                    $place = new PlaceLocale($data->$locale->address1_name, $data->$locale->address2_name, $data->$locale->postal_code, $data->$locale->city_name, $data->$locale->country_name);
+                    $place = new PlaceLocale($data->$locale->place_name, $data->$locale->address1_name, $data->$locale->address2_name, $data->$locale->postal_code, $data->$locale->city_name, $data->$locale->country_name);
                     $localeTypes->addLocale($locale, $place);
 
                     break;

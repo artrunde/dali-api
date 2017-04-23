@@ -10,7 +10,7 @@ class CitySearchTermFactory extends SearchTermFactory
 
     public function create() {
 
-        $city = City::factory('RodinAPI\Models\City')->findOne($this->tag_id, City::CATEGORY);
+        $city = City::factory('RodinAPI\Models\City')->findOne($this->id, City::CATEGORY);
 
         if( !empty($city) ) {
 
@@ -25,12 +25,12 @@ class CitySearchTermFactory extends SearchTermFactory
 
             foreach( $termsCityEN as $term ) {
                 // Create search term
-                SearchTerm::createSearchTerm('en_'.$term, $labelEN, $this->tag_id);
+                SearchTerm::createSearchTerm('en_'.$term, $labelEN, $this->id);
             }
 
             foreach( $termsCityDK as $term ) {
                 // Create search term
-                SearchTerm::createSearchTerm('dk_'.$term, $labelDK, $this->tag_id);
+                SearchTerm::createSearchTerm('dk_'.$term, $labelDK, $this->id);
             }
 
         } else {

@@ -22,9 +22,12 @@ class SearchTermsController extends BaseController
 
         $responseArray = new SearchTermsResponse();
 
+        /**
+         * @var SearchTerm $searchTerm
+         */
         foreach ($searchTerms as $searchTerm) {
 
-            $response = new SearchTermResponse($query, $locale, $searchTerm->tag_id, $searchTerm->getLabel());
+            $response = new SearchTermResponse($searchTerm->getType(), $query, $locale, $searchTerm->belongs_to, $searchTerm->getLabel());
             $responseArray->addResponse($response);
 
         }
