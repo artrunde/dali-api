@@ -5,7 +5,7 @@ namespace RodinAPI\Models;
 use RodinAPI\Factories\SearchTermFactory;
 use RodinAPI\Library\ODM;
 
-class Artist extends Tag {
+class Artist extends ODM {
 
     const CATEGORY = 'category_artist';
 

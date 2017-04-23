@@ -8,11 +8,15 @@ use RodinAPI\Factories\LocaleFactory;
 use RodinAPI\Factories\SearchTermFactory;
 use RodinAPI\Models\Artist;
 use RodinAPI\Models\City;
+use RodinAPI\Models\Locale;
 use RodinAPI\Models\Place;
+use RodinAPI\Models\PlaceLocale;
 use RodinAPI\Models\SearchTerm;
 use RodinAPI\Models\Tag;
 use RodinAPI\Response\Places\PlaceDeleteResponse;
 use RodinAPI\Response\Places\PlaceAdminResponse;
+use RodinAPI\Response\Places\PlaceQueryResponse;
+use RodinAPI\Response\PlacesResponse;
 
 class PlacesController extends BaseController
 {
@@ -150,26 +154,67 @@ class PlacesController extends BaseController
 
     }
 
+    /**
+     * @return PlacesResponse
+     * @throws ItemNotFoundException
+     */
     public function queryAction()
     {
 
-        $tags = $this->request->getQuery('tag');
+        $result = array();
+
+        $tags = explode(' ',$this->request->getQuery('tags'));
         $url = $this->request->getQuery('url');
 
-        var_dump(explode(' ', $tag));
-        var_dump($url);die;
+        foreach($tags as $tag) {
+            $result[$tag] = Tag::factory('RodinAPI\Models\Tags')->where('tag_id', '=', $tag )->where('belongs_to', '^', 'place_')->findMany();
+        }
 
-        $searchTerms = SearchTerm::factory('RodinAPI\Models\SearchTerm')->where('search_term', '=', $locale . '_' . $query)->findMany();
+        $i = 0;
+        $intersect = array();
 
-        $responseArray = new SearchTermsResponse();
+        foreach($result as $tag => $places) {
 
-        /**
-         * @var SearchTerm $searchTerm
-         */
-        foreach ($searchTerms as $searchTerm) {
+            /**
+             * @var Tag $place
+             */
+            foreach($places as $place) {
+                $intersect[$i][$place->belongs_to] = str_replace('place_', '', $place->belongs_to);
+            }
 
-            $response = new SearchTermResponse($searchTerm->getType(), $query, $locale, $searchTerm->belongs_to, $searchTerm->getLabel());
-            $responseArray->addResponse($response);
+            $i++;
+
+        }
+
+        if( count($intersect) == 1 ) {
+            $matches = $intersect[0];
+        } elseif( count($intersect) == 2 ) {
+            $matches = array_intersect_key($intersect[0], $intersect[1]);
+        } elseif( count($intersect) == 3 ) {
+            $matches = array_intersect_key($intersect[0], $intersect[1], $intersect[2]);
+        } elseif( count($intersect) == 4 ) {
+            $matches = array_intersect_key($intersect[0], $intersect[1], $intersect[2], $intersect[3]);
+        } else {
+            throw new ItemNotFoundException('No places found');
+        }
+
+        $responseArray = new PlacesResponse();
+
+        if( !empty($matches) ) {
+
+            $places = Place::factory('RodinAPI\Models\Place')->batchGetItems($matches);
+
+            /**
+             * @var Place $place
+             */
+            foreach ($places as $place) {
+
+                $locales = LocaleFactory::create('place', $place->locales);
+
+                $response = new PlaceQueryResponse($place->place_id, $place->url, $locales, $place->latitude, $place->longitude, $place->country_code);
+                $responseArray->addResponse($response);
+
+            }
 
         }
 

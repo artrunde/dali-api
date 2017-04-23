@@ -2,7 +2,6 @@
 
 namespace RodinAPI\Models;
 
-use RodinAPI\Factories\SearchTermFactory;
 use RodinAPI\Library\ODM;
 
 class Tag extends ODM {

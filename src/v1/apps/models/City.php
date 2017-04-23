@@ -5,7 +5,7 @@ namespace RodinAPI\Models;
 use RodinAPI\Factories\SearchTermFactory;
 use RodinAPI\Library\ODM;
 
-class City extends Tag {
+class City extends ODM {
 
     const CATEGORY = 'category_city';
 
