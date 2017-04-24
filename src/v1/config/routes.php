@@ -21,7 +21,7 @@ $di->set('router', function () {
     # ------------------------------------------------------------------------------
 
     /**
-     * Search
+     * Tags
      */
 
     $v1->addGet(
@@ -32,6 +32,9 @@ $di->set('router', function () {
         ]
     );
 
+    /**
+     * Places
+     */
 
     $v1->addGet(
         "/public/places",
@@ -40,6 +43,27 @@ $di->set('router', function () {
             "action"     => "query",
         ]
     );
+
+    $v1->addGet(
+        "/public/places/{url_or_id:}",
+        [
+            "controller" => "Places",
+            "action"     => "getPublic",
+        ]
+    );
+
+    /**
+     * Ping
+     */
+
+    $v1->add(
+        "/public/ping",
+        [
+            "controller" => "Index",
+            "action"     => "ping",
+        ]
+    );
+
 
     # ------------------------------------------------------------------------------
     # ADMIN ROUTES
@@ -66,6 +90,14 @@ $di->set('router', function () {
         [
             "controller" => "Tags",
             "action"     => "createRelation",
+        ]
+    );
+
+    $v1->addGet(
+        "/admin/places/{place_id:}/tags",
+        [
+            "controller" => "Tags",
+            "action"     => "getRelations",
         ]
     );
 

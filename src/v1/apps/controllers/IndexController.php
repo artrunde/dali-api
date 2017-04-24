@@ -3,7 +3,7 @@
 namespace RodinAPI\Controllers;
 
 use RodinAPI\Exceptions\ItemNotFoundException;
-use RodinAPI\Response\Debug\DebugResponse;
+use RodinAPI\Response\Ping\PingResponse;
 
 class IndexController extends BaseController
 {
@@ -22,9 +22,25 @@ class IndexController extends BaseController
         /**
          * Return debug response
          */
-        return new DebugResponse(
+        return new PingResponse(
             array('event_params' => $eventParams, 'context_params' => $contextParams)
         );
 
 	}
+
+    public function pingAction()
+    {
+
+        // AWS params
+        $eventParams    = json_decode(getenv('EVENT_PARAMS'),true);
+        $contextParams  = json_decode(getenv('CONTEXT_PARAMS'),true);
+
+        /**
+         * Return debug response
+         */
+        return new PingResponse(
+            array('message' => 'pong', 'method' => $this->request->getMethod())
+        );
+
+    }
 }

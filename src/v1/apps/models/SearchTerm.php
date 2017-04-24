@@ -51,9 +51,16 @@ class SearchTerm extends ODM {
         $searchTerm->belongs_to     = $belongs_to;
         $searchTerm->create_time    = date('c');
 
-        $searchTerm->save();
+        try {
 
-        return $searchTerm;
+            $searchTerm->save();
+
+            return $searchTerm;
+
+        } catch (\Exception $e) {
+
+        }
+
     }
 
     /**

@@ -82,4 +82,27 @@ class City extends ODM {
         return $city;
     }
 
+    /**
+     * @param $place_id
+     * @param $city_id
+     * @return City
+     */
+    public static function createTagRelation($place_id, $city_id)
+    {
+
+        $tagRelation = Tag::factory('RodinAPI\Models\Tag')->create();
+
+        $tagRelation->tag_id        = $city_id;
+        $tagRelation->belongs_to    = 'place_'.$place_id;
+        $tagRelation->category      = City::getCategory();
+        $tagRelation->create_time   = date('c');
+
+        $tagRelation->save();
+
+        // Get city data
+        return City::factory('RodinAPI\Models\City')->findOne($city_id, City::CATEGORY);
+
+
+    }
+
 }

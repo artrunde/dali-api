@@ -41,11 +41,35 @@ class PlacesController extends BaseController
     }
 
     /**
-     * @param $identifier
+     * @param $place_id
      * @return PlaceAdminResponse
      * @throws ItemNotFoundException
      */
-    public function getAction($identifier)
+    public function getAction($place_id)
+    {
+
+        // try place_id second
+        $place = Place::factory('RodinAPI\Models\Place')->findOne($place_id);
+
+        if( !empty($place) ) {
+
+            // Create locales
+            $placeLocales = LocaleFactory::create('place', $place->locales);
+
+            return new PlaceAdminResponse( $place->place_id, $place->url, $placeLocales, $place->latitude, $place->longitude, $place->country_code, $place->status, $place->searchable, $place->create_time );
+
+        }
+
+        throw new ItemNotFoundException('Could not find specified place');
+
+    }
+
+    /**
+     * @param $identifier
+     * @return PlaceQueryResponse
+     * @throws ItemNotFoundException
+     */
+    public function getPublicAction($identifier)
     {
 
         // try by url first
@@ -56,7 +80,7 @@ class PlacesController extends BaseController
             // Create locales
             $placeLocales = LocaleFactory::create('place', $place->locales);
 
-            return new PlaceAdminResponse( $place->place_id, $place->url, $placeLocales, $place->latitude, $place->longitude, $place->country_code, $place->status, $place->searchable, $place->create_time );
+            return new PlaceQueryResponse($place->place_id, $place->url, $placeLocales, $place->latitude, $place->longitude, $place->country_code);
 
         } else {
 
@@ -68,7 +92,7 @@ class PlacesController extends BaseController
                 // Create locales
                 $placeLocales = LocaleFactory::create('place', $place->locales);
 
-                return new PlaceAdminResponse( $place->place_id, $place->url, $placeLocales, $place->latitude, $place->longitude, $place->country_code, $place->status, $place->searchable, $place->create_time );
+                return new PlaceQueryResponse($place->place_id, $place->url, $placeLocales, $place->latitude, $place->longitude, $place->country_code);
 
             }
 
@@ -133,7 +157,7 @@ class PlacesController extends BaseController
 
                 if( $body->searchable === true ) {
 
-                    $searchTerm = SearchTermFactory::factory( $place->url, 'place' );
+                    $searchTerm = SearchTermFactory::factory( $place->place_id, 'place' );
                     $searchTerm->create();
 
                 } else {

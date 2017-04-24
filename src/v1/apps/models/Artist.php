@@ -77,4 +77,26 @@ class Artist extends ODM {
         return $artist;
     }
 
+    /**
+     * @param $place_id
+     * @param $artist_id
+     * @return Artist
+     */
+    public static function createTagRelation($place_id, $artist_id)
+    {
+
+        $tagRelation = Tag::factory('RodinAPI\Models\Tag')->create();
+
+        $tagRelation->tag_id        = $artist_id;
+        $tagRelation->belongs_to    = 'place_'.$place_id;
+        $tagRelation->category      = Artist::getCategory();
+        $tagRelation->create_time   = date('c');
+
+        $tagRelation->save();
+
+        // Get city data
+        return Artist::factory('RodinAPI\Models\Artist')->findOne($artist_id, Artist::CATEGORY);
+
+    }
+
 }

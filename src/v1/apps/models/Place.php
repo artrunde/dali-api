@@ -72,7 +72,7 @@ class Place extends ODM {
         // Check if searchable
         if( true === $place->searchable ) {
 
-            $searchTerm = SearchTermFactory::factory( $place->url, 'place' );
+            $searchTerm = SearchTermFactory::factory( $place->place_id, 'place' );
             $searchTerm->create();
 
         }

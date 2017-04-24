@@ -10,7 +10,7 @@ class PlaceSearchTermFactory extends SearchTermFactory
 
     public function create() {
 
-        $place = Place::factory('RodinAPI\Models\Place')->where('url','=', $this->id)->index('urlIndex')->findFirst();
+        $place = Place::factory('RodinAPI\Models\Place')->findOne($this->id);
 
         if( !empty($place) ) {
 
@@ -24,13 +24,17 @@ class PlaceSearchTermFactory extends SearchTermFactory
             $termsCityDK    = self::getTerms($placeLocales->dk->place_name);
 
             foreach( $termsCityEN as $term ) {
+
                 // Create search term
                 SearchTerm::createSearchTerm('en_'.$term, $labelEN, $this->id);
+
             }
 
             foreach( $termsCityDK as $term ) {
+
                 // Create search term
                 SearchTerm::createSearchTerm('dk_'.$term, $labelDK, $this->id);
+
             }
 
         } else {

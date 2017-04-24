@@ -10,6 +10,8 @@ class Tag extends ODM {
 
     public $belongs_to;
 
+    public $category;
+
     public $create_time;
 
     protected $_table_name = 'rodin_tags_v1';
@@ -21,27 +23,8 @@ class Tag extends ODM {
     protected $_schema = array(
         'tag_id'        => 'S',
         'belongs_to'    => 'S',
+        'category'      => 'S',
         'create_time'   => 'S'
     );
-
-    /**
-     * @param $place_id
-     * @param $tag_id
-     * @return $this
-     */
-    public static function createTagRelation($place_id, $tag_id)
-    {
-
-        $tagRelation = Tag::factory('RodinAPI\Models\Tag')->create();
-
-        $tagRelation->tag_id        = $tag_id;
-        $tagRelation->belongs_to    = 'place_'.$place_id;
-        $tagRelation->create_time   = date('c');
-
-        $tagRelation->save();
-
-        return $tagRelation;
-
-    }
 
 }
