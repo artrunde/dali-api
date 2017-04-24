@@ -296,6 +296,40 @@ paths:
           schema:
             $ref: "#/definitions/Error"
 
+  /places/{place_id}/tags:
+    post:
+      tags:
+      - "Place"
+      summary: "Add a tag to a place"
+      description: "Create a relation between tags and places"
+      operationId: "createTagRelation"
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Relation object that needs to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/TagRelationInput"
+      - name: "place_id"
+        in: path
+        description: "Place unique identifier"
+        required: true
+        type: string
+        x-example: "place_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/TagRelationResult"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+
   /places/{place_id}:
     get:
       tags:
@@ -387,6 +421,22 @@ paths:
 ############################
 
 definitions:
+
+  TagRelationResult:
+    type: object
+    properties:
+      cities:
+        type: array
+      artists:
+        type: array
+
+  TagRelationInput:
+    type: object
+    properties:
+      cities:
+        type: array
+      artists:
+        type: array
 
   ErrorMessages:
     type: object

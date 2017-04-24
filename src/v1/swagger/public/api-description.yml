@@ -82,8 +82,8 @@ paths:
     get:
       tags:
         - "Place"
-      summary: "Get place"
-      description: "Retrieve data about a specific gallery, museum or exhibition"
+      summary: "Query places"
+      description: "Search for a gallery, museum or exhibition wit a specific tag"
       operationId: "queryPlacesByTags"
       produces:
         - application/json
