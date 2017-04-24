@@ -300,6 +300,7 @@ paths:
     post:
       tags:
       - "Place"
+      - "Tag"
       summary: "Add a tag to a place"
       description: "Create a relation between tags and places"
       operationId: "createTagRelation"
