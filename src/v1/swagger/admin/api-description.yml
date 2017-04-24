@@ -2,7 +2,7 @@ swagger: "2.0"
 
 info:
   version: "1.0"
-  title: Artrunde Public API
+  title: Artrunde Admin API
   license:
     name: MIT
 host: api-rodin-prd.artrunde.com
