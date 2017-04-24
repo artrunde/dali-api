@@ -19,7 +19,9 @@ function replaceURI($needle, $haystack, $replace) {
 }
 
 Hooks::beforeEach(function(&$transaction) {
-   echo $transaction->name;
+
+    echo $transaction->name;
+
 });
 
 Hooks::after("Artist > /v1/admin/artists > Create artist > 200 > application/json", function(&$transaction) {

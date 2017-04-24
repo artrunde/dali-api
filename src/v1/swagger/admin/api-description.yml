@@ -330,6 +330,31 @@ paths:
           description: "Bad request"
           schema:
             $ref: "#/definitions/Error"
+    get:
+      tags:
+      - "Place"
+      - "Tag"
+      summary: "Get all tags"
+      description: "Get all tags associated  to a place"
+      operationId: "getAllTagsByPlaceID"
+      produces:
+        - application/json
+      parameters:
+        - name: "place_id"
+          in: path
+          description: "Place unique identifier"
+          required: true
+          type: string
+          x-example: "place_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/TagRelationResult"
+        404:
+          description: "Item not found"
+          schema:
+            $ref: "#/definitions/Error"
 
   /places/{place_id}:
     get:

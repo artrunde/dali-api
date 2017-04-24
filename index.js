@@ -47,6 +47,7 @@ exports.handler = function(event, context) {
         AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
         AWS_SESSION_TOKEN: process.env.AWS_SESSION_TOKEN,
         EVENT_PARAMS: JSON.stringify(event),
+        BODY_JSON: event.body,
         CONTEXT_PARAMS: JSON.stringify(context),
         ENVIRONMENT: environment, // dev/prd
         STAGE: stage // green/blue
@@ -64,17 +65,6 @@ exports.handler = function(event, context) {
     var php = spawn('./bin/php-cgi', ['-dextension=bin/phalcon.so','src/v1/public/index.php'], {
         env: httpObject
     });
-
-    if (event.body !== null && event.body !== undefined) {
-        console.log("Body: " + JSON.stringify(event.body) );
-        //send the input event json as string via STDIN to php process
-        php.stdin.write(event.body);
-        php.stdin.end(); // Close the php stream to unblock php process
-    } else {
-        console.log("Empty body");
-        php.stdin.write('');
-        php.stdin.end(); // Close the php stream to unblock php process
-    }
 
     php.stdout.on('data', function(data) {
         console.log("php.stdout.on");

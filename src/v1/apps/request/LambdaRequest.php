@@ -6,14 +6,9 @@ use Phalcon\Http\Request;
 
 class LambdaRequest extends Request {
 
-    public function __construct()
+    public function getJsonRawBody($associative = false)
     {
-        $this->_rawBody = file_get_contents('php://stdin');
-    }
-
-    public function getRawBody()
-    {
-        return $this->_rawBody;
+        return json_decode(getenv('BODY_JSON'), $associative);
     }
 
     public function isJSON()
