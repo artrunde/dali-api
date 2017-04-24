@@ -48,11 +48,11 @@ abstract class SearchTermFactory
 
         $returnArray = array();
 
-        $length = strlen($string);
+        $length = mb_strlen($string);
 
         for( $i=3; $i<=$length; $i++) {
 
-            $returnArray[] = substr($string, 0, $i );
+            $returnArray[] = mb_substr($string, 0, $i );
 
         }
 
