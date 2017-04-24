@@ -5,8 +5,10 @@ namespace RodinAPI\Controllers;
 use RodinAPI\Exceptions\BadRequestException;
 use RodinAPI\Exceptions\ItemNotFoundException;
 use RodinAPI\Factories\LocaleFactory;
+use RodinAPI\Factories\SearchTermFactory;
 use RodinAPI\Models\City;
 use RodinAPI\Models\SearchTerm;
+use RodinAPI\Models\Tag;
 use RodinAPI\Response\Cities\CityDeleteResponse;
 use RodinAPI\Response\Cities\CityResponse;
 
@@ -78,8 +80,25 @@ class CitiesController extends BaseController
             $city->country_code = $body->country_code;
             $city->latitude     = $body->latitude;
             $city->longitude    = $body->longitude;
-            $city->searchable   = (bool) $body->searchable;
             $city->locales      = json_encode($cityLocales);
+
+            if ($city->searchable !== (bool)$body->searchable) {
+
+                $city->searchable = (bool) $body->searchable;
+
+                if( $body->searchable === true ) {
+
+                    $searchTerm = SearchTermFactory::factory( $city->tag_id, 'city' );
+                    $searchTerm->create();
+
+                } else {
+
+                    // Delete terms
+                    SearchTerm::deleteSearchTerm( $city->tag_id );
+
+                }
+
+            }
 
             $city->save();
 

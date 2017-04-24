@@ -59,7 +59,7 @@ class City extends ODM {
     {
         $city = City::factory('RodinAPI\Models\City')->create();
 
-        $city_id             = uniqid('city_');
+        $city_id             = uniqid();
 
         $city->tag_id        = $city_id;
         $city->belongs_to    = self::CATEGORY;
@@ -74,11 +74,35 @@ class City extends ODM {
 
         if( true === $city->searchable ) {
 
-            $searchTerm = SearchTermFactory::factory( $city->tag_id );
+            $searchTerm = SearchTermFactory::factory( $city->tag_id, 'city' );
             $searchTerm->create();
 
         }
 
         return $city;
     }
+
+    /**
+     * @param $place_id
+     * @param $city_id
+     * @return City
+     */
+    public static function createTagRelation($place_id, $city_id)
+    {
+
+        $tagRelation = Tag::factory('RodinAPI\Models\Tag')->create();
+
+        $tagRelation->tag_id        = $city_id;
+        $tagRelation->belongs_to    = 'place_'.$place_id;
+        $tagRelation->category      = City::getCategory();
+        $tagRelation->create_time   = date('c');
+
+        $tagRelation->save();
+
+        // Get city data
+        return City::factory('RodinAPI\Models\City')->findOne($city_id, City::CATEGORY);
+
+
+    }
+
 }

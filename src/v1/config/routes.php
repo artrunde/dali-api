@@ -21,7 +21,7 @@ $di->set('router', function () {
     # ------------------------------------------------------------------------------
 
     /**
-     * Search
+     * Tags
      */
 
     $v1->addGet(
@@ -31,6 +31,39 @@ $di->set('router', function () {
             "action"     => "query",
         ]
     );
+
+    /**
+     * Places
+     */
+
+    $v1->addGet(
+        "/public/places",
+        [
+            "controller" => "Places",
+            "action"     => "query",
+        ]
+    );
+
+    $v1->addGet(
+        "/public/places/{url_or_id:}",
+        [
+            "controller" => "Places",
+            "action"     => "getPublic",
+        ]
+    );
+
+    /**
+     * Ping
+     */
+
+    $v1->add(
+        "/public/ping",
+        [
+            "controller" => "Index",
+            "action"     => "ping",
+        ]
+    );
+
 
     # ------------------------------------------------------------------------------
     # ADMIN ROUTES
@@ -45,6 +78,62 @@ $di->set('router', function () {
         [
             "controller" => "Index",
             "action"     => "debug",
+        ]
+    );
+
+    /**
+     * Tags
+     */
+
+    $v1->addPost(
+        "/admin/places/{place_id:}/tags",
+        [
+            "controller" => "Tags",
+            "action"     => "createRelation",
+        ]
+    );
+
+    $v1->addGet(
+        "/admin/places/{place_id:}/tags",
+        [
+            "controller" => "Tags",
+            "action"     => "getRelations",
+        ]
+    );
+
+    /**
+     * Places
+     */
+
+    $v1->addPost(
+        "/admin/places",
+        [
+            "controller" => "Places",
+            "action"     => "create",
+        ]
+    );
+
+    $v1->addGet(
+        "/admin/places/{place_id:}",
+        [
+            "controller" => "Places",
+            "action"     => "get",
+        ]
+    );
+
+    $v1->addDelete(
+        "/admin/places/{place_id:}",
+        [
+            "controller" => "Places",
+            "action"     => "delete",
+        ]
+    );
+
+    $v1->addPut(
+        "/admin/places/{place_id:}",
+        [
+            "controller" => "Places",
+            "action"     => "update",
         ]
     );
 
@@ -120,26 +209,6 @@ $di->set('router', function () {
             "action"     => "update",
         ]
     );
-
-    /**
-     * Search Terms
-     */
-    $v1->addPost(
-        "/admin/search-terms",
-        [
-            "controller" => "Search_Terms",
-            "action"     => "create",
-        ]
-    );
-
-    $v1->addDelete(
-        "/admin/search-terms/{tag_id:}",
-        [
-            "controller" => "Search_Terms",
-            "action"     => "delete"
-        ]
-    );
-
 
     // Add the group to the router
     $router->mount($v1);

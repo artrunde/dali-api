@@ -55,7 +55,7 @@ class Artist extends ODM {
     {
         $artist = Artist::factory('RodinAPI\Models\Artist')->create();
 
-        $artist_id = uniqid('artist_');
+        $artist_id              = uniqid();
 
         $artist->tag_id         = $artist_id;
         $artist->belongs_to     = self::CATEGORY;
@@ -69,11 +69,34 @@ class Artist extends ODM {
 
         if( true === $artist->searchable ) {
 
-            $searchTerm = SearchTermFactory::factory( $artist->tag_id );
+            $searchTerm = SearchTermFactory::factory( $artist->tag_id, 'artist' );
             $searchTerm->create();
 
         }
 
         return $artist;
     }
+
+    /**
+     * @param $place_id
+     * @param $artist_id
+     * @return Artist
+     */
+    public static function createTagRelation($place_id, $artist_id)
+    {
+
+        $tagRelation = Tag::factory('RodinAPI\Models\Tag')->create();
+
+        $tagRelation->tag_id        = $artist_id;
+        $tagRelation->belongs_to    = 'place_'.$place_id;
+        $tagRelation->category      = Artist::getCategory();
+        $tagRelation->create_time   = date('c');
+
+        $tagRelation->save();
+
+        // Get city data
+        return Artist::factory('RodinAPI\Models\Artist')->findOne($artist_id, Artist::CATEGORY);
+
+    }
+
 }

@@ -47,6 +47,7 @@ exports.handler = function(event, context) {
         AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
         AWS_SESSION_TOKEN: process.env.AWS_SESSION_TOKEN,
         EVENT_PARAMS: JSON.stringify(event),
+        CONTEXT_PARAMS: JSON.stringify(context),
         ENVIRONMENT: environment, // dev/prd
         STAGE: stage // green/blue
     }, headers);
@@ -76,15 +77,19 @@ exports.handler = function(event, context) {
     }
 
     php.stdout.on('data', function(data) {
+        console.log("php.stdout.on");
         PHPOutput += data.toString('utf-8');
     });
 
     //react to potential errors
     php.stderr.on('data', function(data) {
+        console.log("php.stderr.on");
         PHPOutput += data.toString('utf-8');
     });
 
     php.on('close', function() {
+
+        console.log("php.on.close");
 
         // Parses a raw HTTP response into an object that we can manipulate into the required format.
         var parsedPHPOutput = parser.parseResponse(PHPOutput);
