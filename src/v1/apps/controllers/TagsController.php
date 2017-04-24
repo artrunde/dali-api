@@ -12,8 +12,6 @@ use RodinAPI\Models\Place;
 use RodinAPI\Models\Tag;
 use RodinAPI\Response\Artists\ArtistResponse;
 use RodinAPI\Response\Cities\CityResponse;
-use RodinAPI\Response\Tags\TagArtistResponse;
-use RodinAPI\Response\Tags\TagCityResponse;
 use RodinAPI\Response\Tags\TagResponse;
 use RodinAPI\Response\Tags\TagsResponse;
 

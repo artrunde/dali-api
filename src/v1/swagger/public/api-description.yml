@@ -84,7 +84,7 @@ paths:
         - "Place"
       summary: "Get place"
       description: "Retrieve data about a specific gallery, museum or exhibition"
-      operationId: "getPlaceByURL"
+      operationId: "queryPlacesByTags"
       produces:
         - application/json
       parameters:

@@ -188,10 +188,9 @@ class PlacesController extends BaseController
         $result = array();
 
         $tags = explode(' ',$this->request->getQuery('tags'));
-        $url = $this->request->getQuery('url');
 
         foreach($tags as $tag) {
-            $result[$tag] = Tag::factory('RodinAPI\Models\Tags')->where('tag_id', '=', $tag )->where('belongs_to', '^', 'place_')->findMany();
+            $result[$tag] = Tag::factory('RodinAPI\Models\Tag')->where('tag_id', '=', $tag )->where('belongs_to', '^', 'place_')->findMany();
         }
 
         $i = 0;
