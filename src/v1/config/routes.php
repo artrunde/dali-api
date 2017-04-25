@@ -93,6 +93,14 @@ $di->set('router', function () {
         ]
     );
 
+    $v1->addDelete(
+        "/admin/places/{place_id:}/tags/{tag_id:}",
+        [
+            "controller" => "Tags",
+            "action"     => "deleteRelation",
+        ]
+    );
+
     $v1->addGet(
         "/admin/places/{place_id:}/tags",
         [

@@ -77,6 +77,16 @@ Hooks::before("Place > /v1/admin/places/{place_id} > *", function(&$transaction)
 
 });
 
+Hooks::before("Place > /v1/admin/places/{place_id}/tags/{tag_id} > *", function(&$transaction) {
+
+    global $STASH;
+
+    $transaction->fullPath = replaceURI("place_id", $transaction->fullPath, $STASH['place']['place_id']);
+
+    echo $transaction->fullPath;
+
+});
+
 Hooks::before("Place > /v1/admin/places/{place_id}/tags > *", function(&$transaction) {
 
     global $STASH;
