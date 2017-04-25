@@ -296,6 +296,101 @@ paths:
           schema:
             $ref: "#/definitions/Error"
 
+  /places/{place_id}/tags:
+    post:
+      tags:
+      - "Place"
+      - "Tag"
+      summary: "Add a tag to a place"
+      description: "Create a relation between tags and places"
+      operationId: "createTagRelation"
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Relation object that needs to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/TagRelationInput"
+      - name: "place_id"
+        in: path
+        description: "Place unique identifier"
+        required: true
+        type: string
+        x-example: "place_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/TagRelationResult"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+    get:
+      tags:
+      - "Place"
+      - "Tag"
+      summary: "Get all tags"
+      description: "Get all tags associated to a place"
+      operationId: "getAllTagsByPlaceID"
+      produces:
+        - application/json
+      parameters:
+        - name: "place_id"
+          in: path
+          description: "Place unique identifier"
+          required: true
+          type: string
+          x-example: "place_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/TagRelationResult"
+        404:
+          description: "Item not found"
+          schema:
+            $ref: "#/definitions/Error"
+
+  /places/{place_id}/tags/{tag_id}:
+    delete:
+      tags:
+        - "Place"
+        - "Tag"
+      summary: "Delete a tag"
+      description: "Delete a tag"
+      operationId: "deletePlaceTagRelationByID"
+      produces:
+        - application/json
+      parameters:
+        - name: "place_id"
+          in: path
+          description: "Place unique identifier"
+          required: true
+          type: string
+          x-example: "place_id"
+        - name: "tag_id"
+          in: path
+          description: "Tag unique identifier"
+          required: true
+          type: string
+          x-example: "tag_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            properties:
+              tag_id:
+                type: string
+        404:
+          description: "Place not found"
+          schema:
+            $ref: "#/definitions/Error"
+
   /places/{place_id}:
     get:
       tags:
@@ -387,6 +482,42 @@ paths:
 ############################
 
 definitions:
+
+  TagRelationResult:
+    type: object
+    properties:
+      cities:
+        type: array
+      artists:
+        type: array
+
+  TagRelationCityInput:
+    type: object
+    properties:
+      city_id:
+        type: string
+        example: "city_id"
+        x-example: "city_id"
+
+  TagRelationArtistInput:
+      type: object
+      properties:
+        artist_id:
+          type: string
+          example: "artist_id"
+          x-example: "artist_id"
+
+  TagRelationInput:
+    type: object
+    properties:
+      cities:
+        type: array
+        items:
+          $ref: "#/definitions/TagRelationCityInput"
+      artists:
+        type: array
+        items:
+          $ref: "#/definitions/TagRelationArtistInput"
 
   ErrorMessages:
     type: object

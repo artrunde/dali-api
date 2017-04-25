@@ -36,7 +36,7 @@ class IndexController extends BaseController
          * Return debug response
          */
         return new PingResponse(
-            array('message' => 'pong', 'method' => $this->request->getMethod())
+            array('message' => 'pong', 'method' => $this->request->getMethod(), 'body' => $this->request->getJsonRawBody())
         );
 
     }

@@ -19,7 +19,9 @@ function replaceURI($needle, $haystack, $replace) {
 }
 
 Hooks::beforeEach(function(&$transaction) {
-   echo $transaction->name;
+
+    echo $transaction->name;
+
 });
 
 Hooks::after("Artist > /v1/admin/artists > Create artist > 200 > application/json", function(&$transaction) {
@@ -74,6 +76,27 @@ Hooks::before("Place > /v1/admin/places/{place_id} > *", function(&$transaction)
     echo $transaction->fullPath;
 
 });
+
+Hooks::before("Place > /v1/admin/places/{place_id}/tags/{tag_id} > *", function(&$transaction) {
+
+    global $STASH;
+
+    $transaction->fullPath = replaceURI("place_id", $transaction->fullPath, $STASH['place']['place_id']);
+
+    echo $transaction->fullPath;
+
+});
+
+Hooks::before("Place > /v1/admin/places/{place_id}/tags > *", function(&$transaction) {
+
+    global $STASH;
+
+    $transaction->fullPath = replaceURI("place_id", $transaction->fullPath, $STASH['place']['place_id']);
+
+    echo $transaction->fullPath;
+
+});
+
 
 Hooks::before("City > /v1/admin/cities/{city_id} > *", function(&$transaction) {
 

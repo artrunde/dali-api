@@ -12,6 +12,7 @@ use RodinAPI\Models\Place;
 use RodinAPI\Models\Tag;
 use RodinAPI\Response\Artists\ArtistResponse;
 use RodinAPI\Response\Cities\CityResponse;
+use RodinAPI\Response\Tags\TagDeleteResponse;
 use RodinAPI\Response\Tags\TagResponse;
 use RodinAPI\Response\Tags\TagsResponse;
 
@@ -19,6 +20,39 @@ use RodinAPI\Response\Tags\TagsResponse;
 class TagsController extends BaseController
 {
 
+    /**
+     * @param $place_id
+     * @param $tag_id
+     * @return TagDeleteResponse
+     * @throws ItemNotFoundException
+     */
+    public function deleteRelationAction($place_id, $tag_id)
+    {
+        // Get place
+        $place = Place::factory('RodinAPI\Models\Place')->findOne($place_id);
+
+        if( !empty($place) ) {
+
+            // Get relations
+            $relation = Tag::factory('RodinAPI\Models\Tag')->where('belongs_to','=','place_'.$place_id)->where('tag_id','=', $tag_id)->index('BelongsToTagIndex')->findFirst();
+
+            if( !empty($relation) ) {
+                $relation->delete();
+            }
+
+            return new TagDeleteResponse($tag_id);
+
+        }
+
+        throw new ItemNotFoundException('Could not find specified place');
+    }
+
+    /**
+     * @param $place_id
+     * @return TagResponse
+     * @throws InternalErrorException
+     * @throws ItemNotFoundException
+     */
     public function getRelationsAction($place_id) {
 
         // try by url first
@@ -29,7 +63,7 @@ class TagsController extends BaseController
             $cities     = new TagsResponse();
             $artists    = new TagsResponse();
 
-            // try by url first
+            // Get relations
             $relations = Tag::factory('RodinAPI\Models\Tag')->where('belongs_to','=','place_'.$place_id)->index('BelongsToTagIndex')->findMany();
 
             foreach($relations as $relation) {
@@ -73,6 +107,11 @@ class TagsController extends BaseController
 
     }
 
+    /**
+     * @param $place_id
+     * @return TagResponse
+     * @throws ItemNotFoundException
+     */
     public function createRelationAction($place_id) {
 
         // try by url first
