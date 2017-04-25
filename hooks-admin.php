@@ -107,37 +107,3 @@ Hooks::before("City > /v1/admin/cities/{city_id} > *", function(&$transaction) {
     echo $transaction->fullPath ;
 
 });
-
-/**********************************
- *              PUBLIC
- **********************************/
-
-/*
- *
- *
- $marshaler = new Marshaler();
-$client = new DynamoDbClient([
-    'version'  => 'latest',
-    'region'   => 'eu-west-1'
-]);
-
-$item = $marshaler->marshalJson('
-    {
-        "tag_id": "58f9d0337adb4",
-        "belongs_to": "category_artist"
-    }
-');
-
-$params = [
-    'TableName' => 'rodin_tags_v1_dev',
-    'Item' => $item
-];
-
-try {
-    $result = $client->putItem($params);
-
-} catch (DynamoDbException $e) {
-    echo "Unable to add item:\n";
-    echo $e->getMessage() . "\n";
-}
- */
