@@ -2,7 +2,10 @@
 
 namespace RodinAPI\Models;
 
+use RodinAPI\Exceptions\HandledException;
+use RodinAPI\Exceptions\InternalErrorException;
 use RodinAPI\Library\ODM;
+use RodinAPI\Validators\SearchTermValidator;
 
 class SearchTerm extends ODM {
 
@@ -40,6 +43,7 @@ class SearchTerm extends ODM {
      * @param $label
      * @param $belongs_to
      * @return $this
+     * @throws InternalErrorException
      */
     public static function createSearchTerm( $search_term, $label, $belongs_to )
     {
@@ -53,11 +57,25 @@ class SearchTerm extends ODM {
 
         try {
 
-            $searchTerm->save();
+            /**
+             * Validate request
+             */
+            if( true === $searchTerm->validate(new SearchTermValidator()) ) {
 
-            return $searchTerm;
 
-        } catch (\Exception $e) {
+                try {
+                    $searchTerm->save();
+                    return $searchTerm;
+                } catch (\Exception $e) {
+                    // Do nothing with this. Probably just a duplicate
+                }
+
+            }
+
+        } catch (HandledException $e) {
+
+            // Throw internal server error
+            throw new InternalErrorException('Error while creating search terms');
 
         }
 

@@ -4,6 +4,7 @@ namespace RodinAPI\Models;
 
 use RodinAPI\Factories\SearchTermFactory;
 use RodinAPI\Library\ODM;
+use RodinAPI\Validators\PlaceValidator;
 
 class Place extends ODM {
 
@@ -67,16 +68,26 @@ class Place extends ODM {
         $place->searchable      = (bool) $searchable;
         $place->create_time     = date('c');
 
-        $place->save();
+        /**
+         * Validate request
+         */
+        if( $place->validate(new PlaceValidator())  === true ) {
 
-        // Check if searchable
-        if( true === $place->searchable ) {
 
-            $searchTerm = SearchTermFactory::factory( $place->place_id, 'place' );
-            $searchTerm->create();
+            $place->save();
+
+            // Check if searchable
+            if (true === $place->searchable) {
+
+                $searchTerm = SearchTermFactory::factory($place->place_id, 'place');
+                $searchTerm->create();
+
+            }
+
+            return $place;
 
         }
 
-        return $place;
     }
+
 }

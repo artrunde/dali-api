@@ -90,10 +90,10 @@ paths:
       parameters:
         - name: "tag_id"
           in: path
-          description: "Tags to use for quering a place. Multiple tags can be used with the '+' delimiter e.g tags=tag_id1+tag_id2"
+          description: "Tags to use for querying a place. Multiple tags can be used with the '+' delimiter e.g tags=tag_id1+tag_id2"
           required: true
           type: string
-          x-example: "58fdc6725f2b7"
+          x-example: "58fde4a700440"
       responses:
         200:
           description: "Successful result"
@@ -147,7 +147,7 @@ paths:
           description: "Place unique identifier. This can be both url or place_id"
           required: true
           type: string
-          x-example: "58fdc686b60d4"
+          x-example: "58fdd9fb545ea"
       responses:
         200:
           description: "Successful result"

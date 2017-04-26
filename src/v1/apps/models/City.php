@@ -4,6 +4,7 @@ namespace RodinAPI\Models;
 
 use RodinAPI\Factories\SearchTermFactory;
 use RodinAPI\Library\ODM;
+use RodinAPI\Validators\CityValidator;
 
 class City extends ODM {
 
@@ -70,16 +71,25 @@ class City extends ODM {
         $city->create_time   = date('c');
         $city->searchable    = $searchable;
 
-        $city->save();
+        /**
+         * Validate request
+         */
+        if( $city->validate(new CityValidator())  === true ) {
 
-        if( true === $city->searchable ) {
+            $city->save();
 
-            $searchTerm = SearchTermFactory::factory( $city->tag_id, 'city' );
-            $searchTerm->create();
+            if( true === $city->searchable ) {
+
+                $searchTerm = SearchTermFactory::factory( $city->tag_id, 'city' );
+                $searchTerm->create();
+
+            }
+
+            return $city;
 
         }
 
-        return $city;
+
     }
 
     /**
