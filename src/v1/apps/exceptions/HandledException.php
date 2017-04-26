@@ -48,6 +48,14 @@ abstract class HandledException extends \Exception
 
     }
 
+    /**
+     * @param ResponseMessage $responseMessage
+     */
+    public function addResponseMessages( ResponseMessage $responseMessage )
+    {
+        $this->responseMessages[] = $responseMessage;
+    }
+
     public function __construct( $message = "", $code = 0, \Exception $previous = null )
     {
         $this->message = empty($message) ? $this->message : $message;
