@@ -2,7 +2,9 @@
 
 namespace RodinAPI\Library;
 
+use Aws\DynamoDb\Exception\DynamoDbException;
 use Phalcon\Di;
+use RodinAPI\Exceptions\InternalErrorException;
 use RodinAPI\Validators\BaseValidator;
 
 class ODM
@@ -751,9 +753,20 @@ class ODM
 		}
 
 		$client = $this->getClient();
-		$item = $client->putItem($args);
 
-		return $item;
+		try {
+
+            $item = $client->putItem($args);
+
+            return $item;
+
+        } catch (\Exception $e) {
+
+            // Throw internal server error
+            throw new InternalErrorException('Error with ODM '.$e->getMessage());
+
+        }
+
 	}
 
 	/**

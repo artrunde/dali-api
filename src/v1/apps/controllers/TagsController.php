@@ -125,26 +125,33 @@ class TagsController extends BaseController
             // Get body
             $body = $this->request->getJsonRawBody();
 
-            foreach( $body->cities as $cityTag ) {
+            if ( !empty($body->cities ) ) {
 
-                $city = City::createTagRelation($place_id, $cityTag->city_id);
+                foreach ($body->cities as $cityTag) {
 
-                $cityLocales = LocaleFactory::create('city', $city->locales);
+                    $city = City::createTagRelation($place_id, $cityTag->city_id);
 
-                $cityRelation = new CityResponse( $city->tag_id, $city->country_code, $city->latitude, $city->longitude, $cityLocales, $city->searchable );
-                $cities->addResponse($cityRelation);
+                    $cityLocales = LocaleFactory::create('city', $city->locales);
+
+                    $cityRelation = new CityResponse($city->tag_id, $city->country_code, $city->latitude, $city->longitude, $cityLocales, $city->searchable);
+                    $cities->addResponse($cityRelation);
+
+                }
 
             }
 
-            foreach( $body->artists as $artistTag ) {
+            if ( !empty($body->artists ) ) {
 
-                $artist = Artist::createTagRelation($place_id, $artistTag->artist_id);
+                foreach ($body->artists as $artistTag) {
 
-                $artistLocales = LocaleFactory::create('artist', $artist->locales);
+                    $artist = Artist::createTagRelation($place_id, $artistTag->artist_id);
 
-                $artistRelation = new ArtistResponse( $artist->tag_id, $artistLocales, $artist->born_date, $artist->status, $artist->searchable );
-                $artists->addResponse($artistRelation);
+                    $artistLocales = LocaleFactory::create('artist', $artist->locales);
 
+                    $artistRelation = new ArtistResponse($artist->tag_id, $artistLocales, $artist->born_date, $artist->status, $artist->searchable);
+                    $artists->addResponse($artistRelation);
+
+                }
             }
 
             return new TagResponse($cities, $artists);

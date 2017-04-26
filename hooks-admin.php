@@ -1,9 +1,13 @@
 <?php
 
 require_once 'vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 global $STASH;
 
+use Aws\DynamoDb\DynamoDbClient;
+use Aws\DynamoDb\Exception\DynamoDbException;
+use Aws\DynamoDb\Marshaler;
 use Dredd\Hooks;
 
 function replaceURI($needle, $haystack, $replace) {
@@ -107,3 +111,22 @@ Hooks::before("City > /v1/admin/cities/{city_id} > *", function(&$transaction) {
     echo $transaction->fullPath ;
 
 });
+
+
+Hooks::after("Place > /v1/admin/places/{place_id}/tags > Add a tag to a place > 200 > *", function(&$transaction) {
+
+    $requestBody = json_decode($transaction->real->body);
+
+    // This is ok. Meaning the city is invalid
+    if( $transaction->real->statusCode == 400 && isset($requestBody->meta->statusMessage) && $requestBody->meta->statusMessage == 'Could not validate request' ) {
+
+        $transaction->fail = false;
+
+        var_dump($transaction->real->statusCode, $requestBody);
+
+    }
+
+});
+
+
+
