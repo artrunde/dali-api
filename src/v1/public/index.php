@@ -32,6 +32,7 @@ class Application extends BaseApplication
                 'RodinAPI\Request'     => '../apps/request/',
                 'RodinAPI\Response'    => '../apps/response/',
                 'RodinAPI\Exceptions'  => '../apps/exceptions/',
+                'RodinAPI\Validators'  => '../apps/validators/',
                 'RodinAPI\Factories'   => '../apps/factories/'
             ]
         );
@@ -172,18 +173,39 @@ try {
         $e->getMessage()
     );
 
-    $response->addMessage(
-        $e->getMessage(),
-        ResponseMessage::TYPE_WARNING
-    );
+    if( empty($e->getResponseMessages()) ) {
+
+        $response->addMessage(
+            $e->getMessage(),
+            ResponseMessage::TYPE_WARNING
+        );
+
+    } else {
+
+        /**
+         * @var ResponseMessage $responseMessage
+         */
+        foreach( $e->getResponseMessages() as $responseMessage ) {
+
+            $response->addMessage(
+                $responseMessage->text,
+                $responseMessage->type
+            );
+
+        }
+
+    }
 
     /** @var LambdaRequest $request */
     $di         = Di::getDefault();
     $request    = $di->get('request');
 
     if ( $request->isJSON() ) {
+
         $json = new JSONResponse($response, true);
+
         return $json->send();
+
     }
 
 } catch (\Exception $e) {

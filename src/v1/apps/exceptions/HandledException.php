@@ -2,26 +2,55 @@
 
 namespace RodinAPI\Exceptions;
 
+use Phalcon\Validation\Message;
+use Phalcon\Validation\Message\Group;
+use RodinAPI\Response\ResponseMessage;
+
 /**
- * HandledException
- * Any Exception that extends this will be handled in the response object,
- * Any non-handled exceptions will work as normal
+ * Class HandledException
+ * @package RodinAPI\Exceptions
  */
-class HandledException extends \Exception
+abstract class HandledException extends \Exception
 {
 
+    /**
+     * @var string
+     */
+    protected $message;
+
+    /**
+     * @var int
+     */
     protected $code = 500;
 
-    public function __construct($message = "", $code = 0, \Exception $previous = null)
-    {
-        if (isset($this->message) && $message == '') {
-            $message = $this->message;
-        }
+    /**
+     * @desc ResponseMessage[]
+     * @var array
+     */
+    protected $responseMessages = [];
 
-        if ($code !== 0) {
-            $this->code = $code;
-        }
-
-        parent::__construct($message, $this->code, $previous);
+    public function getResponseMessages() {
+        return $this->responseMessages;
     }
+
+    /**
+     * @param Group $validationMessages
+     */
+    public function addValidatorMessages( Group $validationMessages )
+    {
+
+        /**
+         * @var Message $message
+         */
+        foreach ($validationMessages as $message) {
+            $this->responseMessages[] = new ResponseMessage( $message->getType().' '.$message->getField().': '.$message->getMessage(), ResponseMessage::TYPE_WARNING );
+        }
+
+    }
+
+    public function __construct( $message = "", $code = 0, \Exception $previous = null )
+    {
+        $this->message = empty($message) ? $this->message : $message;
+    }
+
 }

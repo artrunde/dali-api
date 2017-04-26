@@ -4,6 +4,7 @@ namespace RodinAPI\Models;
 
 use RodinAPI\Factories\SearchTermFactory;
 use RodinAPI\Library\ODM;
+use RodinAPI\Validators\ArtistValidator;
 
 class Artist extends ODM {
 
@@ -65,16 +66,24 @@ class Artist extends ODM {
         $artist->create_time    = date('c');
         $artist->searchable     = $searchable;
 
-        $artist->save();
+        /**
+         * Validate request
+         */
+        if( $artist->validate(new ArtistValidator())  === true ) {
 
-        if( true === $artist->searchable ) {
+            $artist->save();
 
-            $searchTerm = SearchTermFactory::factory( $artist->tag_id, 'artist' );
-            $searchTerm->create();
+            if (true === $artist->searchable) {
+
+                $searchTerm = SearchTermFactory::factory($artist->tag_id, 'artist');
+                $searchTerm->create();
+
+            }
+
+            return $artist;
 
         }
 
-        return $artist;
     }
 
     /**

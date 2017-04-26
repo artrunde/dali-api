@@ -11,6 +11,7 @@ use RodinAPI\Models\SearchTerm;
 use RodinAPI\Models\Tag;
 use RodinAPI\Response\Cities\CityDeleteResponse;
 use RodinAPI\Response\Cities\CityResponse;
+use RodinAPI\Validators\CityValidator;
 
 class CitiesController extends BaseController
 {

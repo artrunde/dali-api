@@ -3,9 +3,19 @@
 namespace RodinAPI\Library;
 
 use Phalcon\Di;
+use RodinAPI\Validators\BaseValidator;
 
 class ODM
 {
+
+    /**
+     * @param BaseValidator $validator
+     * @return bool|\Phalcon\Validation\Message\Group
+     */
+    final public function validate( BaseValidator $validator )
+    {
+        return $validator->validate($this);
+    }
 
 	// Log of all queries run, mapped by connection key, only populated if logging is enabled
 	protected static $_query_log = array();
