@@ -43,6 +43,7 @@ class ArtistsController extends BaseController
      */
     public function getAction($city_id)
     {
+
         $artist = Artist::factory('RodinAPI\Models\Artist')->findOne($city_id, Artist::CATEGORY);
 
         if( !empty($artist) ) {
