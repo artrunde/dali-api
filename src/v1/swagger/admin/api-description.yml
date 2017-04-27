@@ -64,34 +64,64 @@ paths:
           description: "Bad request"
           schema:
             $ref: "#/definitions/Error"
+    get:
+      tags:
+        - "Artist"
+      summary: "Get all artists"
+      description: "Retrieve list of all artists"
+      operationId: "queryArtists"
+      produces:
+        - application/json
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/ArtistResult"
 
   /cities:
-      post:
-        tags:
-        - "City"
-        summary: "Create city"
-        description: "Create a new city with locale information"
-        operationId: "createNewCity"
-        consumes:
-        - application/json
-        produces:
-        - application/json
-        parameters:
-        - in: "body"
-          name: "body"
-          description: "City object that needs to be added"
-          required: true
+    post:
+      tags:
+      - "City"
+      summary: "Create city"
+      description: "Create a new city with locale information"
+      operationId: "createNewCity"
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "City object that needs to be added"
+        required: true
+        schema:
+          $ref: "#/definitions/CityInput"
+      responses:
+        200:
+          description: "Successful result"
           schema:
-            $ref: "#/definitions/CityInput"
-        responses:
-          200:
-            description: "Successful result"
-            schema:
+            $ref: "#/definitions/CityResult"
+        400:
+          description: "Bad request"
+          schema:
+            $ref: "#/definitions/Error"
+    get:
+      tags:
+        - "City"
+      summary: "Get all cities"
+      description: "Retrieve list of all cities"
+      operationId: "queryCities"
+      produces:
+        - application/json
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            type: array
+            items:
               $ref: "#/definitions/CityResult"
-          400:
-            description: "Bad request"
-            schema:
-              $ref: "#/definitions/Error"
 
   /places:
     post:
@@ -120,6 +150,21 @@ paths:
           description: "Bad request"
           schema:
             $ref: "#/definitions/Error"
+    get:
+      tags:
+        - "Place"
+      summary: "Get all places"
+      description: "Retrieve list of all places"
+      operationId: "queryPlaces"
+      produces:
+        - application/json
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/PlaceResult"
 
   /places/{place_id}/tags:
     post:
@@ -664,8 +709,8 @@ definitions:
         maxLength: 64
       nickname:
         type: string
-        pattern: "[a-z0-9]{1,64}"
-        minLength: 1
+        pattern: "[a-z0-9]{0,64}"
+        minLength: 0
         maxLength: 64
     required:
       - "first_name"

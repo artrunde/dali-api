@@ -122,6 +122,14 @@ $di->set('router', function () {
     );
 
     $v1->addGet(
+        "/admin/places",
+        [
+            "controller" => "Places",
+            "action"     => "queryAdmin",
+        ]
+    );
+
+    $v1->addGet(
         "/admin/places/{place_id:}",
         [
             "controller" => "Places",
@@ -159,6 +167,14 @@ $di->set('router', function () {
     );
 
     $v1->addGet(
+        "/admin/cities",
+        [
+            "controller" => "Cities",
+            "action"     => "query",
+        ]
+    );
+
+    $v1->addGet(
         "/admin/cities/{tag_id:}",
         [
             "controller" => "Cities",
@@ -191,6 +207,14 @@ $di->set('router', function () {
         [
             "controller" => "Artists",
             "action"     => "create",
+        ]
+    );
+
+    $v1->addGet(
+        "/admin/artists",
+        [
+            "controller" => "Artists",
+            "action"     => "query",
         ]
     );
 

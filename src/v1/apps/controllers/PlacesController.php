@@ -13,6 +13,7 @@ use RodinAPI\Models\Place;
 use RodinAPI\Models\PlaceLocale;
 use RodinAPI\Models\SearchTerm;
 use RodinAPI\Models\Tag;
+use RodinAPI\Response\PlaceResponse;
 use RodinAPI\Response\Places\PlaceDeleteResponse;
 use RodinAPI\Response\Places\PlaceAdminResponse;
 use RodinAPI\Response\Places\PlaceQueryResponse;
@@ -175,6 +176,38 @@ class PlacesController extends BaseController
         }
 
         throw new ItemNotFoundException('Could not find specified place');
+
+    }
+
+    /**
+     * @param $city_id
+     * @return PlacesResponse
+     */
+    public function queryAdminAction($city_id)
+    {
+
+        $places = Place::factory('RodinAPI\Models\Place')->findAll();
+
+        $responseArray = new PlacesResponse();
+
+        if( !empty($places) ) {
+
+            /**
+             * @var Place $place
+             */
+            foreach ( $places as $place ) {
+
+                // Create locales
+                $placeLocales = LocaleFactory::create('place', $place->locales);
+
+                $response = new PlaceAdminResponse( $place->place_id, $place->url, $placeLocales, $place->latitude, $place->longitude, $place->country_code, $place->status, $place->searchable, $place->create_time );
+                $responseArray->addResponse($response);
+
+            }
+
+        }
+
+        return $responseArray;
 
     }
 

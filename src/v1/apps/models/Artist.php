@@ -54,6 +54,7 @@ class Artist extends ODM {
      */
     public static function createArtistTag( LocaleTypes $locales, $born_date, $status, $searchable )
     {
+        // Create artist
         $artist = Artist::factory('RodinAPI\Models\Artist')->create();
 
         $artist_id              = uniqid();

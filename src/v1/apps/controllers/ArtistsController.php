@@ -10,6 +10,7 @@ use RodinAPI\Models\Artist;
 use RodinAPI\Models\SearchTerm;
 use RodinAPI\Response\Artists\ArtistDeleteResponse;
 use RodinAPI\Response\Artists\ArtistResponse;
+use RodinAPI\Response\Artists\ArtistsResponse;
 
 class ArtistsController extends BaseController
 {
@@ -55,6 +56,38 @@ class ArtistsController extends BaseController
         }
 
         throw new ItemNotFoundException('Could not find specified artist');
+
+    }
+
+    /**
+     * @return ArtistsResponse
+     * @throws ItemNotFoundException
+     */
+    public function queryAction()
+    {
+
+        $artists = Artist::factory('RodinAPI\Models\Artist')->where('belongs_to','=',Artist::CATEGORY)->index('BelongsToTagIndex')->findMany();
+
+        $responseArray = new ArtistsResponse();
+
+        if( !empty($artists) ) {
+
+            /**
+             * @var Artist $artist
+             */
+            foreach ( $artists as $artist ) {
+
+                // Create locales
+                $artistLocales = LocaleFactory::create('artist', $artist->locales);
+
+                $response = new ArtistResponse( $artist->tag_id, $artistLocales, $artist->born_date, $artist->status, $artist->searchable );
+                $responseArray->addResponse($response);
+
+            }
+
+        }
+
+        return $responseArray;
 
     }
 
