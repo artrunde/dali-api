@@ -5,9 +5,6 @@ require_once 'vendor/autoload.php';
 
 global $STASH;
 
-use Aws\DynamoDb\DynamoDbClient;
-use Aws\DynamoDb\Exception\DynamoDbException;
-use Aws\DynamoDb\Marshaler;
 use Dredd\Hooks;
 
 function replaceURI($needle, $haystack, $replace) {
@@ -24,7 +21,13 @@ function replaceURI($needle, $haystack, $replace) {
 
 Hooks::beforeEach(function(&$transaction) {
 
-    echo $transaction->name;
+    //echo $transaction->name;
+
+});
+
+Hooks::afterEach(function(&$transaction) {
+
+    echo $transaction->fullPath;
 
 });
 
@@ -67,8 +70,6 @@ Hooks::before("Artist > /v1/admin/artists/{artist_id} > *", function(&$transacti
 
     $transaction->fullPath = replaceURI("artist_id", $transaction->fullPath, $STASH['artist']['artist_id']);
 
-    echo $transaction->fullPath ;
-
 });
 
 Hooks::before("Place > /v1/admin/places/{place_id} > *", function(&$transaction) {
@@ -76,8 +77,6 @@ Hooks::before("Place > /v1/admin/places/{place_id} > *", function(&$transaction)
     global $STASH;
 
     $transaction->fullPath = replaceURI("place_id", $transaction->fullPath, $STASH['place']['place_id']);
-
-    echo $transaction->fullPath;
 
 });
 
@@ -87,8 +86,6 @@ Hooks::before("Place > /v1/admin/places/{place_id}/tags/{tag_id} > *", function(
 
     $transaction->fullPath = replaceURI("place_id", $transaction->fullPath, $STASH['place']['place_id']);
 
-    echo $transaction->fullPath;
-
 });
 
 Hooks::before("Place > /v1/admin/places/{place_id}/tags > *", function(&$transaction) {
@@ -96,8 +93,6 @@ Hooks::before("Place > /v1/admin/places/{place_id}/tags > *", function(&$transac
     global $STASH;
 
     $transaction->fullPath = replaceURI("place_id", $transaction->fullPath, $STASH['place']['place_id']);
-
-    echo $transaction->fullPath;
 
 });
 
@@ -107,8 +102,6 @@ Hooks::before("City > /v1/admin/cities/{city_id} > *", function(&$transaction) {
     global $STASH;
 
     $transaction->fullPath = replaceURI("city_id", $transaction->fullPath, $STASH['city']['city_id']);
-
-    echo $transaction->fullPath ;
 
 });
 
@@ -126,11 +119,8 @@ Hooks::after("Place > /v1/admin/places/{place_id}/tags > Add a tag to a place > 
         $transaction->test->message = 'Skipped since 400 is OK';
         $transaction->test->valid   = true;
 
-        var_dump($transaction->real->statusCode, $requestBody);
+        echo "Skipped since 400 is OK\n";
 
     }
 
 });
-
-
-

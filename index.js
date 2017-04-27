@@ -58,8 +58,11 @@ exports.handler = function(event, context) {
     }
 
     if ( event.queryStringParameters && event.queryStringParameters !== null ) {
+        console.log("Serialize querystring");
         httpObject.QUERY_STRING = serialize(event.queryStringParameters);
     }
+
+    console.log("Spawning PHP...");
 
     // Spawn the PHP CGI process with a bunch of environment variables that describe the request.
     var php = spawn('./bin/php-cgi', ['-dextension=bin/phalcon.so','src/v1/public/index.php'], {
