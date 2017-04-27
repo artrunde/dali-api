@@ -62,9 +62,8 @@ class SearchTerm extends ODM {
              */
             if( true === $searchTerm->validate(new SearchTermValidator()) ) {
 
-                    $searchTerm->save();
-
-                    return $searchTerm;
+                $searchTerm->save();
+                return $searchTerm;
 
             }
 

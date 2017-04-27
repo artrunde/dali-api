@@ -110,6 +110,7 @@ class Application extends BaseApplication
     {
 
         $this->registerServices();
+
         $this->registerAutoloaders();
 
         // Handle request

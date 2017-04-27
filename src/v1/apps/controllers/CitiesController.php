@@ -9,6 +9,7 @@ use RodinAPI\Factories\SearchTermFactory;
 use RodinAPI\Models\City;
 use RodinAPI\Models\SearchTerm;
 use RodinAPI\Models\Tag;
+use RodinAPI\Response\Cities\CitiesResponse;
 use RodinAPI\Response\Cities\CityDeleteResponse;
 use RodinAPI\Response\Cities\CityResponse;
 use RodinAPI\Validators\CityValidator;
@@ -57,6 +58,39 @@ class CitiesController extends BaseController
         }
 
         throw new ItemNotFoundException('Could not find specified city');
+
+    }
+
+    /**
+     * @param $city_id
+     * @return CitiesResponse
+     * @throws ItemNotFoundException
+     */
+    public function queryAction($city_id)
+    {
+
+        $cities = City::factory('RodinAPI\Models\City')->where('belongs_to','=',City::CATEGORY)->index('BelongsToTagIndex')->findMany();
+
+        $responseArray = new CitiesResponse();
+
+        if( !empty($cities) ) {
+
+            /**
+             * @var City $city
+             */
+            foreach ( $cities as $city ) {
+
+                // Create locales
+                $cityLocales = LocaleFactory::create('city', $city->locales);
+
+                $response = new CityResponse( $city->tag_id, $city->country_code, $city->latitude, $city->longitude, $cityLocales, $city->searchable );
+                $responseArray->addResponse($response);
+
+            }
+
+        }
+
+        return $responseArray;
 
     }
 

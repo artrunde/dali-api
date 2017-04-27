@@ -2,7 +2,6 @@
 
 namespace RodinAPI\Library;
 
-use Aws\DynamoDb\Exception\DynamoDbException;
 use Phalcon\Di;
 use RodinAPI\Exceptions\InternalErrorException;
 use RodinAPI\Response\ResponseMessage;
@@ -741,14 +740,17 @@ class ODM
 			$filter_conditions     = $this->_buildConditions($this->_filter_conditions);
 			$options['ScanFilter'] = $filter_conditions;
 		}
+
 		$result     = $this->scan($options);
 		$array      = array();
 		$class_name = get_called_class();
+
 		foreach ($result as $row) {
 			$instance = self::factory($class_name);
 			$instance->hydrate($row);
 			$array[] = $instance;
 		}
+
 		return $array;
 	}
 
@@ -761,7 +763,7 @@ class ODM
      * @throws InternalErrorException
 	 *
 	 */
-	public function scan(array $options = array())
+	protected function scan(array $options = array())
 	{
 		$options['TableName']   = $this->getTableName();
 
@@ -1298,9 +1300,11 @@ class ODM
 	protected function _formatResults(array $items)
 	{
 		$result = array();
+
 		foreach ($items as $item) {
 			$result[] = $this->_formatResult($item);
 		}
+
 		return $result;
 	}
 
