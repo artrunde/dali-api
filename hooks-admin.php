@@ -19,12 +19,6 @@ function replaceURI($needle, $haystack, $replace) {
 
 }
 
-Hooks::beforeEach(function(&$transaction) {
-
-    //echo $transaction->name;
-
-});
-
 Hooks::afterEach(function(&$transaction) {
 
     echo $transaction->fullPath;
