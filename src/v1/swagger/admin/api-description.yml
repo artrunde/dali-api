@@ -13,9 +13,9 @@ schemes:
 
 paths:
 
-  #######################
-  ###     DEBUG       ###
-  #######################
+  #######################################################
+  ###                    DEBUG
+  #######################################################
 
   /debug:
     get:
@@ -32,9 +32,10 @@ paths:
           schema:
             $ref: "#/definitions/Debug"
 
-  #######################
-  ###     ARTISTS     ###
-  #######################
+
+  #######################################################
+  ###                    POSTS
+  #######################################################
 
   /artists:
     post:
@@ -64,209 +65,33 @@ paths:
           schema:
             $ref: "#/definitions/Error"
 
-  /artists/{artist_id}:
-    get:
-      tags:
-        - "Artist"
-      summary: "Get artist"
-      description: "Retrieve data about a specific artist"
-      operationId: "getArtistByID"
-      produces:
-        - application/json
-      parameters:
-        - name: "artist_id"
-          in: path
-          description: "Artist unique identifier"
-          required: true
-          type: string
-          x-example: "artist_id"
-      responses:
-        200:
-          description: "Successful result"
-          schema:
-            $ref: "#/definitions/ArtistResult"
-        404:
-          description: "Item not found"
-          schema:
-            $ref: "#/definitions/Error"
-    put:
-      tags:
-        - "Artist"
-      summary: "Update artist"
-      description: "Update data about a specific artist"
-      operationId: "updateArtistByID"
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - name: "artist_id"
-          in: path
-          description: "Artist unique identifier"
-          required: true
-          type: string
-          x-example: "artist_id"
-        - name: "body"
-          in: "body"
-          description: "Artist object that needs to be updated"
-          required: true
-          schema:
-            $ref: "#/definitions/ArtistInput"
-      responses:
-        200:
-          description: "Successful result"
-          schema:
-            $ref: "#/definitions/ArtistResult"
-        404:
-          description: "Item not found"
-          schema:
-            $ref: "#/definitions/Error"
-    delete:
-      tags:
-        - "Artist"
-      summary: "Delete artist"
-      description: "Delete a specific artist and all relations"
-      operationId: "deleteArtistByID"
-      produces:
-        - application/json
-      parameters:
-        - name: "artist_id"
-          in: path
-          description: "Artist unique identifier"
-          required: true
-          type: string
-          x-example: "artist_id"
-      responses:
-        200:
-          description: "Successful result"
-          schema:
-            properties:
-              artist_id:
-                type: string
-        404:
-          description: "Artist not found"
-          schema:
-            $ref: "#/definitions/Error"
-
-  ########################
-  ###      CITIES      ###
-  ########################
-
   /cities:
-    post:
-      tags:
-      - "City"
-      summary: "Create city"
-      description: "Create a new city with locale information"
-      operationId: "createNewCity"
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "City object that needs to be added"
-        required: true
-        schema:
-          $ref: "#/definitions/CityInput"
-      responses:
-        200:
-          description: "Successful result"
-          schema:
-            $ref: "#/definitions/CityResult"
-        400:
-          description: "Bad request"
-          schema:
-            $ref: "#/definitions/Error"
-
-  /cities/{city_id}:
-    get:
-      tags:
+      post:
+        tags:
         - "City"
-      summary: "Get city"
-      description: "Retrieve data about a specific city"
-      operationId: "getCityByID"
-      produces:
+        summary: "Create city"
+        description: "Create a new city with locale information"
+        operationId: "createNewCity"
+        consumes:
         - application/json
-      parameters:
-        - name: "city_id"
-          in: path
-          description: "City unique identifier"
-          required: true
-          type: string
-          x-example: "city_id"
-      responses:
-        200:
-          description: "Successful result"
-          schema:
-            $ref: "#/definitions/CityResult"
-        404:
-          description: "Item not found"
-          schema:
-            $ref: "#/definitions/Error"
-    put:
-      tags:
-        - "City"
-      summary: "Update city"
-      description: "Update data about a specific city"
-      operationId: "updateCityByID"
-      consumes:
+        produces:
         - application/json
-      produces:
-        - application/json
-      parameters:
-        - name: "city_id"
-          in: path
-          description: "City unique identifier"
-          required: true
-          type: string
-          x-example: "city_id"
-        - name: "body"
-          in: "body"
-          description: "City object that needs to be updated"
+        parameters:
+        - in: "body"
+          name: "body"
+          description: "City object that needs to be added"
           required: true
           schema:
             $ref: "#/definitions/CityInput"
-      responses:
-        200:
-          description: "Successful result"
-          schema:
-            $ref: "#/definitions/CityResult"
-        404:
-          description: "Item not found"
-          schema:
-            $ref: "#/definitions/Error"
-    delete:
-      tags:
-        - "City"
-      summary: "Delete city"
-      description: "Delete a specific city and all its relations"
-      operationId: "deleteCityByID"
-      produces:
-        - application/json
-      parameters:
-        - name: "city_id"
-          in: path
-          description: "City unique identifier"
-          required: true
-          type: string
-          x-example: "city_id"
-      responses:
-        200:
-          description: "Successful result"
-          schema:
-            properties:
-              city_id:
-                type: string
-        404:
-          description: "City not found"
-          schema:
-            $ref: "#/definitions/Error"
-
-  ########################
-  ###      PLACES      ###
-  ########################
+        responses:
+          200:
+            description: "Successful result"
+            schema:
+              $ref: "#/definitions/CityResult"
+          400:
+            description: "Bad request"
+            schema:
+              $ref: "#/definitions/Error"
 
   /places:
     post:
@@ -355,6 +180,10 @@ paths:
           description: "Item not found"
           schema:
             $ref: "#/definitions/Error"
+
+  #######################################################
+  ###                    PLACES
+  #######################################################
 
   /places/{place_id}/tags/{tag_id}:
     delete:
@@ -472,6 +301,183 @@ paths:
                 type: string
         404:
           description: "Place not found"
+          schema:
+            $ref: "#/definitions/Error"
+
+
+  #######################################################
+  ###                    ARTISTS
+  #######################################################
+
+  /artists/{artist_id}:
+    get:
+      tags:
+        - "Artist"
+      summary: "Get artist"
+      description: "Retrieve data about a specific artist"
+      operationId: "getArtistByID"
+      produces:
+        - application/json
+      parameters:
+        - name: "artist_id"
+          in: path
+          description: "Artist unique identifier"
+          required: true
+          type: string
+          x-example: "artist_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/ArtistResult"
+        404:
+          description: "Item not found"
+          schema:
+            $ref: "#/definitions/Error"
+    put:
+      tags:
+        - "Artist"
+      summary: "Update artist"
+      description: "Update data about a specific artist"
+      operationId: "updateArtistByID"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: "artist_id"
+          in: path
+          description: "Artist unique identifier"
+          required: true
+          type: string
+          x-example: "artist_id"
+        - name: "body"
+          in: "body"
+          description: "Artist object that needs to be updated"
+          required: true
+          schema:
+            $ref: "#/definitions/ArtistInput"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/ArtistResult"
+        404:
+          description: "Item not found"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+        - "Artist"
+      summary: "Delete artist"
+      description: "Delete a specific artist and all relations"
+      operationId: "deleteArtistByID"
+      produces:
+        - application/json
+      parameters:
+        - name: "artist_id"
+          in: path
+          description: "Artist unique identifier"
+          required: true
+          type: string
+          x-example: "artist_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            properties:
+              artist_id:
+                type: string
+        404:
+          description: "Artist not found"
+          schema:
+            $ref: "#/definitions/Error"
+
+  #######################################################
+  ###                    CITIES
+  #######################################################
+
+  /cities/{city_id}:
+    get:
+      tags:
+        - "City"
+      summary: "Get city"
+      description: "Retrieve data about a specific city"
+      operationId: "getCityByID"
+      produces:
+        - application/json
+      parameters:
+        - name: "city_id"
+          in: path
+          description: "City unique identifier"
+          required: true
+          type: string
+          x-example: "city_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/CityResult"
+        404:
+          description: "Item not found"
+          schema:
+            $ref: "#/definitions/Error"
+    put:
+      tags:
+        - "City"
+      summary: "Update city"
+      description: "Update data about a specific city"
+      operationId: "updateCityByID"
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: "city_id"
+          in: path
+          description: "City unique identifier"
+          required: true
+          type: string
+          x-example: "city_id"
+        - name: "body"
+          in: "body"
+          description: "City object that needs to be updated"
+          required: true
+          schema:
+            $ref: "#/definitions/CityInput"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            $ref: "#/definitions/CityResult"
+        404:
+          description: "Item not found"
+          schema:
+            $ref: "#/definitions/Error"
+    delete:
+      tags:
+        - "City"
+      summary: "Delete city"
+      description: "Delete a specific city and all its relations"
+      operationId: "deleteCityByID"
+      produces:
+        - application/json
+      parameters:
+        - name: "city_id"
+          in: path
+          description: "City unique identifier"
+          required: true
+          type: string
+          x-example: "city_id"
+      responses:
+        200:
+          description: "Successful result"
+          schema:
+            properties:
+              city_id:
+                type: string
+        404:
+          description: "City not found"
           schema:
             $ref: "#/definitions/Error"
 

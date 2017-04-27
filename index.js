@@ -1,11 +1,26 @@
 'use strict';
 
-var spawn   = require('child_process').spawn;
-var parser  = require('http-string-parser');
+// Async
+// var spawn       = require('child_process').spawn;
+
+// Sync
+var spawn       = require('child_process').spawnSync;
+var parser      = require('http-string-parser');
+
+// Timer
+var start = process.hrtime();
+
+var elapsed_time = function(note){
+
+  var precision = 3; // 3 decimal places
+  var elapsed = process.hrtime(start)[1] / 1000000; // divide by a million to get nano to milli
+
+  console.log('Time: ' + elapsed.toFixed(precision) + "ms - " + note); // print message + time
+
+  start = process.hrtime(); // reset the timer
+}
 
 exports.handler = function(event, context) {
-
-    var PHPOutput = '';
 
     console.log("Request: " + JSON.stringify(event));
 
@@ -31,6 +46,8 @@ exports.handler = function(event, context) {
     console.log("Environment: " + JSON.stringify(environment));
 
     var stage = event.requestContext.stage;
+
+    elapsed_time("Creating HTTP object");
 
     // Create HTTP object
     httpObject = Object.assign({
@@ -58,9 +75,41 @@ exports.handler = function(event, context) {
     }
 
     if ( event.queryStringParameters && event.queryStringParameters !== null ) {
+        console.log("Serialize querystring");
         httpObject.QUERY_STRING = serialize(event.queryStringParameters);
     }
 
+    elapsed_time("Starting PHP");
+
+    console.log("Spawning PHP...");
+
+    // Sync
+    var child = spawn('./bin/php-cgi', ['-dextension=bin/phalcon.so','src/v1/public/index.php'], {
+      env: httpObject
+    });
+
+    elapsed_time("Ended PHP");
+
+    console.log('PHP exited with status %d', child.status);
+
+    var PHPOutput = child.stdout.toString('utf-8');
+
+    // Parses a raw HTTP response into an object that we can manipulate into the required format.
+    var parsedPHPOutput = parser.parseResponse(PHPOutput);
+
+    var response = {
+        statusCode: parsedPHPOutput.statusCode || 200,
+        headers: parsedPHPOutput.headers,
+        body: parsedPHPOutput.body
+    };
+
+    elapsed_time("Created AWS API request");
+
+    console.log("response: " + JSON.stringify(response));
+    context.succeed(response);
+
+  // Async
+    /*
     // Spawn the PHP CGI process with a bunch of environment variables that describe the request.
     var php = spawn('./bin/php-cgi', ['-dextension=bin/phalcon.so','src/v1/public/index.php'], {
         env: httpObject
@@ -93,6 +142,8 @@ exports.handler = function(event, context) {
         console.log("response: " + JSON.stringify(response));
         context.succeed(response);
 
-    });
+    });*/
+
+
 
 };

@@ -2,7 +2,10 @@
 
 namespace RodinAPI\Library;
 
+use Aws\DynamoDb\Exception\DynamoDbException;
 use Phalcon\Di;
+use RodinAPI\Exceptions\InternalErrorException;
+use RodinAPI\Response\ResponseMessage;
 use RodinAPI\Validators\BaseValidator;
 
 class ODM
@@ -184,10 +187,23 @@ class ODM
 			}
 		}
 
-		$client  = $this->getClient();
-		$item    = $client->getItem($args);
+        try {
 
-		if (!is_array($item['Item'])) {
+            $client = $this->getClient();
+            $item   = $client->getItem($args);
+
+        } catch (\Exception $e) {
+
+            // Throw internal server error
+            $internalException =  new InternalErrorException('Internal server error');
+
+            $internalException->addResponseMessages( new ResponseMessage($e->getMessage(), ResponseMessage::TYPE_ERROR) );
+
+            throw $internalException;
+
+        }
+
+		if ( !is_array($item['Item']) ) {
 			return null;
 		}
 
@@ -195,6 +211,7 @@ class ODM
 
 		$class_name = get_called_class();
 		$instance   = self::factory($class_name);
+
 		$instance->hydrate($result);
 
 		return $instance;
@@ -311,10 +328,24 @@ class ODM
 			'ReturnValues' => 'ALL_OLD',
 		);
 
-		$client     = $this->getClient();
-		$result     = $client->deleteItem($args);
+        try {
 
-		return $result;
+            $client = $this->getClient();
+            $result = $client->deleteItem($args);
+
+            return $result;
+
+        } catch (\Exception $e) {
+
+            // Throw internal server error
+            $internalException =  new InternalErrorException('Internal server error');
+
+            $internalException->addResponseMessages( new ResponseMessage($e->getMessage(), ResponseMessage::TYPE_ERROR) );
+
+            throw $internalException;
+
+        }
+
 	}
 
 	/**
@@ -623,8 +654,21 @@ class ODM
 
 			$args['Limit'] = intval($this->_limit);
 
-			$client = $this->getClient();
-			$result  = $client->query($args);
+            try {
+
+                $client = $this->getClient();
+                $result = $client->query($args);
+
+            } catch (\Exception $e) {
+
+                // Throw internal server error
+                $internalException =  new InternalErrorException('Internal server error');
+
+                $internalException->addResponseMessages( new ResponseMessage($e->getMessage(), ResponseMessage::TYPE_ERROR) );
+
+                throw $internalException;
+
+            }
 
 			// $result is "Guzzle\Service\Resource\Model"
 			// and $result has next keys
@@ -652,11 +696,26 @@ class ODM
 
 		} else { // No limit (Use Iterator)
 
-			$client  = $this->getClient();
-			$iterator = $client->getIterator('Query', $args);
+
+            try {
+
+                $client     = $this->getClient();
+                $iterator   = $client->getIterator('Query', $args);
+
+            } catch (\Exception $e) {
+
+                // Throw internal server error
+                $internalException =  new InternalErrorException('Internal server error');
+
+                $internalException->addResponseMessages( new ResponseMessage($e->getMessage(), ResponseMessage::TYPE_ERROR) );
+
+                throw $internalException;
+
+            }
 
 			// $iterator is "Aws\Common\Iterator\AwsResourceIterator"
 			$items = array();
+
 			foreach ($iterator as $item) {
 				$items[] = $item;
 			}
@@ -699,32 +758,45 @@ class ODM
 	 * @param array $options
 	 *
 	 * @return array
+     * @throws InternalErrorException
 	 *
 	 */
 	public function scan(array $options = array())
 	{
 		$options['TableName']   = $this->getTableName();
-		$client                 = $this->getClient();
 
-		$iterator = $client->getIterator('Scan', $options);
+        try {
+
+            $client     = $this->getClient();
+            $iterator   = $client->getIterator('Scan', $options);
+
+        } catch (\Exception $e) {
+
+            // Throw internal server error
+            $internalException =  new InternalErrorException('Internal server error');
+
+            $internalException->addResponseMessages( new ResponseMessage($e->getMessage(), ResponseMessage::TYPE_ERROR) );
+
+            throw $internalException;
+
+        }
+
 		$items    = array();
+
 		foreach ($iterator as $item) {
 			$items[] = $item;
 		}
+
 		return $this->_formatResults($items);
 	}
 
-	/**
-	 * putItem
-	 *
-	 * @param array $values
-	 * @param array $options
-	 * @param array $expected
-	 *
-	 * @return \Aws\Result
-	 *
-	 * @link http://docs.aws.amazon.com/aws-sdk-php/latest/class-Aws.DynamoDb.DynamoDbClient.html#_putItem
-	 */
+    /**
+     * @param array $values
+     * @param array $options
+     * @param array $expected
+     * @return \Aws\Result
+     * @throws InternalErrorException
+     */
 	public function putItem(array $values, array $options = array(), array $expected = array())
 	{
 
@@ -750,10 +822,24 @@ class ODM
 			}
 		}
 
-		$client = $this->getClient();
-		$item = $client->putItem($args);
+		try {
 
-		return $item;
+            $client = $this->getClient();
+            $item   = $client->putItem($args);
+
+            return $item;
+
+        } catch (\Exception $e) {
+
+            // Throw internal server error
+            $internalException =  new InternalErrorException('Internal server error');
+
+            $internalException->addResponseMessages( new ResponseMessage($e->getMessage(), ResponseMessage::TYPE_ERROR) );
+
+            throw $internalException;
+
+        }
+
 	}
 
 	/**
@@ -781,6 +867,7 @@ class ODM
 	 * @return \AWS\Result
 	 *
 	 * @link http://docs.aws.amazon.com/aws-sdk-php/latest/class-Aws.DynamoDb.DynamoDbClient.html#_updateItem
+     * @throws InternalErrorException
 	 */
 	public function updateItem(array $values, array $options = array(), array $expected = array())
 	{
@@ -821,10 +908,24 @@ class ODM
 			}
 		}
 
-		$client = $this->getClient();
-		$item    = $client->updateItem($args);
+        try {
 
-		return $item;
+            $client = $this->getClient();
+            $item   = $client->updateItem($args);
+
+            return $item;
+
+        } catch (\Exception $e) {
+
+            // Throw internal server error
+            $internalException =  new InternalErrorException('Internal server error');
+
+            $internalException->addResponseMessages( new ResponseMessage($e->getMessage(), ResponseMessage::TYPE_ERROR) );
+
+            throw $internalException;
+
+        }
+
 	}
 
 	/**
@@ -955,18 +1056,31 @@ class ODM
 
 		$table_name = $this->getTableName();
 
-		$client   = $this->getClient();
-		$result   = $client->batchGetItem(
-			array(
-				'RequestItems' => array(
-                    $table_name => array(
-						'Keys'           => $keys,
-						'ConsistentRead' => $this->_consistent_read
-					)
-				),
-                'ReturnConsumedCapacity' => 'TOTAL'
-			)
-		);
+        try {
+
+            $client = $this->getClient();
+            $result = $client->batchGetItem(
+                array(
+                    'RequestItems' => array(
+                        $table_name => array(
+                            'Keys'           => $keys,
+                            'ConsistentRead' => $this->_consistent_read
+                        )
+                    ),
+                    'ReturnConsumedCapacity' => 'TOTAL'
+                )
+            );
+
+        } catch (\Exception $e) {
+
+            // Throw internal server error
+            $internalException =  new InternalErrorException('Internal server error');
+
+            $internalException->addResponseMessages( new ResponseMessage($e->getMessage(), ResponseMessage::TYPE_ERROR) );
+
+            throw $internalException;
+
+        }
 
 		$items            = $result->getPath("Responses/{$this->getTableName()}");
 		$class_name       = get_called_class();

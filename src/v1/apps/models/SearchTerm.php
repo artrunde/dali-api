@@ -62,20 +62,16 @@ class SearchTerm extends ODM {
              */
             if( true === $searchTerm->validate(new SearchTermValidator()) ) {
 
-
-                try {
                     $searchTerm->save();
+
                     return $searchTerm;
-                } catch (\Exception $e) {
-                    // Do nothing with this. Probably just a duplicate
-                }
 
             }
 
         } catch (HandledException $e) {
 
             // Throw internal server error
-            throw new InternalErrorException('Error while creating search terms');
+            throw new InternalErrorException('Error while creating search terms: '.$e->getMessage());
 
         }
 
